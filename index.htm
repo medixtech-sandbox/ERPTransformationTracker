@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Medix ERP Transformation Readiness Tracker™</title>
-<!-- Internal version tracking: ERP Transformation Readiness Tracker V4.3 -->
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V4.4 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -381,7 +381,7 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
         <button class="ghost" type="button" onclick="showScreen('screenProfile')">Back</button>
         <div class="right">
           <button class="secondary" type="button" onclick="saveAndExitWizard('scope')">Save & Exit</button>
-          <button class="primary" type="button" onclick="saveWizardScopeAndNext()">Save & Continue</button>
+          <button class="primary" type="button" onclick="advanceScopeToReadiness()">Save & Continue</button>
         </div>
       </div>
     </div>
@@ -452,7 +452,7 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
         <button class="ghost" type="button" onclick="showScreen('screenScope')">Back</button>
         <div class="right">
           <button class="secondary" type="button" onclick="saveAndExitWizard('assessment')">Save & Exit</button>
-          <button class="primary" type="button" onclick="goToExecutiveReport()">Save & Continue</button>
+          <button class="primary" type="button" onclick="advanceReadinessToReport()">Save & Continue</button>
         </div>
       </div>
     </div>
@@ -1007,10 +1007,16 @@ function updatePersonalizedHeaders(){
 
 function showScreen(id){
  updatePersonalizedHeaders();
- document.querySelectorAll('.app-screen').forEach(s=>{s.classList.remove('active');s.style.display='none'});
- const target=el(id);
- if(target){target.classList.add('active');target.style.display='block'}
- renderWizardSteps(id);
+ document.querySelectorAll('.app-screen').forEach(screen=>{
+   screen.classList.remove('active');
+   screen.style.display='none';
+ });
+ const target=document.getElementById(id);
+ if(target){
+   target.classList.add('active');
+   target.style.display='block';
+ }
+ try{renderWizardSteps(id)}catch(e){}
  window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -1139,18 +1145,7 @@ function advanceProfileToScope(){
  document.querySelectorAll('.org-personalized-label').forEach(node=>node.textContent='ERP readiness journey');
 
  // Hard screen transition: do not depend on showScreen or hidden legacy fields.
- document.querySelectorAll('.app-screen').forEach(screen=>screen.classList.remove('active'));
- const profile=document.getElementById('screenProfile');
- const scope=document.getElementById('screenScope');
- if(profile)profile.style.display='none';
- if(scope){
-   scope.classList.add('active');
-   scope.style.display='block';
- }
-
- // Update step indicator if available.
- try{renderWizardSteps('screenScope')}catch(e){}
- window.scrollTo({top:0,behavior:'smooth'});
+ setActiveScreenHard('screenScope');
 }
 
 function saveWizardProfileAndNext(){
@@ -1197,6 +1192,75 @@ function syncWizardScopeFromModules(){
  if(el('wizardScopeFinance'))el('wizardScopeFinance').checked=names.some(x=>/Finance/i.test(x));
  if(el('wizardScopeSupply'))el('wizardScopeSupply').checked=names.some(x=>/Supply/i.test(x));
  if(el('wizardScopePlatform'))el('wizardScopePlatform').checked=names.some(x=>/Platform/i.test(x));
+}
+
+
+function setActiveScreenHard(targetId){
+ document.querySelectorAll('.app-screen').forEach(screen=>{
+   screen.classList.remove('active');
+   screen.style.display='none';
+ });
+ const target=document.getElementById(targetId);
+ if(target){
+   target.classList.add('active');
+   target.style.display='block';
+ }
+ try{renderWizardSteps(targetId)}catch(e){}
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function advanceScopeToReadiness(){
+ const selections={
+   hcm:!!document.getElementById('wizardScopeHCM')?.checked,
+   finance:!!document.getElementById('wizardScopeFinance')?.checked,
+   supply:!!document.getElementById('wizardScopeSupply')?.checked,
+   platform:!!document.getElementById('wizardScopePlatform')?.checked
+ };
+ if(!Object.values(selections).some(Boolean)){
+   alert('Please select at least one ERP scope area before continuing.');
+   return;
+ }
+
+ selectedVendor='other';
+
+ // Ensure the underlying scope controls exist.
+ try{
+   if(!document.querySelector('.moduleCheck'))renderVendorScope();
+ }catch(e){}
+
+ // Synchronize high-level scope selections to the assessment model.
+ document.querySelectorAll('.moduleCheck').forEach(box=>{
+   const kind=(box.dataset.kind||'');
+   const name=(box.dataset.name||'');
+   box.checked =
+     (selections.hcm && /HCM/i.test(kind+name)) ||
+     (selections.finance && /Finance/i.test(kind+name)) ||
+     (selections.supply && /Supply/i.test(kind+name)) ||
+     (selections.platform && /Platform/i.test(kind+name));
+ });
+
+ // Build readiness content before showing Screen 3.
+ try{renderChecklist()}catch(e){}
+ try{calculate()}catch(e){console.warn('Readiness calculation deferred:',e)}
+ try{autosaveDraft()}catch(e){}
+
+ setActiveScreenHard('screenAssessment');
+}
+
+function advanceReadinessToReport(){
+ // Recalculate and persist current answers, but don't let a secondary error block navigation.
+ try{calculate()}catch(e){console.warn('Calculation issue:',e)}
+ try{saveAssessmentSnapshot()}catch(e){console.warn('Snapshot save issue:',e)}
+
+ setActiveScreenHard('screenReport');
+
+ // Refresh report after the screen exists visibly.
+ try{
+   const raw=sections.map((s,i)=>checkedCount(i));
+   const score=+(document.getElementById('score')?.innerText||0);
+   renderExecutiveReport(raw,score);
+   renderHistorySummary();
+ }catch(e){console.warn('Report refresh issue:',e)}
 }
 
 function saveWizardScopeAndNext(){
