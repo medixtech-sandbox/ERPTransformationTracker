@@ -4,8 +4,11 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Medix ERP Transformation Readiness Tracker™</title>
-<!-- Internal version tracking: ERP Transformation Readiness Tracker V8.1 -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V8.2 -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js">
+window.isNewAssessment=true;
+window.comparisonBaselineId=null;
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
@@ -1577,6 +1580,8 @@ function randomizeOrganizationProfile(){
 function startNewAssessmentFlow(){
  assessmentFlowMode='new';
  currentAssessmentId='a_'+Date.now();
+ window.comparisonBaselineId=null;
+ window.isNewAssessment=true;
  ['wizardOrg','wizardEmployees'].forEach(id=>{if(el(id))el(id).value=''});
  if(el('wizardOrgType'))el('wizardOrgType').value='';
  if(el('wizardTimeline'))el('wizardTimeline').value='';
@@ -1625,6 +1630,8 @@ function continueAssessmentFromLanding(event){
    }
  };
  reader.readAsText(file);
+
+ window.isNewAssessment=false;
 }
 
 
@@ -1900,6 +1907,8 @@ function continueSavedAssessment(id){
  el('profileConfirmBanner').classList.remove('hidden');
  updatePersonalizedHeaders();
  showScreen('screenProfile');
+
+ window.isNewAssessment=false;
 }
 function showExecSection(name,btn){
  document.querySelectorAll('.exec-section-panel').forEach(x=>x.classList.remove('active'));
@@ -2046,6 +2055,8 @@ function applyAssessmentData(data){
  },0);
  renderLifecycleTracker();
  renderHistorySummary();
+
+ window.isNewAssessment=false;
 }
 
 function resumeLatestAssessment(){
@@ -2054,6 +2065,8 @@ function resumeLatestAssessment(){
  if(!latest){showTrackerMessage('No saved assessment was found in this browser.');return}
  applyAssessmentData(latest);
  showTrackerMessage('Last saved assessment restored.');
+
+ window.isNewAssessment=false;
 }
 
 function startNewAssessmentVersion(){
@@ -2070,6 +2083,8 @@ function startNewAssessmentVersion(){
    currentAssessmentId='a_'+Date.now();
    showTrackerMessage('New assessment update started.');
  }
+
+ window.isNewAssessment=false;
 }
 
 function showAssessmentHistory(){
@@ -2169,29 +2184,60 @@ function sinceLastAssessmentDisplay(currentScore){
 function renderHistorySummary(){
  const state=trackerState();
  const arr=[...state.assessments].sort((a,b)=>new Date(a.savedAt)-new Date(b.savedAt));
+
+ // A brand-new assessment never shows a change, even if unrelated history exists in the browser.
+ if(window.isNewAssessment===true){
+   ['changeScore','execScoreChange'].forEach(id=>{if(el(id))el(id).innerText='N/A'});
+   if(el('actionsCompletedChange'))el('actionsCompletedChange').innerText='N/A';
+   if(el('categoriesImproved'))el('categoriesImproved').innerText='N/A';
+   if(el('categoriesDeclined'))el('categoriesDeclined').innerText='N/A';
+   if(el('improvementList'))el('improvementList').innerHTML='<li>No prior assessment to compare.</li>';
+   if(el('declineList'))el('declineList').innerHTML='<li>No prior assessment to compare.</li>';
+   renderProgressChart([]);
+   return;
+ }
+
  if(arr.length<2){
-   ['changeScore','actionsCompletedChange','categoriesImproved','categoriesDeclined','execScoreChange'].forEach(id=>{if(el(id))el(id).innerText='—'});
-   if(el('improvementList'))el('improvementList').innerHTML='<li>Save at least two assessment snapshots to see progress.</li>';
+   ['changeScore','execScoreChange'].forEach(id=>{if(el(id))el(id).innerText='N/A'});
+   if(el('actionsCompletedChange'))el('actionsCompletedChange').innerText='N/A';
+   if(el('categoriesImproved'))el('categoriesImproved').innerText='N/A';
+   if(el('categoriesDeclined'))el('categoriesDeclined').innerText='N/A';
+   if(el('improvementList'))el('improvementList').innerHTML='<li>Save an updated assessment to see progress.</li>';
    if(el('declineList'))el('declineList').innerHTML='<li>No comparison available yet.</li>';
    renderProgressChart(arr);
    return;
  }
+
  const prev=arr[arr.length-2],curr=arr[arr.length-1];
  const delta=curr.score-prev.score;
- el('changeScore').innerHTML=`<span class="${delta>0?'change-up':delta<0?'change-down':'change-flat'}">${delta>0?'+':''}${delta}</span>`;
+
+ if(el('changeScore'))el('changeScore').innerHTML=`<span class="${delta>0?'change-up':delta<0?'change-down':'change-flat'}">${delta>0?'+':''}${delta}</span>`;
  if(el('execScoreChange'))el('execScoreChange').innerHTML=`<span class="${delta>0?'change-up':delta<0?'change-down':'change-flat'}">${delta>0?'+':''}${delta}</span>`;
+
  const prevActions=(prev.actionStates||[]).filter(x=>x.checked).length;
  const currActions=(curr.actionStates||[]).filter(x=>x.checked).length;
- el('actionsCompletedChange').innerText=`${currActions}/${Math.max(curr.actionStates?.length||0,1)}`;
+ if(el('actionsCompletedChange'))el('actionsCompletedChange').innerText=`${currActions}/${Math.max(curr.actionStates?.length||0,1)}`;
+
  let improved=[],declined=[];
- curr.categoryPercents.forEach((v,i)=>{
+ (curr.categoryPercents||[]).forEach((v,i)=>{
    const d=v-(prev.categoryPercents?.[i]||0);
-   if(d>0)improved.push({i,d}); else if(d<0)declined.push({i,d});
+   if(d>0)improved.push({i,d});
+   else if(d<0)declined.push({i,d});
  });
- el('categoriesImproved').innerText=improved.length;
- el('categoriesDeclined').innerText=declined.length;
- el('improvementList').innerHTML=improved.sort((a,b)=>b.d-a.d).slice(0,5).map(x=>`<li><strong>${sections[x.i].name}:</strong> +${x.d}%</li>`).join('')||'<li>No categories improved in the latest comparison.</li>';
- el('declineList').innerHTML=declined.sort((a,b)=>a.d-b.d).slice(0,5).map(x=>`<li><strong>${sections[x.i].name}:</strong> ${x.d}%</li>`).join('')||'<li>No categories declined in the latest comparison.</li>';
+
+ if(el('categoriesImproved'))el('categoriesImproved').innerText=improved.length;
+ if(el('categoriesDeclined'))el('categoriesDeclined').innerText=declined.length;
+
+ if(el('improvementList'))el('improvementList').innerHTML=
+   improved.sort((a,b)=>b.d-a.d).slice(0,5)
+   .map(x=>`<li><strong>${sections[x.i].name}:</strong> +${x.d}%</li>`).join('')||
+   '<li>No categories improved in the latest comparison.</li>';
+
+ if(el('declineList'))el('declineList').innerHTML=
+   declined.sort((a,b)=>a.d-b.d).slice(0,5)
+   .map(x=>`<li><strong>${sections[x.i].name}:</strong> ${x.d}%</li>`).join('')||
+   '<li>No categories declined in the latest comparison.</li>';
+
  renderProgressChart(arr);
 }
 function renderProgressChart(arr){
