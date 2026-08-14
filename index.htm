@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Medix ERP Transformation Readiness Tracker™</title>
-<!-- Internal version tracking: ERP Transformation Readiness Tracker V7.2 -->
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V7.4 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -237,13 +237,13 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 .exec-stat-card{border:1px solid var(--line);border-radius:16px;padding:16px;background:#fff}
 .exec-stat-card .value{font-size:28px;font-weight:900;line-height:1.05;color:var(--blue)}
 .exec-stat-card .label{font-size:12px;color:var(--muted);margin-top:6px}
-.exec-stat-card.status-green{border-left:5px solid var(--green)}
-.exec-stat-card.status-yellow{border-left:5px solid var(--yellow)}
-.exec-stat-card.status-red{border-left:5px solid var(--red)}
-.exec-stat-card.risk-low{border-left:5px solid var(--green)}
-.exec-stat-card.risk-medium{border-left:5px solid var(--yellow)}
-.exec-stat-card.risk-elevated{border-left:5px solid var(--orange)}
-.exec-stat-card.risk-high{border-left:5px solid var(--red)}
+.exec-stat-card.status-green{background:#fff;border-color:var(--line);border-left:5px solid var(--green)}
+.exec-stat-card.status-yellow{background:#fff;border-color:var(--line);border-left:5px solid var(--yellow)}
+.exec-stat-card.status-red{background:#fff;border-color:var(--line);border-left:5px solid var(--red)}
+.exec-stat-card.risk-low{background:#fff;border-color:var(--line);border-left:5px solid var(--green)}
+.exec-stat-card.risk-medium{background:#fff;border-color:var(--line);border-left:5px solid var(--yellow)}
+.exec-stat-card.risk-elevated{background:#fff;border-color:var(--line);border-left:5px solid var(--orange)}
+.exec-stat-card.risk-high{background:#fff;border-color:var(--line);border-left:5px solid var(--red)}
 @media(max-width:800px){.exec-dashboard-v2{grid-template-columns:1fr}.exec-dashboard-hero{grid-template-columns:1fr;text-align:center}}
 
 .readiness-stoplight-wrap{display:flex;align-items:center;gap:12px}
@@ -286,6 +286,12 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 @media(max-width:1120px){.grid,.platform-grid,.module-area,.grid3,.grid4,.service-grid,.scope-grid{grid-template-columns:1fr}.profile-grid,.ecosystem,.kpi-grid{grid-template-columns:1fr 1fr}.questions{grid-template-columns:1fr}.module-list{grid-template-columns:1fr}}
 @media(max-width:720px){.wrapper{padding:14px}h1{font-size:30px}.profile-grid,.ecosystem,.kpi-grid{grid-template-columns:1fr}.hero{padding:24px}.score-ring{align-items:flex-start;flex-direction:column}}
 @media print{body{background:#fff}.wrapper{max-width:none;padding:10px}.hero,.card{box-shadow:none}.button-row,.platform-grid,#introCard{display:none!important}.grid{grid-template-columns:1fr}.card{break-inside:avoid}.section{break-inside:avoid}.questions{grid-template-columns:1fr 1fr}}
+
+.exec-dashboard-v2{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:stretch}
+.exec-dashboard-hero{grid-column:1/-1}
+#statusCard,#probabilityCard,#riskCard{grid-column:auto}
+@media(max-width:760px){.exec-dashboard-v2{grid-template-columns:1fr}.exec-dashboard-hero{grid-column:1}}
+
 </style>
 </head>
 <body>
@@ -306,10 +312,6 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 <p>A longitudinal ERP readiness and transformation tracking tool designed to help executive teams assess progress, manage key actions, and monitor readiness throughout the ERP lifecycle.</p>
 <span class="pill">Executive Assessment</span><span class="pill">Progress Tracking</span><span class="pill">Lifecycle Readiness</span>
 </div>
-
-
-
-
 <div class="app-screen active" id="screenLanding">
 <div class="landing-shell">
 <div class="landing-card">
@@ -480,7 +482,13 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 </div>
 </div>
 </div>
+<div class="screen-nav">
+<button class="ghost" onclick="showScreen('screenScope')" type="button">Back</button>
+<div class="right">
+<button class="secondary" onclick="saveAndExitWizard('assessment')" type="button">Save &amp; Exit</button>
+<button class="primary" onclick="advanceReadinessToReport()" type="button">Save &amp; Continue</button>
 </div>
+</div></div>
 </div><div class="app-screen" id="screenReport">
 <div class="screen-shell">
 <div class="page-brand-banner">
@@ -643,11 +651,6 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 <button class="primary" onclick="advanceReadinessToReport()" type="button">Save &amp; Continue</button>
 </div>
 </div>
-
-
-
-
-
 <script>
 const vendors={
  workday:{name:"Workday",tag:"Cloud ERP / HCM",desc:"Workday-specific scoping for HCM, Financial Management, Spend Management, Supply Chain, analytics, Extend, and healthcare integrations.",groups:[
