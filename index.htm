@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Medix ERP Transformation Readiness Tracker™</title>
-<!-- Internal version tracking: ERP Transformation Readiness Tracker V4.1 -->
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V4.3 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -345,7 +345,7 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
         <button class="ghost" type="button" onclick="showScreen('screenLanding')">Back</button>
         <div class="right">
           <button class="secondary" type="button" onclick="saveAndExitWizard('profile')">Save & Exit</button>
-          <button class="primary" type="button" onclick="saveWizardProfileAndNext()">Save & Continue</button>
+          <button class="primary" type="button" onclick="advanceProfileToScope()">Save & Continue</button>
         </div>
       </div>
     </div>
@@ -1007,8 +1007,9 @@ function updatePersonalizedHeaders(){
 
 function showScreen(id){
  updatePersonalizedHeaders();
- document.querySelectorAll('.app-screen').forEach(s=>s.classList.remove('active'));
- const target=el(id);if(target)target.classList.add('active');
+ document.querySelectorAll('.app-screen').forEach(s=>{s.classList.remove('active');s.style.display='none'});
+ const target=el(id);
+ if(target){target.classList.add('active');target.style.display='block'}
  renderWizardSteps(id);
  window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -1098,6 +1099,58 @@ function continueAssessmentFromLanding(event){
    }
  };
  reader.readAsText(file);
+}
+
+
+function advanceProfileToScope(){
+ const org=(document.getElementById('wizardOrg')?.value||'').trim();
+ const orgType=document.getElementById('wizardOrgType')?.value||'';
+ const employees=document.getElementById('wizardEmployees')?.value||'';
+ const timeline=document.getElementById('wizardTimeline')?.value||'';
+ const stage=document.getElementById('wizardLifecycleStage')?.value||'Discovery';
+
+ if(!org||!orgType||!employees||!timeline){
+   alert('Please complete Organization Name, Organization Type, Number of Employees, and Target Timeline before continuing.');
+   return;
+ }
+
+ // Persist the visible Step 1 values directly.
+ try{
+   const state=trackerState();
+   const id=currentAssessmentId||state.draft?.id||('a_'+Date.now());
+   state.draft={
+     ...(state.draft||{}),
+     id,
+     savedAt:new Date().toISOString(),
+     org,
+     orgType,
+     employees,
+     timeline,
+     lifecycleStage:stage
+   };
+   currentAssessmentId=id;
+   saveTrackerState(state);
+ }catch(e){
+   console.warn('Draft save skipped:',e);
+ }
+
+ // Personalize headers directly from the captured organization.
+ document.querySelectorAll('.org-personalized-name').forEach(node=>node.textContent=org);
+ document.querySelectorAll('.org-personalized-label').forEach(node=>node.textContent='ERP readiness journey');
+
+ // Hard screen transition: do not depend on showScreen or hidden legacy fields.
+ document.querySelectorAll('.app-screen').forEach(screen=>screen.classList.remove('active'));
+ const profile=document.getElementById('screenProfile');
+ const scope=document.getElementById('screenScope');
+ if(profile)profile.style.display='none';
+ if(scope){
+   scope.classList.add('active');
+   scope.style.display='block';
+ }
+
+ // Update step indicator if available.
+ try{renderWizardSteps('screenScope')}catch(e){}
+ window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function saveWizardProfileAndNext(){
