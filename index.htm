@@ -1,10 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Medix ERP Transformation Readiness Tracker™</title>
-<!-- Internal version tracking: ERP Transformation Readiness Tracker V6.9 -->
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V7.1 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -285,411 +286,363 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 </head>
 <body>
 <div class="wrapper">
-  <div class="brand-header hidden" id="legacyBrandHeader">
-    <div class="logo-wrap">
-      <img src="medix-technology-logo.png" alt="Medix Technology" class="medix-logo">
-      <div class="brand-lockup">
-        <strong>ERP Transformation Readiness Tracker™</strong>
-        <span>Healthcare-focused assessment. Data-driven insights. Smarter ERP decisions.</span>
-      </div>
-    </div>
-    <div class="brand-tagline">People. Technology. Solutions.</div>
-  </div>
-
-  <div class="hero hidden" id="legacyHero">
-    <div class="kicker">Healthcare ERP Advisory Portal</div>
-    <h1>Medix ERP Transformation Readiness Tracker™</h1>
-    <p>A longitudinal ERP readiness and transformation tracking tool designed to help executive teams assess progress, manage key actions, and monitor readiness throughout the ERP lifecycle.</p>
-    <span class="pill">Executive Assessment</span><span class="pill">Progress Tracking</span><span class="pill">Lifecycle Readiness</span>
-  </div>
-
-  
-  <div class="app-screen active" id="screenLanding">
-    <div class="landing-shell">
-      <div class="landing-card">
-        <div class="landing-top">
-          <div class="kicker">Healthcare ERP Advisory Portal</div>
-          <h1>Medix ERP Transformation Readiness Tracker™</h1>
-          <p>Assess readiness, track progress, and guide executive decision-making throughout the ERP lifecycle.</p>
-        </div>
-        <div class="landing-body">
-          <div id="trackerMessage" class="success-banner"></div>
-          <h2>How would you like to begin?</h2>
-          <div class="choice-grid">
-            <div class="choice-card">
-              <h3>Start a New Assessment</h3>
-              <p>Create a new ERP readiness assessment and establish your organization and project profile.</p>
-              <button class="primary" type="button" onclick="startNewAssessmentFlow()">Start New Assessment</button>
-            </div>
-
-            <div class="choice-card">
-              <h3>Continue an Assessment</h3>
-              <p>Restore a previously downloaded backup or reopen a project saved in this browser.</p>
-              <button class="secondary" type="button" onclick="document.getElementById('landingBackupInput').click()">Upload Assessment Backup</button>
-              <button class="ghost" type="button" onclick="showLandingAssessmentHistory()">Assessment History</button>
-              <input id="landingBackupInput" class="backup-file-input" type="file" accept=".json,application/json" onchange="continueAssessmentFromLanding(event)">
-              <div id="landingHistoryPanel" class="hidden" style="margin-top:12px"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="app-screen" id="screenProfile">
-    <div class="screen-shell">
-      <div class="page-brand-banner">
-        <div class="kicker">Healthcare ERP Advisory Portal</div>
-        <h1>Medix ERP Transformation Readiness Tracker™</h1>
-        <p><span class="org-personalized-label">ERP readiness journey</span><span class="org-personalized-name"></span></p>
-      </div>
-
-      <div class="wizard-steps" id="wizardProfile"></div>
-      <div class="screen-header">
-        <div>
-          <div class="kicker" style="color:var(--primary-step-1)">Step 1</div>
-          <h2 id="profileScreenTitle">Organization & Project Profile</h2>
-          <p class="small" id="profileScreenHelp">Enter the basic information for this ERP transformation.</p>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="profile-actions-inline">
-          <button class="secondary" type="button" onclick="randomizeOrganizationProfile()">Randomize Organization Details</button>
-        </div>
-        <div class="profile-grid">
-          <label>Organization Name <span class="required-star">*</span><br><input id="wizardOrg" type="text" placeholder="Health System / Organization"></label>
-          <label>Organization Type <span class="required-star">*</span><br>
-            <select id="wizardOrgType">
-              <option value="">Select Organization Type</option>
-              <option>Academic Medical Center</option><option>Integrated Delivery Network (IDN)</option>
-              <option>Community Health System</option><option>Critical Access Hospital</option>
-              <option>Children's Hospital</option><option>Specialty Hospital</option>
-              <option>Ambulatory / Physician Group</option><option>Government / VA</option>
-              <option>Behavioral Health</option><option>Other Healthcare Organization</option>
-            </select>
-          </label>
-          <label>Number of Employees <span class="required-star">*</span><br><input id="wizardEmployees" type="number" min="1" placeholder="Example: 12500"></label>
-          <label>Target Timeline <span class="required-star">*</span><br>
-            <select id="wizardTimeline">
-              <option value="">Select Target Timeline</option>
-              <option>0–6 Months</option><option>6–12 Months</option><option>12–18 Months</option><option>18–30 Months</option><option>30+ Months</option>
-            </select>
-          </label>
-          <label>Current ERP Lifecycle Stage <span class="required-star">*</span><br>
-            <select id="wizardLifecycleStage">
-              <option value="Discovery">Discovery</option>
-              <option value="Business Case Creation">Business Case</option>
-              <option value="Vendor Selection">Vendor Selection</option>
-              <option value="Implementation Planning">Pre-Implementation</option>
-              <option value="Implementation">Implementation</option>
-              <option value="Testing">Testing</option>
-              <option value="Go-Live / Hypercare">Go-Live / Hypercare</option>
-              <option value="Optimization">Stabilization / Optimization</option>
-            </select>
-          </label>
-        </div>
-        <div id="profileConfirmBanner" class="confirm-banner hidden"></div>
-      </div>
-    </div>
-        
-
-      <div class="screen-nav">
-        <button class="ghost" type="button" onclick="showScreen('screenLanding')">Back</button>
-        <div class="right">
-          <button class="secondary" type="button" onclick="saveAndExitWizard('profile')">Save &amp; Exit</button>
-          <button class="primary" type="button" onclick="advanceProfileToScope()">Save &amp; Continue</button>
-        </div>
-      </div>
+<div class="brand-header hidden" id="legacyBrandHeader">
+<div class="logo-wrap">
+<img alt="Medix Technology" class="medix-logo" src="medix-technology-logo.png"/>
+<div class="brand-lockup">
+<strong>ERP Transformation Readiness Tracker™</strong>
+<span>Healthcare-focused assessment. Data-driven insights. Smarter ERP decisions.</span>
+</div>
+</div>
+<div class="brand-tagline">People. Technology. Solutions.</div>
+</div>
+<div class="hero hidden" id="legacyHero">
+<div class="kicker">Healthcare ERP Advisory Portal</div>
+<h1>Medix ERP Transformation Readiness Tracker™</h1>
+<p>A longitudinal ERP readiness and transformation tracking tool designed to help executive teams assess progress, manage key actions, and monitor readiness throughout the ERP lifecycle.</p>
+<span class="pill">Executive Assessment</span><span class="pill">Progress Tracking</span><span class="pill">Lifecycle Readiness</span>
 </div>
 
-  <div class="app-screen" id="screenScope">
-    <div class="screen-shell">
-      <div class="page-brand-banner">
-        <div class="kicker">Healthcare ERP Advisory Portal</div>
-        <h1>Medix ERP Transformation Readiness Tracker™</h1>
-        <p><span class="org-personalized-label">ERP readiness journey</span><span class="org-personalized-name"></span></p>
-      </div>
 
-      <div class="wizard-steps" id="wizardScope"></div>
-      <div class="screen-header">
-        <div>
-          <div class="kicker" style="color:var(--primary-step-1)">Step 2</div>
-          <h2>General ERP Evaluation Scope</h2>
-          <p class="small">Select all ERP areas included in the initiative. You can choose more than one.</p>
-        </div>
-      </div>
 
-      <div class="card">
-        <div class="scope-simple-grid">
-          <label class="scope-simple-card"><input type="checkbox" id="wizardScopeHCM"> Human Capital Management</label>
-          <label class="scope-simple-card"><input type="checkbox" id="wizardScopeFinance"> Financial Management</label>
-          <label class="scope-simple-card"><input type="checkbox" id="wizardScopeSupply"> Supply Chain Management</label>
-          <label class="scope-simple-card"><input type="checkbox" id="wizardScopePlatform"> Platform, Reporting & AI</label>
-        </div>
-      </div>
-    </div>
-        
 
-      <div class="screen-nav">
-        <button class="ghost" type="button" onclick="showScreen('screenProfile')">Back</button>
-        <div class="right">
-          <button class="secondary" type="button" onclick="saveAndExitWizard('scope')">Save &amp; Exit</button>
-          <button class="primary" type="button" onclick="advanceScopeToReadiness()">Save &amp; Continue</button>
-        </div>
-      </div>
+<div class="app-screen active" id="screenLanding">
+<div class="landing-shell">
+<div class="landing-card">
+<div class="landing-top">
+<div class="kicker">Healthcare ERP Advisory Portal</div>
+<h1>Medix ERP Transformation Readiness Tracker™</h1>
+<p>Assess readiness, track progress, and guide executive decision-making throughout the ERP lifecycle.</p>
 </div>
-
-  <div class="app-screen assessment-screen" id="screenAssessment">
-    <div class="screen-shell">
-      <div class="page-brand-banner">
-        <div class="kicker">Healthcare ERP Advisory Portal</div>
-        <h1>Medix ERP Transformation Readiness Tracker™</h1>
-        <p><span class="org-personalized-label">ERP readiness journey</span><span class="org-personalized-name"></span></p>
-      </div>
-
-      <div class="wizard-steps" id="wizardAssessment"></div>
-
-
-  <div class="card hidden" id="historyCard">
-    <h2>Assessment History</h2>
-    <div class="saved-list" id="savedAssessments"></div>
-  </div>
-
-  <div id="assessment">
-          <div class="profile-actions-inline">
-        <button class="secondary" type="button" onclick="smartRandomizeReadiness()">Randomize Readiness for Testing</button>
-      </div>
-
+<div class="landing-body">
+<div class="success-banner" id="trackerMessage"></div>
+<h2>How would you like to begin?</h2>
+<div class="choice-grid">
+<div class="choice-card">
+<h3>Start a New Assessment</h3>
+<p>Create a new ERP readiness assessment and establish your organization and project profile.</p>
+<button class="primary" onclick="startNewAssessmentFlow()" type="button">Start New Assessment</button>
+</div>
+<div class="choice-card">
+<h3>Continue an Assessment</h3>
+<p>Restore a previously downloaded backup or reopen a project saved in this browser.</p>
+<button class="secondary" onclick="document.getElementById('landingBackupInput').click()" type="button">Upload Assessment Backup</button>
+<button class="ghost" onclick="showLandingAssessmentHistory()" type="button">Assessment History</button>
+<input accept=".json,application/json" class="backup-file-input" id="landingBackupInput" onchange="continueAssessmentFromLanding(event)" type="file"/>
+<div class="hidden" id="landingHistoryPanel" style="margin-top:12px"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="app-screen" id="screenProfile"><div class="screen-shell"><div class="page-brand-banner">
+<div class="kicker">Healthcare ERP Advisory Portal</div>
+<h1>Medix ERP Transformation Readiness Tracker™</h1>
+<p><span class="org-personalized-label">ERP readiness journey</span><span class="org-personalized-name"></span></p>
+</div><div class="wizard-steps" id="wizardProfile"></div><div class="screen-header">
+<div>
+<div class="kicker" style="color:var(--primary-step-1)">Step 1</div>
+<h2 id="profileScreenTitle">Organization &amp; Project Profile</h2>
+<p class="small" id="profileScreenHelp">Enter the basic information for this ERP transformation.</p>
+</div>
+</div><div class="card">
+<div class="profile-actions-inline">
+<button class="secondary" onclick="randomizeOrganizationProfile()" type="button">Randomize Organization Details</button>
+</div>
+<div class="profile-grid">
+<label>Organization Name <span class="required-star">*</span><br/><input id="wizardOrg" placeholder="Health System / Organization" type="text"/></label>
+<label>Organization Type <span class="required-star">*</span><br/>
+<select id="wizardOrgType">
+<option value="">Select Organization Type</option>
+<option>Academic Medical Center</option><option>Integrated Delivery Network (IDN)</option>
+<option>Community Health System</option><option>Critical Access Hospital</option>
+<option>Children's Hospital</option><option>Specialty Hospital</option>
+<option>Ambulatory / Physician Group</option><option>Government / VA</option>
+<option>Behavioral Health</option><option>Other Healthcare Organization</option>
+</select>
+</label>
+<label>Number of Employees <span class="required-star">*</span><br/><input id="wizardEmployees" min="1" placeholder="Example: 12500" type="number"/></label>
+<label>Target Timeline <span class="required-star">*</span><br/>
+<select id="wizardTimeline">
+<option value="">Select Target Timeline</option>
+<option>0–6 Months</option><option>6–12 Months</option><option>12–18 Months</option><option>18–30 Months</option><option>30+ Months</option>
+</select>
+</label>
+<label>Current ERP Lifecycle Stage <span class="required-star">*</span><br/>
+<select id="wizardLifecycleStage">
+<option value="Discovery">Discovery</option>
+<option value="Business Case Creation">Business Case</option>
+<option value="Vendor Selection">Vendor Selection</option>
+<option value="Implementation Planning">Pre-Implementation</option>
+<option value="Implementation">Implementation</option>
+<option value="Testing">Testing</option>
+<option value="Go-Live / Hypercare">Go-Live / Hypercare</option>
+<option value="Optimization">Stabilization / Optimization</option>
+</select>
+</label>
+</div>
+<div class="confirm-banner hidden" id="profileConfirmBanner"></div>
+</div><div class="screen-nav">
+<button class="ghost" onclick="showScreen('screenLanding')" type="button">Back</button>
+<div class="right">
+<button class="secondary" onclick="saveAndExitWizard('profile')" type="button">Save &amp; Exit</button>
+<button class="primary" onclick="advanceProfileToScope()" type="button">Save &amp; Continue</button>
+</div>
+</div></div></div><div class="app-screen" id="screenScope">
+<div class="screen-shell">
+<div class="page-brand-banner">
+<div class="kicker">Healthcare ERP Advisory Portal</div>
+<h1>Medix ERP Transformation Readiness Tracker™</h1>
+<p><span class="org-personalized-label">ERP readiness journey</span><span class="org-personalized-name"></span></p>
+</div>
+<div class="wizard-steps" id="wizardScope"></div>
+<div class="screen-header">
+<div>
+<div class="kicker" style="color:var(--primary-step-1)">Step 2</div>
+<h2>General ERP Evaluation Scope</h2>
+<p class="small">Select all ERP areas included in the initiative. You can choose more than one.</p>
+</div>
+</div>
 <div class="card">
-      <h2>Executive Dashboard</h2>
-      <div class="readiness-empty-state" id="readinessDashboardEmpty">
-        <h3>Complete the Readiness Checklist to Generate Your Score</h3>
-        <p>Your ERP Readiness Score, readiness status, projected success probability, overall project risk, and executive summary will appear here once you begin answering the assessment.</p>
-      </div>
-      <div class="dashboard-content hidden-dashboard" id="readinessDashboardContent">
-        <div class="exec-dashboard-v2">
-          <div class="exec-dashboard-hero">
-            <div class="exec-score-block">
-              <div class="exec-score-number" id="score">—</div>
-              <div class="exec-score-caption">ERP Readiness Score</div>
-            </div>
-            <div class="exec-summary-copy" id="execAssessmentSummary">
+<div class="scope-simple-grid">
+<label class="scope-simple-card"><input id="wizardScopeHCM" type="checkbox"/> Human Capital Management</label>
+<label class="scope-simple-card"><input id="wizardScopeFinance" type="checkbox"/> Financial Management</label>
+<label class="scope-simple-card"><input id="wizardScopeSupply" type="checkbox"/> Supply Chain Management</label>
+<label class="scope-simple-card"><input id="wizardScopePlatform" type="checkbox"/> Platform, Reporting &amp; AI</label>
+</div>
+</div>
+</div>
+<div class="screen-nav">
+<button class="ghost" onclick="showScreen('screenProfile')" type="button">Back</button>
+<div class="right">
+<button class="secondary" onclick="saveAndExitWizard('scope')" type="button">Save &amp; Exit</button>
+<button class="primary" onclick="advanceScopeToReadiness()" type="button">Save &amp; Continue</button>
+</div>
+</div>
+</div><div class="app-screen assessment-screen" id="screenAssessment">
+<div class="screen-shell">
+<div class="page-brand-banner">
+<div class="kicker">Healthcare ERP Advisory Portal</div>
+<h1>Medix ERP Transformation Readiness Tracker™</h1>
+<p><span class="org-personalized-label">ERP readiness journey</span><span class="org-personalized-name"></span></p>
+</div>
+<div class="wizard-steps" id="wizardAssessment"></div>
+<div class="card hidden" id="historyCard">
+<h2>Assessment History</h2>
+<div class="saved-list" id="savedAssessments"></div>
+</div>
+<div id="assessment">
+<div class="profile-actions-inline">
+<button class="secondary" onclick="smartRandomizeReadiness()" type="button">Randomize Readiness for Testing</button>
+</div>
+<div class="card">
+<h2>Executive Dashboard</h2>
+<div class="readiness-empty-state" id="readinessDashboardEmpty">
+<h3>Complete the Readiness Checklist to Generate Your Score</h3>
+<p>Your ERP Readiness Score, readiness status, projected success probability, overall project risk, and executive summary will appear here once you begin answering the assessment.</p>
+</div>
+<div class="dashboard-content hidden-dashboard" id="readinessDashboardContent">
+<div class="exec-dashboard-v2">
+<div class="exec-dashboard-hero">
+<div class="exec-score-block">
+<div class="exec-score-number" id="score">—</div>
+<div class="exec-score-caption">ERP Readiness Score</div>
+</div>
+<div class="exec-summary-copy" id="execAssessmentSummary">
               Begin completing the readiness checklist to generate a current-state executive summary.
             </div>
-          </div>
-          <div class="exec-stat-card" id="statusCard">
-            <div class="readiness-stoplight-wrap">
-              <div class="readiness-stoplight red" id="readinessStoplight" role="img" aria-label="Readiness status: Red"></div>
-              <div class="readiness-stoplight-copy">
-                <div class="value" id="readinessStatusText">Red</div>
-                <div class="label">Readiness Status</div>
-              </div>
-            </div>
-          </div>
-          <div class="exec-stat-card" id="probabilityCard">
-            <div class="value" id="prob">—</div>
-            <div class="label">Projected Success Probability</div>
-          </div>
-          <div class="exec-stat-card" id="riskCard">
-            <div class="readiness-stoplight-wrap">
-              <div class="project-risk-light red" id="projectRiskLight" role="img" aria-label="Overall project risk: High"></div>
-              <div class="readiness-stoplight-copy">
-                <div class="value" id="risk"></div>
-                <div class="label">Overall Project Risk</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-        </div>
-    </div>
-
-    <div class="card">
-      <h2 id="scopeTitle">General ERP Evaluation Scope</h2>
-      <p class="small" id="scopeHelp">Select the top-level ERP areas included in the initiative.</p>
-      <div class="scope-grid" id="moduleGroups"></div>
-    </div>
-
-    <div class="grid">
-      <div class="card">
-        <h2>Readiness Checklist</h2>
-        <p class="small">Check each item your organization has already addressed. Workstreams are weighted based on ERP implementation risk in healthcare environments.</p>
-        <div id="checklist"></div>
-        <div class="button-row"><button class="secondary" onclick="resetAssessment()">Reset Assessment</button></div>
-      </div>
-      <div>
-        <div class="card">
-          <h2>Readiness by Category</h2>
-          <div id="categoryBars"></div>
-        </div>
-        <div class="card">
-          <h2>Strengths &amp; Gaps Radar</h2>
-          <div class="chart-wrap"><canvas id="radar"></canvas></div>
-        </div>
-      </div>
-    </div>
-
-    
-      <div class="screen-nav">
-        <button class="ghost" type="button" onclick="showScreen('screenScope')">Back</button>
-        <div class="right">
-          <button class="secondary" type="button" onclick="saveAndExitWizard('assessment')">Save &amp; Exit</button>
-          <button class="primary" type="button" onclick="advanceReadinessToReport()">Save &amp; Continue</button>
-        </div>
-      </div>
 </div>
-    </div>
-        
+<div class="exec-stat-card" id="statusCard">
+<div class="readiness-stoplight-wrap">
+<div aria-label="Readiness status" class="readiness-stoplight red" id="readinessStoplight" role="img"></div>
+<div class="readiness-stoplight-copy">
+<div class="label">Readiness Status</div>
 </div>
-
-  <div class="app-screen" id="screenReport">
-    <div class="screen-shell">
-      <div class="page-brand-banner">
-        <div class="kicker">Healthcare ERP Advisory Portal</div>
-        <h1>Medix ERP Transformation Readiness Tracker™</h1>
-        <p><span class="org-personalized-label">ERP readiness journey</span><span class="org-personalized-name"></span></p>
-      </div>
-
-      <div class="wizard-steps" id="wizardReport"></div>
+</div>
+</div>
+</div>
+<div class="exec-stat-card" id="probabilityCard">
+<div class="value" id="prob">—</div>
+<div class="label">Projected Success Probability</div>
+</div>
+<div class="exec-stat-card" id="riskCard">
+<div class="readiness-stoplight-wrap">
+<div aria-label="Overall project risk" class="readiness-stoplight red" id="projectRiskLight" role="img"></div>
+<div class="readiness-stoplight-copy">
+<div class="label">Overall Project Risk</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="app-screen" id="screenReport">
+<div class="screen-shell">
+<div class="page-brand-banner">
+<div class="kicker">Healthcare ERP Advisory Portal</div>
+<h1>Medix ERP Transformation Readiness Tracker™</h1>
+<p><span class="org-personalized-label">ERP readiness journey</span><span class="org-personalized-name"></span></p>
+</div>
+<div class="wizard-steps" id="wizardReport"></div>
 <div class="card executive-report exec-command-center" id="executiveReadinessReport">
-      <div class="exec-report-header">
-        <h2>Executive Readiness Command Center</h2>
-        <p id="executiveNarrative">Complete the assessment to generate an executive-level view of readiness, progress, priorities, and recommended actions.</p>
-      </div>
-
-      <div class="exec-summary-strip">
-        <div class="exec-summary-tile"><div class="num" id="execCurrentScore">0</div><div class="label">Current Readiness Score</div></div>
-        <div class="exec-summary-tile"><div class="num" id="execScoreChange">—</div><div class="label">Change Since Last Assessment</div></div>
-        <div class="exec-summary-tile"><div class="num" id="execPriorityCount">0</div><div class="label">Priority Areas</div></div>
-        <div class="exec-summary-tile"><div class="num" id="execActionProgress">0/0</div><div class="label">Executive Actions Complete</div></div>
-      </div>
-
-      <div class="exec-section-nav">
-        <div class="exec-section-nav-label">Executive Report Sections</div>
-        <div class="exec-section-grid">
-          <button class="exec-section-card active" type="button" onclick="showExecSection('overview',this)">
-            <span class="section-kicker">01 · Current State</span>
-            <span class="section-title">Executive Overview</span>
-            <span class="section-desc">Overall readiness, priorities and executive-level findings.</span>
-          </button>
-          <button class="exec-section-card" type="button" onclick="showExecSection('progress',this)">
-            <span class="section-kicker">02 · Movement</span>
-            <span class="section-title">Progress & Change</span>
-            <span class="section-desc">See what has improved, declined or changed since the prior assessment.</span>
-          </button>
-          <button class="exec-section-card" type="button" onclick="showExecSection('guidance',this)">
-            <span class="section-kicker">03 · Focus</span>
-            <span class="section-title">Executive Guidance</span>
-            <span class="section-desc">Key considerations based on your current ERP lifecycle stage.</span>
-          </button>
-          <button class="exec-section-card" type="button" onclick="showExecSection('actions',this)">
-            <span class="section-kicker">04 · Action</span>
-            <span class="section-title">Priority Next Steps</span>
-            <span class="section-desc">Executive actions to address the highest-priority readiness gaps.</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="exec-section-panel active" id="execSection_overview">
-        <div class="exec-report-grid">
-          <div class="exec-panel">
-            <h3>Where You Are in the ERP Journey</h3>
-            <div id="journeyFocus"></div>
-          </div>
-          <div class="exec-panel">
-            <h3>Top Executive Priorities</h3>
-            <div id="executivePriorities"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="exec-section-panel" id="execSection_progress">
-        <div class="history-grid">
-          <div class="history-card"><div class="num" id="changeScore">—</div><div class="small">Readiness Score Change</div></div>
-          <div class="history-card"><div class="num" id="actionsCompletedChange">—</div><div class="small">Executive Actions Completed</div></div>
-          <div class="history-card"><div class="num" id="categoriesImproved">—</div><div class="small">Categories Improved</div></div>
-          <div class="history-card"><div class="num" id="categoriesDeclined">—</div><div class="small">Categories Declined</div></div>
-        </div>
-        <div class="exec-report-grid" style="margin-top:14px">
-          <div class="exec-panel"><h3>What Improved</h3><ul id="improvementList"></ul></div>
-          <div class="exec-panel"><h3>What Needs Attention</h3><ul id="declineList"></ul></div>
-        </div>
-        <div class="timeline-chart-wrap"><canvas id="progressChart"></canvas></div>
-      </div>
-
-      <div class="exec-section-panel" id="execSection_guidance">
-        <div class="exec-report-grid">
-          <div class="exec-panel">
-            <h3>Things to Keep in Mind</h3>
-            <ul id="keepInMind"></ul>
-          </div>
-          <div class="exec-panel">
-            <h3>What Does Not Need to Be Fully Solved Yet</h3>
-            <ul id="notYet"></ul>
-          </div>
-        </div>
-      </div>
-
-      <div class="exec-section-panel" id="execSection_actions">
-        <div class="exec-panel">
-          <h3>Recommended Next Steps</h3>
-          <ol class="exec-next-steps" id="recommendedNextSteps"></ol>
-        </div>
-
-        <div class="exec-checklist-wrap">
-          <div class="exec-checklist-header">
-            <h3>Executive Action Checklist</h3>
-            <p>Leadership actions to complete before moving confidently into the next ERP phase.</p>
-          </div>
-          <div id="executiveActionChecklist"></div>
-          <div class="exec-checklist-summary" id="executiveChecklistSummary"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="grid">
-      <div class="card"><h2>Detailed Readiness Findings</h2><ul class="findings" id="findings"></ul></div>
-      <div class="card"><h2>Financial & Operational Impact</h2><ul class="impact" id="impact"></ul></div>
-    </div>
-
-    <div class="card">
-      <h2>Medix Opportunity Report</h2>
-      <p class="small">Based on selected scope and readiness gaps, these are the areas where Medix may be positioned as a practical ERP advisory, staffing, implementation, or stabilization partner.</p>
-      <div class="service-grid" id="services"></div>
-    </div>
-
-    <div class="card" id="saveAssessmentCard">
-      <h2>Submit Completed Assessment</h2>
-      <p class="small">Complete the contact fields below so a Medix ERP Advisory specialist can review the assessment and follow up with recommendations based on the responses.</p>
-      <div class="profile-grid">
-        <label>First Name <span class="required-star">*</span><br><input id="firstName" type="text" placeholder="First Name" oninput="clearFieldError('firstName')" data-contact-required="true"><div class="error-message" id="err_firstName">First Name is required.</div></label>
-        <label>Last Name <span class="required-star">*</span><br><input id="lastName" type="text" placeholder="Last Name" oninput="clearFieldError('lastName')" data-contact-required="true"><div class="error-message" id="err_lastName">Last Name is required.</div></label>
-        <label>Title <span class="required-star">*</span><br><input id="contactTitle" type="text" placeholder="Title" oninput="clearFieldError('contactTitle')" data-contact-required="true"><div class="error-message" id="err_contactTitle">Title is required.</div></label>
-        <label>Business Email <span class="required-star">*</span><br><input id="email" type="email" placeholder="name@organization.org" oninput="clearFieldError('email')" data-contact-required="true"><div class="error-message" id="err_email">Valid Business Email is required.</div></label>
-        <label>Phone<br><input id="phone" type="tel" placeholder="Optional"></label>
-      </div>
-      <div id="saveValidation" class="validation-banner">Please complete all required organization and contact fields before submitting.</div>
-      <div id="saveSuccess" class="success-banner">Your ERP Readiness Snapshot has been submitted successfully. A Medix ERP Advisory specialist will review your assessment and follow up with personalized recommendations.</div>
-      <div class="button-row">
-        <button class="primary" onclick="submitAssessment()">Submit Assessment</button>
-        <button class="ghost" onclick="downloadPDFReport()">Download PDF Report</button>
-      </div>
-      <!-- HubSpot-ready structured assessment data is generated by buildAssessmentPayload() and stored internally for future CRM integration. -->
-    </div>
-
-      <div class="screen-nav">
-        <button class="ghost" type="button" onclick="showScreen('screenAssessment')">Back to Assessment</button>
-        <div class="right">
-          <button class="secondary" type="button" onclick="exportTrackerBackup()">Download Backup</button>
-          <button class="primary" type="button" onclick="saveAssessmentSnapshot()">Save Progress</button>
-        </div>
-      </div>
-    </div>
-  </div>
+<div class="exec-report-header">
+<h2>Executive Readiness Command Center</h2>
+<p id="executiveNarrative">Complete the assessment to generate an executive-level view of readiness, progress, priorities, and recommended actions.</p>
 </div>
+<div class="exec-summary-strip">
+<div class="exec-summary-tile"><div class="num" id="execCurrentScore">0</div><div class="label">Current Readiness Score</div></div>
+<div class="exec-summary-tile"><div class="num" id="execScoreChange">—</div><div class="label">Change Since Last Assessment</div></div>
+<div class="exec-summary-tile"><div class="num" id="execPriorityCount">0</div><div class="label">Priority Areas</div></div>
+<div class="exec-summary-tile"><div class="num" id="execActionProgress">0/0</div><div class="label">Executive Actions Complete</div></div>
+</div>
+<div class="exec-section-nav">
+<div class="exec-section-nav-label">Executive Report Sections</div>
+<div class="exec-section-grid">
+<button class="exec-section-card active" onclick="showExecSection('overview',this)" type="button">
+<span class="section-kicker">01 · Current State</span>
+<span class="section-title">Executive Overview</span>
+<span class="section-desc">Overall readiness, priorities and executive-level findings.</span>
+</button>
+<button class="exec-section-card" onclick="showExecSection('progress',this)" type="button">
+<span class="section-kicker">02 · Movement</span>
+<span class="section-title">Progress &amp; Change</span>
+<span class="section-desc">See what has improved, declined or changed since the prior assessment.</span>
+</button>
+<button class="exec-section-card" onclick="showExecSection('guidance',this)" type="button">
+<span class="section-kicker">03 · Focus</span>
+<span class="section-title">Executive Guidance</span>
+<span class="section-desc">Key considerations based on your current ERP lifecycle stage.</span>
+</button>
+<button class="exec-section-card" onclick="showExecSection('actions',this)" type="button">
+<span class="section-kicker">04 · Action</span>
+<span class="section-title">Priority Next Steps</span>
+<span class="section-desc">Executive actions to address the highest-priority readiness gaps.</span>
+</button>
+</div>
+</div>
+<div class="exec-section-panel active" id="execSection_overview">
+<div class="exec-report-grid">
+<div class="exec-panel">
+<h3>Where You Are in the ERP Journey</h3>
+<div id="journeyFocus"></div>
+</div>
+<div class="exec-panel">
+<h3>Top Executive Priorities</h3>
+<div id="executivePriorities"></div>
+</div>
+</div>
+</div>
+<div class="exec-section-panel" id="execSection_progress">
+<div class="history-grid">
+<div class="history-card"><div class="num" id="changeScore">—</div><div class="small">Readiness Score Change</div></div>
+<div class="history-card"><div class="num" id="actionsCompletedChange">—</div><div class="small">Executive Actions Completed</div></div>
+<div class="history-card"><div class="num" id="categoriesImproved">—</div><div class="small">Categories Improved</div></div>
+<div class="history-card"><div class="num" id="categoriesDeclined">—</div><div class="small">Categories Declined</div></div>
+</div>
+<div class="exec-report-grid" style="margin-top:14px">
+<div class="exec-panel"><h3>What Improved</h3><ul id="improvementList"></ul></div>
+<div class="exec-panel"><h3>What Needs Attention</h3><ul id="declineList"></ul></div>
+</div>
+<div class="timeline-chart-wrap"><canvas id="progressChart"></canvas></div>
+</div>
+<div class="exec-section-panel" id="execSection_guidance">
+<div class="exec-report-grid">
+<div class="exec-panel">
+<h3>Things to Keep in Mind</h3>
+<ul id="keepInMind"></ul>
+</div>
+<div class="exec-panel">
+<h3>What Does Not Need to Be Fully Solved Yet</h3>
+<ul id="notYet"></ul>
+</div>
+</div>
+</div>
+<div class="exec-section-panel" id="execSection_actions">
+<div class="exec-panel">
+<h3>Recommended Next Steps</h3>
+<ol class="exec-next-steps" id="recommendedNextSteps"></ol>
+</div>
+<div class="exec-checklist-wrap">
+<div class="exec-checklist-header">
+<h3>Executive Action Checklist</h3>
+<p>Leadership actions to complete before moving confidently into the next ERP phase.</p>
+</div>
+<div id="executiveActionChecklist"></div>
+<div class="exec-checklist-summary" id="executiveChecklistSummary"></div>
+</div>
+</div>
+</div>
+<div class="grid">
+<div class="card"><h2>Detailed Readiness Findings</h2><ul class="findings" id="findings"></ul></div>
+<div class="card"><h2>Financial &amp; Operational Impact</h2><ul class="impact" id="impact"></ul></div>
+</div>
+<div class="card">
+<h2>Medix Opportunity Report</h2>
+<p class="small">Based on selected scope and readiness gaps, these are the areas where Medix may be positioned as a practical ERP advisory, staffing, implementation, or stabilization partner.</p>
+<div class="service-grid" id="services"></div>
+</div>
+<div class="card" id="saveAssessmentCard">
+<h2>Submit Completed Assessment</h2>
+<p class="small">Complete the contact fields below so a Medix ERP Advisory specialist can review the assessment and follow up with recommendations based on the responses.</p>
+<div class="profile-grid">
+<label>First Name <span class="required-star">*</span><br/><input data-contact-required="true" id="firstName" oninput="clearFieldError('firstName')" placeholder="First Name" type="text"/><div class="error-message" id="err_firstName">First Name is required.</div></label>
+<label>Last Name <span class="required-star">*</span><br/><input data-contact-required="true" id="lastName" oninput="clearFieldError('lastName')" placeholder="Last Name" type="text"/><div class="error-message" id="err_lastName">Last Name is required.</div></label>
+<label>Title <span class="required-star">*</span><br/><input data-contact-required="true" id="contactTitle" oninput="clearFieldError('contactTitle')" placeholder="Title" type="text"/><div class="error-message" id="err_contactTitle">Title is required.</div></label>
+<label>Business Email <span class="required-star">*</span><br/><input data-contact-required="true" id="email" oninput="clearFieldError('email')" placeholder="name@organization.org" type="email"/><div class="error-message" id="err_email">Valid Business Email is required.</div></label>
+<label>Phone<br/><input id="phone" placeholder="Optional" type="tel"/></label>
+</div>
+<div class="validation-banner" id="saveValidation">Please complete all required organization and contact fields before submitting.</div>
+<div class="success-banner" id="saveSuccess">Your ERP Readiness Snapshot has been submitted successfully. A Medix ERP Advisory specialist will review your assessment and follow up with personalized recommendations.</div>
+<div class="button-row">
+<button class="primary" onclick="submitAssessment()">Submit Assessment</button>
+<button class="ghost" onclick="downloadPDFReport()">Download PDF Report</button>
+</div>
+<!-- HubSpot-ready structured assessment data is generated by buildAssessmentPayload() and stored internally for future CRM integration. -->
+</div>
+<div class="screen-nav">
+<button class="ghost" onclick="showScreen('screenAssessment')" type="button">Back to Assessment</button>
+<div class="right">
+<button class="secondary" onclick="exportTrackerBackup()" type="button">Download Backup</button>
+<button class="primary" onclick="saveAssessmentSnapshot()" type="button">Save Progress</button>
+</div>
+</div>
+</div>
+</div></div>
+<div class="card">
+<h2 id="scopeTitle">General ERP Evaluation Scope</h2>
+<p class="small" id="scopeHelp">Select the top-level ERP areas included in the initiative.</p>
+<div class="scope-grid" id="moduleGroups"></div>
+</div>
+<div class="grid">
+<div class="card">
+<h2>Readiness Checklist</h2>
+<p class="small">Check each item your organization has already addressed. Workstreams are weighted based on ERP implementation risk in healthcare environments.</p>
+<div id="checklist"></div>
+<div class="button-row"><button class="secondary" onclick="resetAssessment()">Reset Assessment</button></div>
+</div>
+<div>
+<div class="card">
+<h2>Readiness by Category</h2>
+<div id="categoryBars"></div>
+</div>
+<div class="card">
+<h2>Strengths &amp; Gaps Radar</h2>
+<div class="chart-wrap"><canvas id="radar"></canvas></div>
+</div>
+</div>
+</div>
+<div class="screen-nav">
+<button class="ghost" onclick="showScreen('screenScope')" type="button">Back</button>
+<div class="right">
+<button class="secondary" onclick="saveAndExitWizard('assessment')" type="button">Save &amp; Exit</button>
+<button class="primary" onclick="advanceReadinessToReport()" type="button">Save &amp; Continue</button>
+</div>
+</div>
+
+
+
+
 
 <script>
 const vendors={
@@ -901,17 +854,11 @@ function readinessStatusLabel(score){
 function updateReadinessStoplight(score){
  const status=score>=80?'Green':score>=60?'Yellow':'Red';
  const cls=status.toLowerCase();
-
  const light=el('readinessStoplight');
  if(light){
    light.className='readiness-stoplight '+cls;
    light.setAttribute('aria-label','Readiness status: '+status);
  }
-
- // Hide text label; color is the status.
- const textNode=el('readinessStatusText');
- if(textNode)textNode.innerText='';
-
  return status;
 }
 
@@ -919,10 +866,9 @@ function updateProjectRiskLight(riskText,riskCls){
  const light=el('projectRiskLight');
  if(light){
    const cls=riskCls==='green'?'green':riskCls==='yellow'?'yellow':riskCls==='orange'?'orange':'red';
-   light.className='project-risk-light '+cls;
+   light.className='readiness-stoplight '+cls;
    light.setAttribute('aria-label','Overall project risk: '+riskText);
  }
- if(el('risk'))el('risk').innerText='';
 }
 
 function riskLevel(v){if(v>=75)return['Low','green'];if(v>=55)return['Medium','yellow'];if(v>=35)return['Elevated','orange'];return['High','red']}
@@ -1041,7 +987,7 @@ function refreshExecutiveDashboardOnly(){
  if(el('score'))el('score').innerText=score;updateReadinessStoplight(score);updateReadinessStoplight(score);updateReadinessStoplight(score);
  
  if(el('prob'))el('prob').innerText=prob+'%';
- if(el('risk'))updateProjectRiskLight(riskText,riskCls);
+ 
  const riskCard=el('riskCard');
  if(riskCard)riskCard.className='exec-stat-card '+(riskText==='Low'?'risk-low':riskText==='Medium'?'risk-medium':riskText==='Elevated'?'risk-elevated':'risk-high');
 
