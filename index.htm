@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Medix ERP Transformation Readiness Tracker™</title>
-<!-- Internal version tracking: ERP Transformation Readiness Tracker V8.2 -->
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V8.4 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js">
 window.isNewAssessment=true;
 window.comparisonBaselineId=null;
@@ -410,6 +410,95 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
   .exec-dashboard-hero{grid-column:1}
 }
 
+
+/* V8.3 compact dashboard row */
+.exec-dashboard-v2{
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  gap:10px !important;
+  align-items:stretch !important;
+}
+.exec-dashboard-hero{
+  grid-column:1/-1 !important;
+}
+#statusCard,#probabilityCard,#riskCard{
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:center !important;
+  align-items:center !important;
+  min-height:76px !important;
+  padding:10px 12px !important;
+  margin:0 !important;
+  background:#fff !important;
+  border:1px solid var(--line) !important;
+  border-radius:12px !important;
+  box-shadow:none !important;
+  text-align:center !important;
+}
+#statusCard{
+  border-left:5px solid var(--yellow) !important;
+}
+#riskCard{
+  border-left:5px solid var(--yellow) !important;
+}
+#statusCard.status-green{border-left-color:var(--green) !important}
+#statusCard.status-yellow{border-left-color:var(--yellow) !important}
+#statusCard.status-red{border-left-color:var(--red) !important}
+#riskCard.risk-low{border-left-color:var(--green) !important}
+#riskCard.risk-medium{border-left-color:var(--yellow) !important}
+#riskCard.risk-elevated{border-left-color:var(--orange) !important}
+#riskCard.risk-high{border-left-color:var(--red) !important}
+#readinessStoplight,#projectRiskLight{
+  width:28px !important;
+  height:28px !important;
+  flex:0 0 28px !important;
+  margin:0 0 6px !important;
+}
+#probabilityCard .value{
+  font-size:24px !important;
+  line-height:1 !important;
+  margin-bottom:6px !important;
+}
+#statusCard .label,#probabilityCard .label,#riskCard .label{
+  font-size:11px !important;
+  line-height:1.2 !important;
+  margin:0 !important;
+}
+@media(max-width:680px){
+  .exec-dashboard-v2{grid-template-columns:1fr !important}
+  .exec-dashboard-hero{grid-column:1 !important}
+}
+
+/* V8.4 dynamic status/risk outer accent */
+#statusCard.status-green{
+  border-left-color:var(--green) !important;
+  box-shadow:-3px 0 8px rgba(46,125,50,.16) !important;
+}
+#statusCard.status-yellow{
+  border-left-color:var(--yellow) !important;
+  box-shadow:-3px 0 8px rgba(249,168,37,.18) !important;
+}
+#statusCard.status-red{
+  border-left-color:var(--red) !important;
+  box-shadow:-3px 0 8px rgba(198,40,40,.16) !important;
+}
+#riskCard.risk-low{
+  border-left-color:var(--green) !important;
+  box-shadow:-3px 0 8px rgba(46,125,50,.16) !important;
+}
+#riskCard.risk-medium{
+  border-left-color:var(--yellow) !important;
+  box-shadow:-3px 0 8px rgba(249,168,37,.18) !important;
+}
+#riskCard.risk-elevated{
+  border-left-color:var(--orange) !important;
+  box-shadow:-3px 0 8px rgba(239,108,0,.18) !important;
+}
+#riskCard.risk-high{
+  border-left-color:var(--red) !important;
+  box-shadow:-3px 0 8px rgba(198,40,40,.16) !important;
+}
+
 </style>
 </head><body><div class="wrapper"><div class="app-screen active" id="screenLanding">
 <div class="landing-shell">
@@ -556,27 +645,13 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
               Begin completing the readiness checklist to generate a current-state executive summary.
             </div>
 </div>
-<div class="exec-stat-card" id="statusCard">
-<div class="readiness-stoplight-wrap">
-<div aria-label="Readiness status" class="readiness-stoplight red" id="readinessStoplight" role="img"></div>
-<div class="readiness-stoplight-copy">
-<div class="label">Readiness Status</div>
-</div>
-</div>
-</div>
+<div class="exec-stat-card" id="statusCard"><div aria-label="Readiness status" class="readiness-stoplight red" id="readinessStoplight" role="img"></div><div class="label">Readiness Status</div></div>
 </div>
 <div class="exec-stat-card" id="probabilityCard">
 <div class="value" id="prob">—</div>
 <div class="label">Projected Success Probability</div>
 </div>
-<div class="exec-stat-card" id="riskCard">
-<div class="readiness-stoplight-wrap">
-<div aria-label="Overall project risk" class="readiness-stoplight red" id="projectRiskLight" role="img"></div>
-<div class="readiness-stoplight-copy">
-<div class="label">Overall Project Risk</div>
-</div>
-</div>
-</div>
+<div class="exec-stat-card" id="riskCard"><div aria-label="Overall project risk" class="readiness-stoplight red" id="projectRiskLight" role="img"></div><div class="label">Overall Project Risk</div></div>
 </div>
 </div>
 </div>
