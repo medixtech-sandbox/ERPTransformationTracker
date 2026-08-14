@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Medix ERP Transformation Readiness Tracker™</title>
-<!-- Internal version tracking: ERP Transformation Readiness Tracker V2.3 -->
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V2.5 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -895,12 +895,6 @@ function showTrackerMessage(msg){
  setTimeout(()=>b.classList.remove('show'),3500);
 }
 
-_${j}`),sel=el(`status${i}_${j}`);
- if(!box||!sel)return;
- box.checked=(sel.value==='Complete'||sel.value==='Not Applicable');
- autosaveDraft();
-}
-
 function lifecycleStages(){
  return [
   ['Discovery','Discovery'],['Business Case Creation','Business Case'],['Vendor Selection','Vendor Selection'],
@@ -1536,7 +1530,6 @@ function resetAssessment(){
 function randomizeAssessment(){
   const pick=items=>items[Math.floor(Math.random()*items.length)];
   const chance=probability=>Math.random()<probability;
-
   const orgPrefixes=['North Valley','Summit','Lakeside','Pioneer','Evergreen','Riverbend','Central Plains','Blue Ridge','Oakwood','Horizon'];
   const orgSuffixes=['Health System','Medical Center','Regional Health','Healthcare Network','Community Hospital','Health Alliance'];
   const employeeSizes=[350,650,1200,2500,4800,7500,12000,18500,26000,42000];
@@ -1544,29 +1537,32 @@ function randomizeAssessment(){
   const timelines=['0–6 Months','6–12 Months','12–18 Months','18–30 Months','30+ Months'];
   const stages=['Discovery','Business Case Creation','Vendor Selection','Implementation Planning','Implementation'];
 
+  selectedVendor='other';
+  selectedJourneyStage='General Assessment';
+
   if(el('org'))el('org').value=`${pick(orgPrefixes)} ${pick(orgSuffixes)}`;
   if(el('orgType'))el('orgType').value=pick(orgTypes);
   if(el('employees'))el('employees').value=pick(employeeSizes);
   if(el('timeline'))el('timeline').value=pick(timelines);
   if(el('lifecycleStage'))el('lifecycleStage').value=pick(stages);
 
-  // Randomize top-level ERP scope cards / module checkboxes.
-  document.querySelectorAll('.moduleCheck').forEach(x=>x.checked=chance(.55));
+  document.querySelectorAll('.moduleCheck').forEach(box=>box.checked=chance(.6));
+  if(!document.querySelector('.moduleCheck:checked')){
+    const modules=[...document.querySelectorAll('.moduleCheck')];
+    if(modules.length)pick(modules).checked=true;
+  }
 
-  // Randomize readiness checklist checkboxes only.
   sections.forEach((s,i)=>{
-    const baseChance=Math.max(.30,Math.min(.85,.68-(i*.012)));
     s.questions.forEach((q,j)=>{
       const box=el(`q${i}_${j}`);
-      if(box)box.checked=chance(baseChance);
+      if(box)box.checked=chance(.58);
     });
   });
 
-  // Randomize executive action checklist if it has already been rendered.
-  document.querySelectorAll('.execActionCheck').forEach(x=>x.checked=chance(.35));
-
   renderLifecycleTracker();
   calculate();
+
+  document.querySelectorAll('.execActionCheck').forEach(box=>box.checked=chance(.35));
   updateExecutiveChecklistSummary();
   autosaveDraft();
 }
