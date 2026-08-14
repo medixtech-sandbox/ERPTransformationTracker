@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Medix ERP Transformation Readiness Tracker™</title>
-<!-- Internal version tracking: ERP Transformation Readiness Tracker V5.1 -->
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V5.3 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -235,6 +235,7 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 .exec-metric-card .metric-label{font-size:12px;color:var(--muted);margin-top:7px}
 .exec-summary-panel{grid-column:1/-1;border:1px solid var(--line);border-radius:14px;padding:14px;background:#F8FCFF;border-left:5px solid var(--secondary)}
 .exec-summary-panel strong{color:var(--navy)}
+
 @media(max-width:900px){.exec-dashboard-compact{grid-template-columns:1fr}.exec-metrics-panel{grid-template-columns:1fr 1fr}}
 @media(max-width:620px){.exec-metrics-panel{grid-template-columns:1fr}}
 @media(max-width:900px){.choice-grid{grid-template-columns:1fr 1fr}}
@@ -751,7 +752,7 @@ const sections=[
 ]
 let selectedVendor=null,selectedJourneyStage=null,evaluatedErpSystems=[],radarChart=null;
 function el(id){return document.getElementById(id)}
-function init(){renderJourneyCards();renderPlatformCards();renderEvaluationCards();renderChecklist();renderEcosystem();renderLifecycleTracker();renderHistorySummary();renderWizardSteps('screenLanding');}
+function init(){renderJourneyCards();renderPlatformCards();renderEvaluationCards();renderChecklist();renderEcosystem();renderLifecycleTracker();renderHistorySummary();renderWizardSteps('screenLanding');startTargetedRefresh();}
 function earlyEvaluationStage(stage){return APP_CONFIG.earlyEvaluationStages.includes(stage)}
 function renderJourneyCards(){const jg=el('journeyGrid');if(!jg)return;jg.innerHTML='';journeyStages.forEach(stage=>{jg.innerHTML+=`<div class="platform-card" id="stage_${safeId(stage.key)}" onclick="selectJourneyStage('${stage.key}')"><span class="platform-tag">${stage.tag}</span><strong>${stage.key}</strong><div class="small">${stage.desc}</div></div>`})}
 function renderPlatformCards(){const pg=el('platformGrid');if(!pg)return;pg.innerHTML='';Object.entries(vendors).filter(([key])=>key!=='other').forEach(([key,v])=>{pg.innerHTML+=`<div class="platform-card" id="plat_${key}" onclick="selectPlatform('${key}')"><span class="platform-tag">${v.tag}</span><strong>${v.name}</strong><div class="small">${v.desc}</div></div>`})}
@@ -912,6 +913,69 @@ function buildAssessmentSummary(raw,score,prob,riskText){
    msg+=' All major readiness categories are currently at or above benchmark.';
  }
  return msg;
+}
+
+
+let targetedRefreshTimer=null;
+
+function currentReadinessRaw(){
+ return sections.map((s,i)=>checkedCount(i));
+}
+
+function refreshExecutiveDashboardOnly(){
+ if(!selectedVendor)return;
+ const raw=currentReadinessRaw();
+ let weighted=0;
+ sections.forEach((s,i)=>{
+   const c=raw[i], max=sectionMax(i);
+   weighted+=(c/max)*effectiveWeight(i);
+ });
+
+ const mods=selectedModules();
+ const modCount=mods.length;
+ const eco=ecosystemCount();
+ const cpx=complexityPoints();
+ const scopePenalty=Math.min(14, Math.floor(modCount/4)+Math.floor(eco/5)+Math.floor(cpx/3));
+ const score=Math.max(0,Math.round(weighted-scopePenalty));
+ const prob=Math.min(96,Math.max(15,Math.round(score*.86+11)));
+ const [riskText,riskCls]=riskLevel(score);
+
+ if(el('score'))el('score').innerText=score;
+ if(el('scoreCircle'))el('scoreCircle').style.setProperty('--score',score);
+ if(el('readinessStatusText'))el('readinessStatusText').innerText=score>=75?'Green':score>=55?'Yellow':'Red';
+ if(el('prob'))el('prob').innerText=prob+'%';
+ if(el('risk')){
+   el('risk').innerText=riskText;
+   el('risk').style.color=riskCls==='green'?'#2E7D32':riskCls==='yellow'?'#F9A825':riskCls==='orange'?'#EF6C00':'#C62828';
+ }
+ if(el('execAssessmentSummary')){
+   el('execAssessmentSummary').innerHTML='<strong>Assessment Summary</strong><div class="small" style="margin-top:6px">'+buildAssessmentSummary(raw,score,prob,riskText)+'</div>';
+ }
+ updateReadinessDashboardVisibility();
+}
+
+function refreshReadinessCategoryOnly(){
+ if(!selectedVendor)return;
+ const raw=currentReadinessRaw();
+ renderBars(raw);
+}
+
+function refreshReadinessRadarOnly(){
+ if(!selectedVendor)return;
+ const raw=currentReadinessRaw();
+ renderRadar(raw);
+}
+
+function targetedFiveSecondRefresh(){
+ // Only these three UI areas update.
+ refreshExecutiveDashboardOnly();
+ refreshReadinessCategoryOnly();
+ refreshReadinessRadarOnly();
+}
+
+function startTargetedRefresh(){
+ if(targetedRefreshTimer)clearInterval(targetedRefreshTimer);
+ targetedRefreshTimer=setInterval(targetedFiveSecondRefresh,5000);
 }
 
 function calculate(){if(!selectedVendor)return;updateReadinessDashboardVisibility();const raw=[];let weighted=0;sections.forEach((s,i)=>{const c=checkedCount(i);const max=sectionMax(i);raw.push(c);weighted+=(c/max)*effectiveWeight(i);const b=el('badge'+i);b.innerText=`${c}/${max}`;b.className='badge '+scoreClass(c,s.benchmark)});const mods=selectedModules();const modCount=mods.length, eco=ecosystemCount(), cpx=complexityPoints();const scopePenalty=Math.min(14, Math.floor(modCount/4)+Math.floor(eco/5)+Math.floor(cpx/3));const score=Math.max(0,Math.round(weighted-scopePenalty));const prob=Math.min(96,Math.max(15,Math.round(score*.86+11)));const [riskText,riskCls]=riskLevel(score);const complexity=projectComplexity(modCount,eco,cpx);el('score').innerText=score;el('scoreCircle').style.setProperty('--score',score);if(el('readinessStatusText'))el('readinessStatusText').innerText=score>=75?'Green':score>=55?'Yellow':'Red';const stoplight=score>=75?'green':score>=55?'yellow':'red';el('stoplightIndicator').className='stoplight-indicator '+stoplight;el('prob').innerText=prob+'%';if(el('moduleCount'))el('moduleCount').innerText=modCount;if(el('selectedModuleCount'))el('selectedModuleCount').innerText=modCount;el('risk').innerText=riskText;el('risk').style.color=riskCls==='green'?'#2E7D32':riskCls==='yellow'?'#F9A825':riskCls==='orange'?'#EF6C00':'#C62828';if(el('execAssessmentSummary'))el('execAssessmentSummary').innerHTML='<strong>Assessment Summary</strong><div class="small" style="margin-top:6px">'+buildAssessmentSummary(raw,score,prob,riskText)+'</div>';renderProfileSummary(modCount,eco,complexity);renderExecutiveSummary(score,prob,riskText,modCount,eco);renderBars(raw);renderRadar(raw);renderHeat(raw);renderExecutiveReport(raw,score);renderFindings(raw,score,modCount,eco,complexity);renderImpact(raw,modCount,eco);renderServices(raw,modCount,eco);autosaveDraft()}
