@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Medix ERP Transformation Readiness Tracker™</title>
-<!-- Internal version tracking: ERP Transformation Readiness Tracker V4.7 -->
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V4.8 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -347,6 +347,14 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
       </div>
     </div>
         
+
+      <div class="screen-nav">
+        <button class="ghost" type="button" onclick="showScreen('screenLanding')">Back</button>
+        <div class="right">
+          <button class="secondary" type="button" onclick="saveAndExitWizard('profile')">Save &amp; Exit</button>
+          <button class="primary" type="button" onclick="advanceProfileToScope()">Save &amp; Continue</button>
+        </div>
+      </div>
 </div>
 
   <div class="app-screen" id="screenScope">
@@ -376,6 +384,14 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
       </div>
     </div>
         
+
+      <div class="screen-nav">
+        <button class="ghost" type="button" onclick="showScreen('screenProfile')">Back</button>
+        <div class="right">
+          <button class="secondary" type="button" onclick="saveAndExitWizard('scope')">Save &amp; Exit</button>
+          <button class="primary" type="button" onclick="advanceScopeToReadiness()">Save &amp; Continue</button>
+        </div>
+      </div>
 </div>
 
   <div class="app-screen assessment-screen" id="screenAssessment">
@@ -445,7 +461,15 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
       </div>
     </div>
 
-    </div>
+    
+      <div class="screen-nav">
+        <button class="ghost" type="button" onclick="showScreen('screenScope')">Back</button>
+        <div class="right">
+          <button class="secondary" type="button" onclick="saveAndExitWizard('assessment')">Save &amp; Exit</button>
+          <button class="primary" type="button" onclick="advanceReadinessToReport()">Save &amp; Continue</button>
+        </div>
+      </div>
+</div>
     </div>
         
 </div>
