@@ -1,9 +1,10 @@
 <!DOCTYPE html>
+
 <html><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Medix ERP Transformation Readiness Tracker™</title>
-<!-- Internal version tracking: ERP Transformation Readiness Tracker V7.8 -->
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V8.0 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -546,7 +547,26 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 </div>
 </div>
 </div>
-<div class="screen-nav">
+<div class="grid" id="readinessLiveGrid">
+<div class="card">
+<h2>Readiness Checklist</h2>
+<p class="small">Check each item your organization has already addressed. Workstreams are weighted based on ERP implementation risk in healthcare environments.</p>
+<div id="checklist"></div>
+<div class="button-row">
+<button class="secondary" onclick="resetAssessment()" type="button">Reset Assessment</button>
+</div>
+</div>
+<div>
+<div class="card">
+<h2>Readiness by Category</h2>
+<div id="categoryBars"></div>
+</div>
+<div class="card">
+<h2>Strengths &amp; Gaps Radar</h2>
+<div class="chart-wrap"><canvas id="radar"></canvas></div>
+</div>
+</div>
+</div><div class="screen-nav">
 <button class="ghost" onclick="showScreen('screenScope')" type="button">Back</button>
 <div class="right">
 <button class="secondary" onclick="saveAndExitWizard('assessment')" type="button">Save &amp; Exit</button>
@@ -927,6 +947,10 @@ function grade(score){if(score>=92)return'A';if(score>=85)return'A-';if(score>=7
 
 
 function smartRandomizeReadiness(){
+ if(!document.querySelector('#checklist input[type="checkbox"][id^="q"]')){
+   try{renderChecklist()}catch(e){console.warn('Checklist render issue:',e)}
+ }
+
  const stage=(document.getElementById('lifecycleStage')?.value||
               document.getElementById('wizardLifecycleStage')?.value||
               'Discovery');
@@ -1343,6 +1367,73 @@ function medixAdvisoryPerspective(raw){
  return `<p>Based on the current assessment, Medix may be most relevant in <strong>${focus}</strong>.</p><p class="exec-muted">The intent is to target support where readiness gaps or internal capacity constraints could affect the next phase—not to replace work the organization can effectively own internally.</p>`;
 }
 
+function renderDetailedExecutiveFindings(){
+ const findingsEl=el('findings'), impactEl=el('impact'), servicesEl=el('services');
+ if(!findingsEl&&!impactEl&&!servicesEl)return;
+
+ const cats=(typeof categoryReadinessData==='function')?categoryReadinessData():[];
+ const low=[...cats].sort((a,b)=>a.value-b.value).slice(0,5);
+ const high=[...cats].sort((a,b)=>b.value-a.value).slice(0,3);
+ const org=(el('wizardOrg')?.value||'Your organization').trim();
+ const stage=el('wizardLifecycleStage')?.value||'Discovery';
+
+ const findingAdvice={
+  'Executive Alignment & Business Case':'Confirm executive sponsorship, measurable outcomes, scope boundaries, and the decision criteria that will govern the ERP program.',
+  'Financial Planning & Total Cost of Ownership':'Validate the full TCO, including implementation services, internal backfill, training, integrations, data conversion, contingency, legacy retirement, and post-go-live support.',
+  'Governance & Decision Making':'Establish decision rights, escalation paths, steering governance, and a cadence that prevents unresolved decisions from slowing design and build.',
+  'Staffing & Resource Capacity':'Quantify internal SME capacity and backfill needs early so operational leaders can support the program without creating day-to-day coverage gaps.',
+  'Data Conversion & Migration':'Define conversion scope, ownership, cleansing, archival, validation, and cutover requirements before downstream build and testing accelerate.',
+  'Change Management & Adoption':'Create an executive-sponsored change strategy tied to stakeholder readiness, communications, workflow change, and measurable adoption.',
+  'Training & Education':'Size the training population, delivery model, environments, trainers, super-user strategy, and protected learning time.',
+  'Integration & Technical Readiness':'Inventory interfaces, infrastructure, identity/security, third parties, devices, and technical dependencies with clear owners and timelines.',
+  'Testing & Validation':'Define integrated testing, regression, performance, security, user acceptance, defect management, and business sign-off responsibilities.',
+  'Go-Live & Stabilization':'Build activation, command-center, at-the-elbow, issue triage, stabilization, and transition-to-support plans before go-live pressure peaks.'
+ };
+ if(findingsEl){
+   findingsEl.innerHTML=(low.length?low.map(x=>`<li><strong>${x.name} — ${x.value}%.</strong> ${findingAdvice[x.name]||'This is one of the lower-scoring readiness areas. Assign an executive owner, define the gap-closing actions, and establish a target date before advancing materially.'}</li>`):['<li>Complete the Readiness Checklist to generate detailed findings.</li>']).join('')+
+   (high.length?`<li><strong>Current strengths:</strong> ${high.map(x=>`${x.name} (${x.value}%)`).join(', ')}. Preserve these strengths as the program advances from ${stage}.</li>`:'');
+ }
+
+ const impactAdvice={
+  'Executive Alignment & Business Case':'Weak alignment can create scope churn, delayed approvals, competing priorities, and benefits that are difficult to measure.',
+  'Financial Planning & Total Cost of Ownership':'Incomplete TCO assumptions can produce budget surprises from consulting, backfill, training, conversion, integration, infrastructure, and stabilization.',
+  'Governance & Decision Making':'Slow decisions create downstream rework, schedule slippage, and avoidable external consulting expense.',
+  'Staffing & Resource Capacity':'Insufficient capacity increases burnout and contractor dependence while pulling critical SMEs away from operations.',
+  'Data Conversion & Migration':'Late data decisions increase cleansing, validation, testing, cutover effort, and operational risk.',
+  'Change Management & Adoption':'Low adoption can reduce productivity, increase support demand, and delay expected ERP benefits.',
+  'Training & Education':'Underfunded training can increase errors, productivity loss, help-desk volume, and stabilization costs.',
+  'Integration & Technical Readiness':'Late technical dependencies can compress testing and create expensive remediation close to go-live.',
+  'Testing & Validation':'Insufficient testing raises the probability of production defects, operational disruption, and extended stabilization.',
+  'Go-Live & Stabilization':'Weak activation planning can increase premium support spend, productivity loss, and the duration of post-go-live disruption.'
+ };
+ if(impactEl){
+   impactEl.innerHTML=(low.length?low.slice(0,4).map(x=>`<li><strong>${x.name}:</strong> ${impactAdvice[x.name]||'If left unresolved, this gap can create additional cost, schedule pressure, operational disruption, or delayed benefit realization.'}</li>`):['<li>Complete the assessment to identify financial and operational exposure.</li>']).join('')+
+   `<li><strong>Executive priority:</strong> Before advancing beyond ${stage}, validate budget assumptions, internal/backfill capacity, decision timelines, third-party dependencies, training, conversion, and the post-go-live operating model.</li>`;
+ }
+
+ const scope=[];
+ if(el('wizardScopeHCM')?.checked)scope.push('Human Capital Management');
+ if(el('wizardScopeFinance')?.checked)scope.push('Financial Management');
+ if(el('wizardScopeSupply')?.checked)scope.push('Supply Chain Management');
+ if(el('wizardScopePlatform')?.checked)scope.push('Enterprise Platform / Technical');
+
+ const medixAdvice={
+  'Executive Alignment & Business Case':'ERP readiness advisory, business-case validation, roadmap development, governance design, and executive planning.',
+  'Financial Planning & Total Cost of Ownership':'Independent TCO validation, implementation cost modeling, staffing/backfill planning, and third-party cost review.',
+  'Governance & Decision Making':'Program governance, PMO leadership, decision frameworks, and experienced ERP program/project leadership.',
+  'Staffing & Resource Capacity':'Flexible ERP staffing, functional and technical specialists, project leadership, and backfill so internal SMEs can focus on transformation work.',
+  'Data Conversion & Migration':'Data strategy, conversion planning, data engineering, migration, and validation resources.',
+  'Change Management & Adoption':'Change leadership, stakeholder readiness, communications, adoption planning, and organizational change resources.',
+  'Training & Education':'Training strategy, curriculum support, trainers, super-user planning, and go-live education capacity.',
+  'Integration & Technical Readiness':'Integration architects, developers, security/technical SMEs, infrastructure, and testing resources.',
+  'Testing & Validation':'Testing leadership, test coordination, functional/technical testers, defect management, and activation readiness support.',
+  'Go-Live & Stabilization':'Go-live command-center support, activation staffing, stabilization resources, optimization, and long-term sustainment.'
+ };
+ if(servicesEl){
+   servicesEl.innerHTML=(low.length?low.slice(0,5).map(x=>`<div class="service"><h3>${x.name}</h3><p>${medixAdvice[x.name]||'Targeted ERP advisory and specialized project talent to close this readiness gap without unnecessarily expanding the core implementation team.'}</p></div>`):'<div class="service"><h3>Complete the Assessment</h3><p>Medix recommendations will be generated from the identified readiness gaps.</p></div>')+
+   `<div class="service"><h3>Recommended Engagement Strategy</h3><p>${scope.length?`For the selected scope of ${scope.join(', ')}, `:''}prioritize the two or three gaps that most affect the next lifecycle stage, then determine whether advisory support, specialized project staffing, internal backfill, or a blended model is the best fit.</p></div>`;
+ }
+}
 function renderExecutiveReport(raw,score){
  if(el('execCurrentScore'))el('execCurrentScore').innerText=score+'/100';
  const priorityItems=executivePriorityItems(raw);
@@ -1355,6 +1446,8 @@ function renderExecutiveReport(raw,score){
  el('recommendedNextSteps').innerHTML=discoveryNextSteps(raw).map(x=>`<li>${x}</li>`).join('');
  renderExecutiveActionChecklist(raw);
  renderHistorySummary();
+
+ try{renderDetailedExecutiveFindings()}catch(e){console.warn('Findings render issue:',e)}
 }
 
 
@@ -1623,6 +1716,7 @@ function advanceReadinessToReport(){
  try{saveAssessmentSnapshot()}catch(e){console.warn('Snapshot save issue:',e)}
 
  setActiveScreenHard('screenReport');
+ renderDetailedExecutiveFindings();
 
  // Refresh report after the screen exists visibly.
  try{
