@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Medix ERP Transformation Readiness Tracker™</title>
-<!-- Internal version tracking: ERP Transformation Readiness Tracker V7.1 -->
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V7.2 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -270,6 +270,10 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 .project-risk-light.yellow{background:var(--yellow)}
 .project-risk-light.orange{background:var(--orange)}
 .project-risk-light.red{background:var(--red)}
+
+.exec-stat-card.status-green{background:rgba(46,125,50,.06);border-color:rgba(46,125,50,.24)}
+.exec-stat-card.status-yellow{background:rgba(249,168,37,.08);border-color:rgba(249,168,37,.28)}
+.exec-stat-card.status-red{background:rgba(198,40,40,.06);border-color:rgba(198,40,40,.24)}
 @media(max-width:900px){.exec-section-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.exec-section-grid{grid-template-columns:1fr}}
 @media(max-width:900px){.choice-grid{grid-template-columns:1fr 1fr}}
@@ -854,11 +858,16 @@ function readinessStatusLabel(score){
 function updateReadinessStoplight(score){
  const status=score>=80?'Green':score>=60?'Yellow':'Red';
  const cls=status.toLowerCase();
+
  const light=el('readinessStoplight');
  if(light){
    light.className='readiness-stoplight '+cls;
    light.setAttribute('aria-label','Readiness status: '+status);
  }
+
+ const card=el('statusCard');
+ if(card)card.className='exec-stat-card status-'+cls;
+
  return status;
 }
 
