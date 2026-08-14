@@ -1,1 +1,1588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Medix ERP Transformation Readiness Tracker™</title>
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V2.0 -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{
+  --primary:#0075C9;
+  --secondary:#63E6B8;
+  --primary-step-1:#004582;
+  --primary-step-2:#002454;
+  --navy:#002454;
+  --blue:#0075C9;
+  --blue2:#004582;
+  --sky:#EAF6FE;
+  --ice:#F8FCFF;
+  --panel:#FFFFFF;
+  --line:#D8E3ED;
+  --text:#101828;
+  --muted:#475467;
+  --green:#2E7D32;--yellow:#F9A825;--red:#C62828;--orange:#EF6C00;--purple:#004582;
+  --shadow:0 12px 32px rgba(0,36,84,.10);
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;font-family:'Proxima Nova',Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#F7FBFE 0%,#fff 42%);color:var(--text);line-height:1.45}
+.wrapper{max-width:1480px;margin:0 auto;padding:28px}
+.brand-header{display:flex;align-items:center;justify-content:space-between;gap:18px;background:#fff;border:1px solid var(--line);border-radius:22px;padding:18px 22px;margin-bottom:18px;box-shadow:var(--shadow)}
+.logo-wrap{display:flex;align-items:center;gap:16px}.medix-logo{height:64px;width:auto;max-width:310px;object-fit:contain}.brand-lockup{border-left:4px solid var(--secondary);padding-left:16px}.brand-lockup strong{display:block;color:var(--navy);font-size:16px}.brand-lockup span{display:block;color:var(--muted);font-size:13px}.brand-tagline{color:var(--secondary);font-weight:900;font-size:18px;white-space:nowrap}
+.hero{position:relative;overflow:hidden;background:radial-gradient(circle at 86% 18%,rgba(99,230,184,.22),transparent 24%),linear-gradient(135deg,var(--primary-step-2),var(--primary-step-1) 58%,var(--primary));color:#fff;padding:34px;border-radius:24px;box-shadow:0 16px 40px rgba(0,36,84,.24);border-bottom:5px solid var(--secondary)}
+.brand{font-size:29px;font-weight:900;letter-spacing:.4px}.kicker{text-transform:uppercase;letter-spacing:1.8px;font-size:12px;opacity:.92;margin-top:8px;color:var(--secondary);font-weight:900}
+h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inherit}.hero p{font-size:17px;max-width:940px;opacity:.96}.pill{display:inline-flex;border:1px solid rgba(99,230,184,.55);border-radius:999px;padding:8px 12px;margin:10px 8px 0 0;background:rgba(99,230,184,.12);font-weight:800;font-size:13px;color:#fff}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:var(--shadow);margin-top:20px}.card h2{margin:0 0 12px;color:var(--navy);font-size:24px}.card h3{margin:0 0 9px;color:var(--navy);font-size:18px}.small{font-size:13px;color:var(--muted)}
+.hidden{display:none!important}.center{text-align:center}.intro{max-width:860px;margin:0 auto}.button-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}button{border:0;border-radius:12px;padding:12px 16px;font-weight:900;cursor:pointer}.primary{background:linear-gradient(135deg,var(--primary-step-1),var(--primary));color:#fff;box-shadow:0 8px 18px rgba(0,117,201,.20)}.secondary{background:#EAF6FE;color:var(--navy);border:1px solid #C9E7FA}.ghost{background:#fff;color:var(--navy);border:1px solid var(--line)}
+.platform-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}.platform-card{border:1px solid var(--line);border-radius:18px;padding:18px;background:#FBFDFF;cursor:pointer;transition:.18s;min-height:132px}.platform-card:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(15,23,42,.10)}.platform-card.selected{border:2px solid var(--primary);background:#EFF8FF;box-shadow:0 10px 28px rgba(0,117,201,.16)}.platform-card strong{display:block;font-size:19px;color:var(--navy);margin-bottom:5px}.platform-tag{display:inline-flex;font-size:11px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;color:var(--primary-step-1);background:#EAF6FE;padding:5px 8px;border-radius:999px;margin-bottom:8px;border:1px solid #C9E7FA}
+.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:22px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.profile-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}input[type=text],input[type=email],input[type=tel],input[type=number],select{width:100%;padding:11px;border:1px solid var(--line);border-radius:11px;font-size:14px;background:#fff}.required-star{color:var(--red);font-weight:900}.field-error{border-color:var(--red)!important;background:#FFF7F7!important}.error-message{display:none;color:var(--red);font-size:12px;font-weight:800;margin-top:5px}.error-message.show{display:block}.validation-banner{display:none;background:#FFF7F7;border:1px solid #F3B3B3;color:#8A1F1F;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.validation-banner.show{display:block}.success-banner{display:none;background:#F1FAF2;border:1px solid #BFE5C2;color:#1F6B25;border-radius:14px;padding:12px;margin-top:12px;font-weight:800}.success-banner.show{display:block}label{cursor:pointer}.stepbar{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0}.stepbar span{padding:8px 11px;border:1px solid var(--line);border-radius:999px;background:#fff;font-weight:800;font-size:13px;color:var(--muted)}.stepbar .active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.vendor-banner{display:flex;justify-content:space-between;gap:16px;align-items:center;background:#F7FBFE;border:1px solid var(--line);border-radius:18px;padding:16px;margin-top:16px}.vendor-banner h2{margin:0;color:var(--navy)}
+.module-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 14px}.module-toolbar button,.mini-button{padding:8px 10px;border-radius:10px;font-size:12px}.module-area{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.module-group{border:1px solid var(--line);border-radius:16px;padding:15px;background:#FBFDFF}.module-group h3{display:flex;justify-content:space-between;gap:8px;align-items:center}.module-group-actions{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 4px}.module-list{display:grid;grid-template-columns:repeat(2,1fr);gap:6px 10px;margin-top:8px}.module-list label,.ecosystem label,.questions label{display:flex;align-items:flex-start;gap:8px;padding:5px 0}.module-list input,.ecosystem input,.questions input{margin-top:3px}.scope-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:14px}.scope-card{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:16px;padding:18px;background:#FBFDFF;font-weight:900;color:var(--navy);cursor:pointer}.scope-card:has(input:checked){border:2px solid var(--primary);background:#EFF8FF}.scope-card input{width:20px;height:20px}
+.module-count{margin-top:12px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#F7FBFE;font-weight:800;color:var(--navy);display:inline-flex;gap:8px;align-items:center}
+.ecosystem{display:grid;grid-template-columns:repeat(4,1fr);gap:6px 14px}.questions{display:grid;grid-template-columns:1fr 1fr;gap:4px 18px;margin-top:8px}.section{border-top:1px solid var(--line);padding:18px 0}.section:first-of-type{border-top:none}.section-header{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.badge{display:inline-flex;align-items:center;justify-content:center;min-width:66px;height:32px;border-radius:999px;font-weight:900;color:white;white-space:nowrap}.green{background:var(--green)}.yellow{background:var(--yellow);color:#1f2933}.red{background:var(--red)}.orange{background:var(--orange)}.purple{background:var(--purple)}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.kpi{border:1px solid var(--line);border-radius:16px;padding:14px;background:#FBFDFF}.kpi .num{font-size:33px;font-weight:900;color:var(--blue);line-height:1}.kpi .label{font-size:12px;color:var(--muted);margin-top:6px}.grade{font-size:56px!important}.score-ring{display:flex;align-items:center;gap:16px}.score-circle{width:118px;height:118px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:conic-gradient(var(--primary) calc(var(--score)*1%),#E5E7EB 0);position:relative}.score-circle:before{content:"";position:absolute;width:88px;height:88px;background:#fff;border-radius:50%}.score-circle span{position:relative;font-size:32px;font-weight:900;color:var(--navy)}
+.metric{margin:12px 0}.metric-row{display:flex;justify-content:space-between;font-size:13px;font-weight:800;color:var(--navy)}.track{height:11px;background:#E5E7EB;border-radius:999px;overflow:hidden;margin-top:6px}.track span{display:block;height:100%;background:linear-gradient(90deg,var(--primary),var(--secondary));width:0}.chart-wrap{height:360px}.heat-table{width:100%;border-collapse:collapse}.heat-table th,.heat-table td{border-bottom:1px solid var(--line);padding:10px;text-align:left;font-size:14px}.heat-table th{background:#F7FBFE;color:var(--navy)}
+.findings li,.impact li,.benchmark li{margin-bottom:9px}.callout{background:#F8FCFF;border-left:5px solid var(--secondary);padding:13px;border-radius:11px;margin-top:12px}.service-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.service{border:1px solid var(--line);border-radius:15px;padding:13px;background:#FBFDFF}.service strong{color:var(--navy)}
+.stoplight-indicator{width:118px;height:118px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:#fff;box-shadow:inset 0 0 0 8px rgba(255,255,255,.35),0 8px 20px rgba(15,23,42,.15)}.stoplight-indicator.green{background:var(--green)}.stoplight-indicator.yellow{background:var(--yellow);color:#1f2933}.stoplight-indicator.red{background:var(--red)}
 
+.stage-group{margin:20px 0 26px;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#fff}
+.stage-group:first-child{margin-top:8px}
+.stage-header{padding:16px 18px;background:linear-gradient(135deg,var(--primary-step-2),var(--primary-step-1));color:#fff;border-bottom:4px solid var(--secondary)}
+.stage-header h3{margin:0 0 4px;color:#fff;font-size:19px}
+.stage-header .small{color:#EAF6FE}
+.stage-content{padding:0 18px}
+.stage-content .section:first-child{border-top:none}
+
+.executive-report{margin-top:22px}
+.exec-report-header{background:linear-gradient(135deg,var(--primary-step-2),var(--primary-step-1));color:#fff;border-radius:20px;padding:24px;border-bottom:5px solid var(--secondary);box-shadow:var(--shadow)}
+.exec-report-header h2{color:#fff;margin:0 0 8px;font-size:26px}
+.exec-report-header p{margin:0;opacity:.96}
+.exec-report-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.exec-panel{border:1px solid var(--line);border-radius:18px;padding:18px;background:#fff}
+.exec-panel h3{margin:0 0 10px;color:var(--navy);font-size:18px}
+.exec-panel ul,.exec-panel ol{margin:8px 0 0;padding-left:20px}
+.exec-panel li{margin-bottom:8px}
+.exec-priority{border-left:5px solid var(--primary);padding:12px 14px;margin:10px 0;background:#F8FCFF;border-radius:10px}
+.exec-priority strong{color:var(--navy)}
+.exec-callout{background:#F1FAF7;border:1px solid #BFE8D8;border-radius:14px;padding:14px;margin-top:12px}
+.exec-muted{color:var(--muted);font-size:13px}
+.exec-next-steps{counter-reset:item}
+.exec-next-steps li{margin-bottom:9px}
+
+.exec-checklist-wrap{margin-top:16px;border:1px solid var(--line);border-radius:18px;background:#fff;overflow:hidden}
+.exec-checklist-header{padding:18px;background:#F7FBFE;border-bottom:1px solid var(--line)}
+.exec-checklist-header h3{margin:0 0 5px;color:var(--navy);font-size:20px}
+.exec-checklist-header p{margin:0;color:var(--muted);font-size:13px}
+.exec-task{display:grid;grid-template-columns:34px 1fr 190px;gap:12px;align-items:start;padding:14px 16px;border-bottom:1px solid var(--line)}
+.exec-task:last-child{border-bottom:none}
+.exec-task input{width:20px;height:20px;margin-top:3px}
+.exec-task-title{font-weight:900;color:var(--navy);margin-bottom:3px}
+.exec-task-detail{font-size:13px;color:var(--muted)}
+.exec-task-meta{font-size:12px;border-left:3px solid var(--secondary);padding-left:10px;color:var(--navy)}
+.exec-task-meta strong{display:block;margin-bottom:2px}
+.exec-checklist-summary{display:flex;gap:12px;flex-wrap:wrap;padding:12px 16px;background:#FBFDFF;border-top:1px solid var(--line)}
+.exec-checklist-summary span{font-size:12px;font-weight:800;color:var(--navy)}
+.exec-decision{display:inline-block;padding:4px 8px;border-radius:999px;background:#EAF6FE;color:var(--navy);font-size:11px;font-weight:900;margin-top:6px}
+
+.tracker-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.tracker-toolbar button{min-width:140px}
+.lifecycle{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;margin-top:16px}
+.lifecycle-step{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff;min-height:88px}
+.lifecycle-step strong{display:block;color:var(--navy);font-size:13px;margin-bottom:4px}
+.lifecycle-step .small{font-size:11px}
+.lifecycle-step.current{border:2px solid var(--primary);background:#EFF8FF}
+.lifecycle-step.complete{background:#F1FAF2;border-color:#BFE5C2}
+.lifecycle-step.upcoming{opacity:.72}
+.history-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.history-card{border:1px solid var(--line);border-radius:16px;padding:14px;background:#FBFDFF}
+.history-card .num{font-size:28px;font-weight:900;color:var(--blue)}
+.change-up{color:var(--green);font-weight:900}.change-down{color:var(--red);font-weight:900}.change-flat{color:var(--muted);font-weight:900}
+.saved-list{display:grid;gap:10px}
+.saved-item{display:flex;justify-content:space-between;gap:12px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
+.saved-item-actions{display:flex;gap:8px;flex-wrap:wrap}
+.status-select{min-width:140px;padding:7px;border:1px solid var(--line);border-radius:9px;background:#fff;font-size:12px}
+.question-row{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:10px;align-items:start;padding:5px 0}
+.question-row label{padding:0!important}
+.progress-note{width:100%;margin-top:5px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;font-size:12px}
+.timeline-chart-wrap{height:280px}
+.compare-table{width:100%;border-collapse:collapse}
+.compare-table th,.compare-table td{padding:9px;border-bottom:1px solid var(--line);font-size:13px;text-align:left}
+.compare-table th{background:#F7FBFE;color:var(--navy)}
+@media(max-width:1120px){.lifecycle{grid-template-columns:repeat(4,1fr)}.history-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:720px){.lifecycle,.history-grid{grid-template-columns:1fr}.question-row{grid-template-columns:1fr}}
+@media(max-width:900px){.exec-task{grid-template-columns:30px 1fr}.exec-task-meta{grid-column:2;border-left:0;border-top:1px solid var(--line);padding:8px 0 0}}
+@media(max-width:900px){.exec-report-grid{grid-template-columns:1fr}}
+@media(max-width:900px){.brand-header{align-items:flex-start;flex-direction:column}.brand-tagline{white-space:normal}.medix-logo{height:52px}.brand-lockup{border-left:0;border-top:4px solid var(--secondary);padding-left:0;padding-top:12px}}
+@media(max-width:1120px){.grid,.platform-grid,.module-area,.grid3,.grid4,.service-grid,.scope-grid{grid-template-columns:1fr}.profile-grid,.ecosystem,.kpi-grid{grid-template-columns:1fr 1fr}.questions{grid-template-columns:1fr}.module-list{grid-template-columns:1fr}}
+@media(max-width:720px){.wrapper{padding:14px}h1{font-size:30px}.profile-grid,.ecosystem,.kpi-grid{grid-template-columns:1fr}.hero{padding:24px}.score-ring{align-items:flex-start;flex-direction:column}}
+@media print{body{background:#fff}.wrapper{max-width:none;padding:10px}.hero,.card{box-shadow:none}.button-row,.platform-grid,#introCard{display:none!important}.grid{grid-template-columns:1fr}.card{break-inside:avoid}.section{break-inside:avoid}.questions{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="brand-header">
+    <div class="logo-wrap">
+      <img src="medix-technology-logo.png" alt="Medix Technology" class="medix-logo">
+      <div class="brand-lockup">
+        <strong>ERP Transformation Readiness Tracker™</strong>
+        <span>Healthcare-focused assessment. Data-driven insights. Smarter ERP decisions.</span>
+      </div>
+    </div>
+    <div class="brand-tagline">People. Technology. Solutions.</div>
+  </div>
+
+  <div class="hero">
+    <div class="kicker">Healthcare ERP Advisory Portal</div>
+    <h1>Medix ERP Transformation Readiness Tracker™</h1>
+    <p>A longitudinal ERP readiness and transformation tracking tool designed to help executive teams assess progress, manage key actions, and monitor readiness throughout the ERP lifecycle.</p>
+    <span class="pill">Executive Assessment</span><span class="pill">Progress Tracking</span><span class="pill">Lifecycle Readiness</span>
+  </div>
+
+  <div class="card">
+    <h2>ERP Transformation Tracker</h2>
+    <p class="small">Save your progress, return later, compare assessment snapshots, and track executive actions throughout the ERP lifecycle.</p>
+    <div class="tracker-toolbar">
+      <button class="primary" type="button" onclick="saveAssessmentSnapshot()">Save Progress</button>
+      <button class="secondary" type="button" onclick="resumeLatestAssessment()">Resume Last Assessment</button>
+      <button class="secondary" type="button" onclick="showAssessmentHistory()">Assessment History</button>
+      <button class="ghost" type="button" onclick="startNewAssessmentVersion()">Start New Update</button>
+    </div>
+    <div id="trackerMessage" class="success-banner"></div>
+    <div class="lifecycle" id="lifecycleTracker"></div>
+  </div>
+
+  <div class="card" id="sinceLastCard">
+    <h2>Since Your Last Assessment</h2>
+    <div class="history-grid">
+      <div class="history-card"><div class="num" id="changeScore">—</div><div class="small">Readiness Score Change</div></div>
+      <div class="history-card"><div class="num" id="actionsCompletedChange">—</div><div class="small">Executive Actions Completed</div></div>
+      <div class="history-card"><div class="num" id="categoriesImproved">—</div><div class="small">Categories Improved</div></div>
+      <div class="history-card"><div class="num" id="categoriesDeclined">—</div><div class="small">Categories Declined</div></div>
+    </div>
+    <div class="exec-report-grid" style="margin-top:14px">
+      <div class="exec-panel"><h3>What Improved</h3><ul id="improvementList"></ul></div>
+      <div class="exec-panel"><h3>What Needs Attention</h3><ul id="declineList"></ul></div>
+    </div>
+    <div class="timeline-chart-wrap"><canvas id="progressChart"></canvas></div>
+  </div>
+
+  <div class="card hidden" id="historyCard">
+    <h2>Assessment History</h2>
+    <div class="saved-list" id="savedAssessments"></div>
+  </div>
+
+  <div id="assessment">
+</div>
+      
+    </div>
+
+    <div class="button-row" style="margin-top:20px">
+      <button class="secondary" type="button" onclick="randomizeAssessment()">Randomize</button>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Organization & Project Profile</h2>
+        <div class="profile-grid">
+          <label>Organization Name <span class="required-star">*</span><br><input id="org" type="text" placeholder="Health System / Organization" oninput="calculate();clearFieldError('org')" data-required="true"><div class="error-message" id="err_org">Organization Name is required.</div></label>
+          <label>Organization Type <span class="required-star">*</span><br><select id="orgType" onchange="calculate();clearFieldError('orgType')" data-required="true"><option value="">Select Organization Type</option><option>Academic Medical Center</option><option>Integrated Delivery Network (IDN)</option><option>Community Health System</option><option>Critical Access Hospital</option><option>Children's Hospital</option><option>Specialty Hospital</option><option>Ambulatory / Physician Group</option><option>Government / VA</option><option>Behavioral Health</option><option>Other Healthcare Organization</option></select><div class="error-message" id="err_orgType">Organization Type is required.</div></label>
+          <label>Number of Employees <span class="required-star">*</span><br><input id="employees" type="number" min="1" step="1" placeholder="Example: 12500" oninput="calculate();clearFieldError('employees')" data-required="true"><div class="error-message" id="err_employees">Number of Employees is required.</div></label>
+          <label>Current ERP Lifecycle Stage <span class="required-star">*</span><br><select id="lifecycleStage" onchange="onLifecycleStageChange();calculate()" data-required="true">
+<option value="Discovery">Discovery</option>
+<option value="Business Case Creation">Business Case</option>
+<option value="Vendor Selection">Vendor Selection</option>
+<option value="Implementation Planning">Pre-Implementation</option>
+<option value="Implementation">Implementation</option>
+<option value="Testing">Testing</option>
+<option value="Go-Live / Hypercare">Go-Live / Hypercare</option>
+<option value="Optimization">Stabilization / Optimization</option>
+</select><div class="error-message" id="err_lifecycleStage">Lifecycle Stage is required.</div></label>
+          <label>Target Timeline <span class="required-star">*</span><br><select id="timeline" onchange="calculate();clearFieldError('timeline')" data-required="true"><option value="">Select Target Timeline</option><option>0–6 Months</option><option>6–12 Months</option><option>12–18 Months</option><option>18–30 Months</option><option>30+ Months</option></select><div class="error-message" id="err_timeline">Target Timeline is required.</div></label>
+        </div>
+        <div id="profileValidation" class="validation-banner">Please complete the required profile fields before saving or generating the report.</div>
+        <div class="callout" id="profileSummary"></div>
+      </div>
+
+      <div class="card">
+        <h2>Executive Dashboard</h2>
+        <div class="score-ring">
+          <div>
+            <div class="score-circle" id="scoreCircle" style="--score:0"><span id="score">0</span></div>
+            <div class="small center" style="margin-top:8px;font-weight:800;color:var(--navy)">ERP Readiness Score</div>
+          </div>
+          <div><div class="kpi"><div class="stoplight-indicator red" id="stoplightIndicator" role="img" aria-label="Readiness status indicator"></div><div class="label">Readiness Status</div></div></div>
+        </div>
+        <div class="kpi-grid" style="margin-top:12px;grid-template-columns:repeat(2,1fr)">
+          <div class="kpi"><div class="num"><span id="prob">0%</span></div><div class="label">Projected Success Probability</div></div>
+          <div class="kpi"><div class="num"><span id="risk">High</span></div><div class="label">Overall Project Risk</div></div>
+        </div>
+        <div class="callout" id="execSummary"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 id="scopeTitle">General ERP Evaluation Scope</h2>
+      <p class="small" id="scopeHelp">Select the top-level ERP areas included in the initiative.</p>
+      <div class="scope-grid" id="moduleGroups"></div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Readiness Checklist</h2>
+        <p class="small">Check each item your organization has already addressed. Workstreams are weighted based on ERP implementation risk in healthcare environments.</p>
+        <div id="checklist"></div>
+        <div class="button-row"><button class="primary" onclick="downloadPDFReport()">Download PDF Report</button><button class="secondary" onclick="resetAssessment()">Reset Assessment</button></div>
+      </div>
+      <div>
+        <div class="card">
+          <h2>Readiness by Category</h2>
+          <div id="categoryBars"></div>
+        </div>
+        <div class="card">
+          <h2>Strengths &amp; Gaps Radar</h2>
+          <div class="chart-wrap"><canvas id="radar"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card executive-report" id="executiveReadinessReport">
+      <div class="exec-report-header">
+        <h2>Executive Readiness Report</h2>
+        <p id="executiveNarrative">Complete the assessment to generate an executive-level summary of readiness, priorities, stage considerations, and recommended next steps.</p>
+      </div>
+
+      <div class="exec-report-grid">
+        <div class="exec-panel">
+          <h3>Where You Are in the ERP Journey</h3>
+          <div id="journeyFocus"></div>
+        </div>
+        <div class="exec-panel">
+          <h3>Top Executive Priorities</h3>
+          <div id="executivePriorities"></div>
+        </div>
+      </div>
+
+      <div class="exec-report-grid">
+        <div class="exec-panel">
+          <h3>Things to Keep in Mind</h3>
+          <ul id="keepInMind"></ul>
+        </div>
+        <div class="exec-panel">
+          <h3>What Does Not Need to Be Fully Solved Yet</h3>
+          <ul id="notYet"></ul>
+        </div>
+      </div>
+
+      <div class="exec-panel" style="margin-top:16px">
+        <h3>Recommended Next Steps</h3>
+        <ol class="exec-next-steps" id="recommendedNextSteps"></ol>
+      </div>
+
+      <div class="exec-checklist-wrap">
+        <div class="exec-checklist-header">
+          <h3>Executive Action Checklist</h3>
+          <p>Leadership actions to complete before moving confidently into the next ERP phase. The checklist adapts to the most important readiness gaps identified in the assessment.</p>
+        </div>
+        <div id="executiveActionChecklist"></div>
+        <div class="exec-checklist-summary" id="executiveChecklistSummary"></div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card"><h2>Detailed Readiness Findings</h2><ul class="findings" id="findings"></ul></div>
+      <div class="card"><h2>Financial & Operational Impact</h2><ul class="impact" id="impact"></ul></div>
+    </div>
+
+    <div class="card">
+      <h2>Medix Opportunity Report</h2>
+      <p class="small">Based on selected scope and readiness gaps, these are the areas where Medix may be positioned as a practical ERP advisory, staffing, implementation, or stabilization partner.</p>
+      <div class="service-grid" id="services"></div>
+    </div>
+
+    <div class="card" id="saveAssessmentCard">
+      <h2>Submit Completed Assessment</h2>
+      <p class="small">Complete the contact fields below so a Medix ERP Advisory specialist can review the assessment and follow up with recommendations based on the responses.</p>
+      <div class="profile-grid">
+        <label>First Name <span class="required-star">*</span><br><input id="firstName" type="text" placeholder="First Name" oninput="clearFieldError('firstName')" data-contact-required="true"><div class="error-message" id="err_firstName">First Name is required.</div></label>
+        <label>Last Name <span class="required-star">*</span><br><input id="lastName" type="text" placeholder="Last Name" oninput="clearFieldError('lastName')" data-contact-required="true"><div class="error-message" id="err_lastName">Last Name is required.</div></label>
+        <label>Title <span class="required-star">*</span><br><input id="contactTitle" type="text" placeholder="Title" oninput="clearFieldError('contactTitle')" data-contact-required="true"><div class="error-message" id="err_contactTitle">Title is required.</div></label>
+        <label>Business Email <span class="required-star">*</span><br><input id="email" type="email" placeholder="name@organization.org" oninput="clearFieldError('email')" data-contact-required="true"><div class="error-message" id="err_email">Valid Business Email is required.</div></label>
+        <label>Phone<br><input id="phone" type="tel" placeholder="Optional"></label>
+      </div>
+      <div id="saveValidation" class="validation-banner">Please complete all required organization and contact fields before submitting.</div>
+      <div id="saveSuccess" class="success-banner">Your ERP Readiness Snapshot has been submitted successfully. A Medix ERP Advisory specialist will review your assessment and follow up with personalized recommendations.</div>
+      <div class="button-row">
+        <button class="primary" onclick="submitAssessment()">Submit Assessment</button>
+        <button class="ghost" onclick="downloadPDFReport()">Download PDF Report</button>
+      </div>
+      <!-- HubSpot-ready structured assessment data is generated by buildAssessmentPayload() and stored internally for future CRM integration. -->
+    </div>
+  </div>
+</div>
+
+<script>
+const vendors={
+ workday:{name:"Workday",tag:"Cloud ERP / HCM",desc:"Workday-specific scoping for HCM, Financial Management, Spend Management, Supply Chain, analytics, Extend, and healthcare integrations.",groups:[
+  {name:"Workday Human Capital Management",kind:"HCM",items:["Core HCM","Human Resources","Payroll","Time Tracking","Absence Management","Benefits","Compensation","Recruiting","Onboarding","Talent & Performance","Learning","Succession Planning","Workforce Planning","Employee Experience / Journeys","Peakon Employee Voice","Skills Cloud"]},
+  {name:"Workday Financial Management",kind:"Finance",items:["Financial Management","General Ledger","Accounts Payable","Accounts Receivable","Expenses","Asset Management","Cash Management","Banking & Settlement","Revenue Management","Project Financials","Grants Management","Financial Reporting","Consolidation & Close","Planning","Adaptive Planning"]},
+  {name:"Workday Spend & Supply Chain",kind:"Supply Chain",items:["Procurement","Inventory Management","Strategic Sourcing","Supplier Contracts","Supplier Management","Requisitions","Purchase Orders","Receiving","Inventory Replenishment","Warehouse Management","Spend Analytics","Supplier Performance","Contract Lifecycle Management"]},
+  {name:"Workday Platform, Analytics & AI",kind:"Platform",items:["Prism Analytics","Workday Extend","Workday Integration Cloud","Workday Assistant","Workday Illuminate / AI","Document Intelligence","Report Writer","Security Administration","Business Process Framework"]}
+ ]},
+ oracle:{name:"Oracle Cloud ERP",tag:"Oracle Fusion Cloud",desc:"Oracle Fusion Cloud terminology across Oracle Cloud HCM, ERP Financials, SCM, EPM, Analytics, Redwood, and Oracle Integration Cloud.",groups:[
+  {name:"Oracle Fusion Cloud HCM",kind:"HCM",items:["Global Human Resources","Workforce Structures","Payroll","Time and Labor","Absence Management","Benefits","Compensation","Recruiting","Onboarding","Journeys","Learning","Talent Management","Performance Management","Career Development","Succession Planning","Workforce Modeling","HR Help Desk"]},
+  {name:"Oracle Fusion Cloud Financials",kind:"Finance",items:["General Ledger","Payables","Receivables","Cash Management","Assets","Expenses","Revenue Management","Lease Accounting","Project Financial Management","Grants Management","Joint Venture Management","Collections","Financial Reporting Center","Risk Management","Accounting Hub"]},
+  {name:"Oracle Fusion Cloud SCM",kind:"Supply Chain",items:["Procurement","Self Service Procurement","Purchasing","Supplier Portal","Supplier Qualification Management","Supplier Lifecycle Management","Sourcing","Procurement Contracts","Inventory Management","Cost Management","Warehouse Management","Maintenance","Order Management","Logistics","Supply Planning","Demand Management","Product Lifecycle Management"]},
+  {name:"Oracle EPM, Analytics & Platform",kind:"Platform",items:["Enterprise Performance Management","Planning and Budgeting","Financial Consolidation and Close","Account Reconciliation","Oracle Transactional Business Intelligence","Fusion Analytics Warehouse","Oracle Analytics Cloud","Oracle Integration Cloud","Visual Builder","Process Automation","Redwood User Experience","Digital Assistant"]}
+ ]},
+ infor:{name:"Infor CloudSuite",tag:"Industry Cloud / Healthcare",desc:"Infor healthcare-oriented scoping using CloudSuite, Financials, Supply Management, HCM, Infor OS, Birst, Coleman, Cloverleaf, and Lawson migration language.",groups:[
+  {name:"Infor HCM",kind:"HCM",items:["Global HR","Payroll","Talent Management","Talent Acquisition","Learning Management","Compensation Management","Benefits Administration","Workforce Management","HR Service Delivery","Employee and Manager Self-Service","Talent Science"]},
+  {name:"Infor Financials",kind:"Finance",items:["Financial Management","General Ledger","Accounts Payable","Accounts Receivable","Cash Management","Asset Accounting","Budgeting","Expense Management","Project Accounting","Grant Accounting","Close Management","Financial Reporting","Infor FSM"]},
+  {name:"Infor Supply Management",kind:"Supply Chain",items:["Supply Management","Procurement","Strategic Sourcing","Contract Management","Requisitions","Purchase Orders","Receiving","Inventory Management","Inventory Intelligence","Warehouse Management","Vendor Management","Supplier Portal","MSCM / Mobile Supply Chain"]},
+  {name:"Infor Platform, Analytics & Integration",kind:"Platform",items:["Infor OS","Infor Birst Analytics","Coleman AI","Infor Process Intelligence","Infor Data Fabric","Infor ION","Infor Mongoose","Cloverleaf Integration Suite","Lawson Migration","Landmark","IPA / Process Automation","LBI Replacement"]}
+ ]},
+ sap:{name:"SAP S/4HANA",tag:"Enterprise ERP",desc:"SAP scoping across S/4HANA Finance, SuccessFactors, Ariba, IBP, EWM, BTP, Analytics Cloud, Datasphere, and Joule AI.",groups:[
+  {name:"SAP SuccessFactors / HXM",kind:"HCM",items:["Employee Central","Employee Central Payroll","Time Tracking","Recruiting","Onboarding","Learning","Performance & Goals","Compensation","Succession & Development","Workforce Analytics","Employee Experience Management"]},
+  {name:"SAP S/4HANA Finance",kind:"Finance",items:["S/4HANA Finance","General Ledger Accounting","Accounts Payable","Accounts Receivable","Asset Accounting","Controlling","Treasury and Risk Management","Cash Management","Central Finance","Group Reporting","Financial Closing Cockpit","Project System","Revenue Accounting"]},
+  {name:"SAP Supply Chain & Procurement",kind:"Supply Chain",items:["SAP Ariba","Sourcing and Procurement","Materials Management","Inventory Management","Extended Warehouse Management","Transportation Management","Integrated Business Planning","Demand Planning","Supply Planning","Asset Management","Plant Maintenance","Quality Management","Supplier Lifecycle and Performance"]},
+  {name:"SAP Platform, Analytics & AI",kind:"Platform",items:["SAP Business Technology Platform","SAP Analytics Cloud","SAP Datasphere","SAP Integration Suite","Fiori User Experience","Joule AI","Build Process Automation","Master Data Governance","Signavio Process Intelligence"]}
+ ]},
+ dynamics:{name:"Microsoft Dynamics 365",tag:"Business Applications",desc:"Microsoft Dynamics 365 scoping across Finance, Supply Chain Management, Human Resources, Project Operations, Power Platform, Dataverse, and Copilot.",groups:[
+  {name:"Dynamics 365 Human Resources",kind:"HCM",items:["Human Resources","Personnel Management","Employee Self-Service","Manager Self-Service","Benefits Management","Leave and Absence","Compensation Management","Performance Management","Skills and Certifications","Organization Administration","Workforce Analytics"]},
+  {name:"Dynamics 365 Finance",kind:"Finance",items:["Finance","General Ledger","Accounts Payable","Accounts Receivable","Cash and Bank Management","Budgeting","Fixed Assets","Expense Management","Credit and Collections","Project Operations","Financial Reporting","Electronic Reporting","Tax"]},
+  {name:"Dynamics 365 Supply Chain Management",kind:"Supply Chain",items:["Supply Chain Management","Procurement and Sourcing","Product Information Management","Inventory Management","Warehouse Management","Transportation Management","Master Planning","Demand Planning","Asset Management","Manufacturing","Quality Management","Vendor Collaboration"]},
+  {name:"Microsoft Platform, Analytics & AI",kind:"Platform",items:["Power BI","Power Automate","Power Apps","Dataverse","Copilot","Azure Integration Services","Dual-write","Customer Insights","Microsoft Entra ID","Fabric Analytics"]}
+ ]},
+ peoplesoft:{name:"Oracle PeopleSoft",tag:"Legacy ERP / Upgrade",desc:"PeopleSoft scoping across HCM, Financials, Supply Chain Management, PeopleTools, Fluid UI, and modernization or migration planning.",groups:[
+  {name:"PeopleSoft Human Capital Management",kind:"HCM",items:["Human Resources","Payroll for North America","Time and Labor","Absence Management","Benefits Administration","eBenefits","eProfile","ePerformance","Talent Acquisition Manager","Candidate Gateway","Learning Management","Workforce Administration","Position Management"]},
+  {name:"PeopleSoft Financial Management",kind:"Finance",items:["General Ledger","Accounts Payable","Accounts Receivable","Billing","Asset Management","Expenses","Cash Management","Treasury","Project Costing","Grants","Contracts","Commitment Control","Financial Gateway"]},
+  {name:"PeopleSoft Supply Chain Management",kind:"Supply Chain",items:["Purchasing","eProcurement","Supplier Contract Management","Supplier Portal","Strategic Sourcing","Inventory","Order Management","Maintenance Management","Supplier Relationship Management","Mobile Inventory","Asset Lifecycle Management"]},
+  {name:"PeopleSoft Platform & Modernization",kind:"Platform",items:["PeopleTools","Fluid User Interface","Application Engine","Integration Broker","Process Scheduler","Query Manager","BI Publisher","PeopleSoft Update Manager","Selective Adoption","Cloud Manager","OCI Migration","Archiving and Decommissioning"]}
+ ]},
+ lawson:{name:"Lawson / Infor Migration",tag:"Legacy Replacement",desc:"Legacy Lawson/Infor replacement scope focused on current modules, technical debt, migration target, interfaces, reports, ProcessFlow/IPA, Landmark, and MSCM impacts.",groups:[
+  {name:"Current Lawson HCM Footprint",kind:"HCM",items:["Lawson HR","Payroll","Benefits","Personnel Administration","Absence / Leave","Employee Self-Service","Manager Self-Service","Talent / Recruiting Integrations","Workforce Management Integrations","UKG / Kronos Interface"]},
+  {name:"Current Lawson Financials Footprint",kind:"Finance",items:["Lawson General Ledger","Accounts Payable","Accounts Receivable","Asset Management","Cash Management","Project Accounting","Grant Accounting","Budgeting","Financial Reporting","LBI Reports","Infor Spreadsheet Designer","Close Processes"]},
+  {name:"Current Lawson Supply Chain Footprint",kind:"Supply Chain",items:["Lawson Procurement","Requisitions","Purchase Orders","Receiving","Inventory Control","Item Master","Vendor Master","Contract Management","MSCM","Par Management","Materials Management","EDI Supplier Interfaces"]},
+  {name:"Migration & Technical Debt",kind:"Platform",items:["Landmark","IPA / ProcessFlow","Design Studio","Custom Reports","Custom Interfaces","Security Roles","Data Archiving","Historical Reporting","Lawson Portal","Batch Jobs","Job Scheduler","Decommissioning Plan","Target ERP Selection"]}
+ ]},
+ ukg:{name:"UKG",tag:"HCM / Workforce Management",desc:"UKG scope centered on HCM, payroll, workforce management, scheduling, timekeeping, analytics, and integration with a separate finance/supply chain ERP.",groups:[
+  {name:"UKG Pro HCM",kind:"HCM",items:["Core HR","Payroll","Benefits Administration","Talent Acquisition","Onboarding","Performance Management","Compensation Management","Learning","Employee Voice","People Assist","Employee Self-Service","Manager Self-Service"]},
+  {name:"UKG Pro Workforce Management",kind:"HCM",items:["Timekeeping","Advanced Scheduling","Absence Management","Leave Management","Labor Forecasting","Activities and Labor Tracking","Attestation","Accruals","Workforce Analytics","Mobile Workforce","Healthcare Scheduling"]},
+  {name:"Finance / ERP Integration Scope",kind:"Finance",items:["Payroll to General Ledger Interface","Labor Costing","Benefits Carrier Feeds","AP / Deduction Interfaces","Banking / NACHA","Tax Filing Interfaces","Finance ERP Integration","Budget and Position Control Integration","Grant Labor Distribution"]},
+  {name:"Platform, Analytics & Integration",kind:"Platform",items:["UKG Pro Analytics","UKG Talk","UKG Bryte AI","Boomi Integration","APIs","Identity Management","SSO","Security Roles","Data Conversion","Report Migration","Time Clock Integration","EHR Scheduling Integration"]}
+ ]},
+ other:{name:"General ERP Evaluation",tag:"Rapid ERP Scope",desc:"Vendor-neutral top-level ERP scope for the streamlined assessment.",groups:[
+  {name:"Human Capital Management",kind:"HCM",items:["Human Capital Management"]},
+  {name:"Financial Management",kind:"Finance",items:["Financial Management"]},
+  {name:"Supply Chain Management",kind:"Supply Chain",items:["Supply Chain Management"]},
+  {name:"Platform, Reporting & AI",kind:"Platform",items:["Platform, Reporting & AI"]}
+ ]}
+};
+const APP_CONFIG={
+  version:"V7",
+  earlyEvaluationStages:["Discovery","Business Case Creation","Vendor Selection"],
+  visibleJourneyStages:[
+    {key:"Discovery",tag:"Early Evaluation",desc:"Initial exploration of ERP needs, current-state pain points, business case assumptions, high-level scope, and platform options."},
+    {key:"Business Case Creation",tag:"Value & Funding",desc:"Building the financial case, expected benefits, total cost of ownership, risk profile, timeline, and investment approval."},
+    {key:"Vendor Selection",tag:"RFP / Selection",desc:"Comparing ERP platforms and partners, running RFP activities, evaluating fit, and preparing for contract negotiations."},
+    {key:"Implementation Planning",tag:"Pre-Implementation",desc:"Defining governance, scope, staffing, budget, implementation roadmap, risk controls, and readiness before formal build begins."},
+    {key:"Implementation",tag:"Build / Configure",desc:"Active design, configuration, integrations, reporting, data conversion, change management, and project delivery."}
+  ],
+  /*
+  Future Journey Stages - hidden in V7, preserved for future expansion.
+  To re-enable, move these objects into visibleJourneyStages and update weightProfiles if needed.
+  futureJourneyStages:[
+    {key:"Testing",tag:"Validation",desc:"System, integration, payroll, reporting, security, user acceptance, regression, and operational readiness testing."},
+    {key:"Go-Live / Hypercare",tag:"Activation",desc:"Cutover, command center, issue triage, stabilization, user support, and early post-go-live performance management."},
+    {key:"Optimization",tag:"Post-Live",desc:"Improving workflows, reporting, adoption, release management, support model maturity, automation, and value realization."}
+  ],
+  */
+  stepbars:{
+    early:'<span class="active">1 ERP Transformation Journey</span><span>2 ERP Systems Evaluated</span><span>3 General ERP Assessment</span><span>4 Profile</span><span>5 Healthcare Ecosystem</span><span>6 Readiness</span><span>7 Executive Report</span><span>8 Submit Assessment</span>',
+    vendorSpecific:'<span class="active">1 ERP Transformation Journey</span><span>2 Target ERP</span><span>3 Profile</span><span>4 Vendor Scope</span><span>5 Healthcare Ecosystem</span><span>6 Readiness</span><span>7 Executive Report</span><span>8 Submit Assessment</span>'
+  },
+  weightProfiles:{
+    discovery:[12,14,11,10,12,8,6,5,3,3,3,3,4,3,3],
+    businessCase:[12,14,11,10,12,8,6,5,3,3,3,3,4,3,3],
+    selection:[10,11,9,8,9,9,8,6,4,5,4,5,3,4,5],
+    implementationPlanning:[3,3,5,5,10,12,11,10,6,10,5,5,5,5,5],
+    implementation:[3,3,5,5,3,3,10,10,8,10,9,9,7,8,7],
+    default:[12,14,11,10,12,8,6,5,3,3,3,3,4,3,3]
+  },
+  radarDimensions:[
+    {label:"Strategy & Business Case",sections:[0,1,2]},
+    {label:"Program Foundation",sections:[3,4,5]},
+    {label:"Data & Reporting",sections:[6]},
+    {label:"People Readiness",sections:[7,8]},
+    {label:"Technology & Integrations",sections:[9,13]},
+    {label:"Legacy & Operating Model",sections:[10,11]},
+    {label:"AI & Automation",sections:[12]},
+    {label:"Testing & Cutover",sections:[14]}
+  ]
+};
+const journeyStages=APP_CONFIG.visibleJourneyStages;
+const stageWeights=APP_CONFIG.weightProfiles;
+const healthcareSystems=["Epic","Oracle Health / Cerner","MEDITECH","Altera","eClinicalWorks","athenahealth","NextGen"];
+const sections=[
+{name:"Executive Alignment & Business Case",short:"Executive",weight:12,benchmark:5,questions:["Executive sponsor is identified and actively engaged.","ERP functional and technical scope requirements are clearly defined.","Strategic objectives and measurable business outcomes are documented.","Board or executive leadership understands scope, timeline, investment, and risk.","Finance, HR, supply chain, IT, and operations are aligned on project goals.","Value realization and success metrics are defined."],rec:"Clarify sponsorship, ERP functional and technical scope, outcomes, governance expectations, and value realization before locking timeline or budget."},
+{name:"Financial Planning & Total Cost of Ownership",short:"TCO",weight:14,benchmark:5,questions:["Software, implementation, advisory, and staffing costs are included in the TCO.","Internal labor and SME allocation costs are included.","Backfill and interim support costs are budgeted.","Training, testing, change management, and post-go-live support are budgeted.","Legacy overlap, archiving, and decommissioning costs are included.","A risk-based contingency budget has been calculated, approved, and incorporated into the overall program budget."],rec:"Expand the TCO model to include internal labor, staffing, backfill resources, testing, training, organizational change management, legacy overlap, post-go-live support, and a risk-based contingency budget aligned to the implementation stage and risk profile."},
+{name:"Governance & Decision Making",short:"Governance",weight:11,benchmark:5,questions:["Executive steering committee is established.","Roles, responsibilities, and accountability are clearly defined.","PMO model and workstream ownership are defined.","Decision rights and escalation paths are documented.","Scope control and change request process are defined.","Governance cadence is agreed upon."],rec:"Establish a formal governance framework that defines executive sponsorship, roles and responsibilities, workstream ownership, decision rights, escalation paths, governance cadence, and change control to reduce implementation risk and prevent scope creep."},
+{name:"Program Staffing & Resource Planning",short:"Staffing",weight:10,benchmark:5,questions:["Core project team and workstream leads are identified.","Program and/or Project Director(s) are identified and actively engaged.","Functional SMEs have defined allocation expectations.","Backfill strategy exists for critical operational roles.","Contingent Worker, SI Consultant, and permanent staffing needs are forecasted.","Skills gaps are assessed across IT, HR, finance, supply chain, data, and reporting."],rec:"Develop a staffing plan that includes program/project leadership, SME allocation, backfill, recruiting lead times, contractors, consultants, and post-go-live support."},
+{name:"Foundational Design Planning",short:"Foundation",weight:12,benchmark:6,questions:["Future-state organizational design has been defined or is in progress.","Future-state operating model has been considered during organizational design activities.","Position, job, and job description rationalization has been planned or completed.","Financial foundation redesign, including Chart of Accounts, cost centers, reporting hierarchies, and financial structures, has been planned or is underway.","Business process standardization workshops have been completed or scheduled.","Union and bargaining unit impacts have been assessed with HR and Legal, if applicable.","Labor negotiation timelines have been incorporated into the overall project schedule, if applicable.","Future-state security role strategy has been considered during organizational design."],rec:"Complete foundational organizational and financial design activities before detailed solution design begins. Early planning for organizational structures, financial foundations, business processes, labor considerations, and future operating models significantly reduces implementation risk and downstream redesign."},
+{name:"Implementation Partner Strategy",short:"Partners",weight:8,benchmark:6,questions:["Implementation partner selection criteria are documented.","Procurement is engaged to manage the implementation partner selection and RFP process.","Legal is engaged to support NDA, MSA, SOW, BAA, and other contract reviews.","Advisory, implementation, staffing, and managed services responsibilities are separated.","Vendor governance model is defined.","Partner accountability and deliverables are documented.","Internal team understands where outside support is required."],rec:"Define partner selection, procurement, legal review, and partner responsibilities early to reduce duplication, cost leakage, contract delays, and gaps between advisory, implementation, and staffing support."},
+{name:"Data Migration, Reporting & Analytics",short:"Data",weight:6,benchmark:5,questions:["Data owners and governance roles are assigned.","Data cleansing plan is underway.","Historical data and archive strategy are defined.","ERP reporting and analytics strategy is documented and aligned with the enterprise reporting and analytics strategy.","Conversion testing and reconciliation approach is defined."],rec:"Start data governance, cleansing, reconciliation, archive strategy, conversion testing, and enterprise-aligned reporting design early."},
+{name:"Organizational Change Management",short:"Change",weight:5,benchmark:5,questions:["Organizational Change Management Leader role is defined and identified internally.","Change strategy is documented.","Stakeholder groups and impacted departments are mapped.","Communication plan and executive messaging are drafted.","Change champions or super users are identified.","Adoption KPIs and resistance management plans are defined."],rec:"Invest in OCM leadership, stakeholder engagement, communication, champions, adoption KPIs, and resistance management well before training."},
+{name:"Training & Organizational Readiness",short:"Training",weight:3,benchmark:4,questions:["Role-based curriculum is defined.","Training environment and materials are planned.","Super users and departmental champions are identified.","Go-live readiness criteria are documented.","Training completion, proficiency, and adoption tracking are planned."],rec:"Treat training as adoption strategy; define curriculum, environments, super users, readiness criteria, and proficiency tracking."},
+{name:"Technical Readiness, Security & Integrations",short:"Technical",weight:3,benchmark:5,questions:["Integration inventory is complete or underway.","Security and role-based access model is being defined.","Identity management and provisioning impacts are understood.","Testing strategy includes integrations and downstream workflows.","Infrastructure, disaster recovery, and support processes are reviewed.","Internal and external vendor contact information, engagement strategy, and communication plan are documented."],rec:"Inventory integrations, security, identity, downstream workflows, vendor contacts, engagement strategy, testing approach, DR, and support model early."},
+{name:"Legacy System Retirement",short:"Legacy",weight:3,benchmark:5,questions:["Legacy systems and contracts are inventoried.","Decommissioning criteria are defined.","Archive and retention strategy is documented.","License reduction and savings opportunities are estimated.","Support model during system overlap is planned.","Contract extension options and associated costs are documented and incorporated into the TCO and contingency budget."],rec:"Create a retirement roadmap for contracts, extension options, licenses, archive access, historical reporting, support overlap, contingency planning, and decommission dates."},
+{name:"Stabilization, Operating Model & Optimization",short:"Op Model",weight:3,benchmark:6,questions:["Hypercare model is defined.","Post-go-live support roles and escalation paths are assigned.","Long-term operating model and support organization are defined.","Support tiers (Tier 1-4), roles, responsibilities, and escalation procedures are documented.","Long-term staffing and budget requirements have been identified.","Application Management Services (AMS) strategy has been defined as internal, partner-supported, or hybrid.","Optimization roadmap is documented.","Release management and continuous improvement processes are planned.","KPIs for value realization and operational performance are defined."],rec:"Plan stabilization and the long-term run-and-maintain model before go-live, including hypercare, support tiers, roles, escalation, budget, AMS strategy, release management, optimization roadmap, and value tracking."},
+{name:"AI, Automation & Platform Readiness",short:"AI",weight:4,benchmark:4,questions:["AI, automation, or analytics goals are connected to ERP strategy.","Initial AI, automation, and intelligent workflow use cases have been identified and prioritized.","Process automation opportunities are identified.","Self-service reporting and dashboard needs are documented.","Data quality requirements for automation are understood.","Governance exists for AI, analytics, and automation use cases."],rec:"Connect ERP planning to AI, automation, intelligent workflows, analytics, dashboards, data quality, and governance."},
+{name:"Healthcare-Specific ERP Readiness",short:"Healthcare",weight:3,benchmark:5,questions:["EHR integration requirements are understood.","Healthcare supply chain and clinical finance workflows are mapped.","Item master rationalization strategy has been defined (planned, in progress, completed, vendor-assisted, or other).","Payroll, labor management, and workforce complexity are documented.","Revenue cycle, grants, physician compensation, or compliance impacts are reviewed.","Healthcare security, privacy, audit, and regulatory requirements are understood."],rec:"Validate EHR/ERP integration, clinical supply chain, item master rationalization, payroll complexity, grants, physician compensation, compliance, privacy, and audit needs."},
+{name:"Testing & Cutover Readiness",short:"Cutover",weight:3,benchmark:6,questions:["Overall testing strategy is documented.","Integration testing approach is defined.","User Acceptance Testing (UAT) strategy is approved.","Cutover strategy is documented.","Dress rehearsal(s) are planned.","Rollback procedures are documented.","Go-live command center is planned.","Business continuity procedures have been validated."],rec:"Define testing, UAT, cutover, dress rehearsal, rollback, command center, and business continuity plans before moving into late-stage implementation."}
+]
+let selectedVendor=null,selectedJourneyStage=null,evaluatedErpSystems=[],radarChart=null;
+function el(id){return document.getElementById(id)}
+function init(){renderJourneyCards();renderPlatformCards();renderEvaluationCards();renderChecklist();renderEcosystem();renderLifecycleTracker();renderHistorySummary();}
+function earlyEvaluationStage(stage){return APP_CONFIG.earlyEvaluationStages.includes(stage)}
+function renderJourneyCards(){const jg=el('journeyGrid');if(!jg)return;jg.innerHTML='';journeyStages.forEach(stage=>{jg.innerHTML+=`<div class="platform-card" id="stage_${safeId(stage.key)}" onclick="selectJourneyStage('${stage.key}')"><span class="platform-tag">${stage.tag}</span><strong>${stage.key}</strong><div class="small">${stage.desc}</div></div>`})}
+function renderPlatformCards(){const pg=el('platformGrid');if(!pg)return;pg.innerHTML='';Object.entries(vendors).filter(([key])=>key!=='other').forEach(([key,v])=>{pg.innerHTML+=`<div class="platform-card" id="plat_${key}" onclick="selectPlatform('${key}')"><span class="platform-tag">${v.tag}</span><strong>${v.name}</strong><div class="small">${v.desc}</div></div>`})}
+function renderEvaluationCards(){const eg=el('evaluationGrid');if(!eg)return;eg.innerHTML='';Object.entries(vendors).filter(([key])=>key!=='other').forEach(([key,v])=>{eg.innerHTML+=`<div class="platform-card" id="eval_${key}" onclick="toggleEvaluationSystem('${key}')"><span class="platform-tag">${v.tag}</span><strong>${v.name}</strong><div class="small">${v.desc}</div></div>`})}
+function safeId(str){return str.replace(/[^a-z0-9]/gi,'_')}
+function selectJourneyStage(stage){selectedJourneyStage=stage;if(el('stage')){el('stage').value=stage;clearFieldError('stage')}renderChecklist();document.querySelectorAll('#journeyGrid .platform-card').forEach(c=>c.classList.remove('selected'));el('stage_'+safeId(stage)).classList.add('selected');el('introCard').classList.add('hidden');selectedVendor=null;el('assessment').classList.add('hidden');document.querySelectorAll('#platformGrid .platform-card').forEach(c=>c.classList.remove('selected'));if(earlyEvaluationStage(stage)){el('platformCard').classList.add('hidden');el('evaluationCard').classList.remove('hidden');setTimeout(()=>el('evaluationCard').scrollIntoView({behavior:'smooth',block:'start'}),100)}else{evaluatedErpSystems=[];document.querySelectorAll('#evaluationGrid .platform-card').forEach(c=>c.classList.remove('selected'));el('evaluationCard').classList.add('hidden');el('platformCard').classList.remove('hidden');setTimeout(()=>el('platformCard').scrollIntoView({behavior:'smooth',block:'start'}),100)}}
+function toggleEvaluationSystem(key){const idx=evaluatedErpSystems.indexOf(key);if(idx>=0)evaluatedErpSystems.splice(idx,1);else evaluatedErpSystems.push(key);const card=el('eval_'+key);if(card)card.classList.toggle('selected',evaluatedErpSystems.includes(key));el('continueEvaluationButton').disabled=evaluatedErpSystems.length===0;el('evaluationValidation').classList.remove('show')}
+function continueGeneralEvaluation(){if(!evaluatedErpSystems.length){el('evaluationValidation').classList.add('show');return}selectPlatform('other',true)}
+function selectPlatform(key,auto=false){selectedVendor=key;document.querySelectorAll('#platformGrid .platform-card').forEach(c=>c.classList.remove('selected'));if(el('plat_'+key))el('plat_'+key).classList.add('selected');el('assessment').classList.remove('hidden');el('introCard').classList.add('hidden');if(auto){el('platformCard').classList.add('hidden');el('evaluationCard').classList.add('hidden')}else{el('evaluationCard').classList.add('hidden')}updateStepbar();renderVendorScope();calculate();setTimeout(()=>el('assessment').scrollIntoView({behavior:'smooth',block:'start'}),100)}
+function updateStepbar(){const early=earlyEvaluationStage(selectedJourneyStage);el('assessmentStepbar').innerHTML=early?APP_CONFIG.stepbars.early:APP_CONFIG.stepbars.vendorSpecific}
+function clearPlatform(){selectedVendor=null;selectedJourneyStage=null;evaluatedErpSystems=[];if(el('stage'))el('stage').value='';el('assessment').classList.add('hidden');el('platformCard').classList.add('hidden');el('evaluationCard').classList.add('hidden');el('introCard').classList.remove('hidden');document.querySelectorAll('.platform-card').forEach(c=>c.classList.remove('selected'));if(el('continueEvaluationButton'))el('continueEvaluationButton').disabled=true;window.scrollTo({top:0,behavior:'smooth'})}
+function renderVendorScope(){const v=vendors[selectedVendor];el('selectedVendorTitle').innerText=v.name;el('selectedVendorDesc').innerText=v.desc;if(selectedVendor==='other'){el('scopeTitle').innerText='General ERP Evaluation Scope';el('scopeHelp').innerText='Select the functional and technical areas included in the ERP evaluation. These selections feed the assessment complexity model.'}else{el('scopeTitle').innerText=v.name+' Module Scope';el('scopeHelp').innerText='These checkboxes use '+v.name+' terminology and feed the assessment complexity model.'}const container=el('moduleGroups');container.innerHTML='';v.groups.forEach((g,gi)=>{let list=g.items.map((item,ii)=>`<label><input type="checkbox" class="moduleCheck" data-group="${gi}" data-kind="${g.kind}" data-name="${escapeHtml(item)}" onchange="calculate()"> <span>${item}</span></label>`).join('');container.innerHTML+=`<div class="module-group"><h3>${g.name}<span class="badge purple">${g.kind}</span></h3><div class="module-group-actions"><button class="secondary mini-button" onclick="setModuleGroup(${gi},true)">Select All</button><button class="ghost mini-button" onclick="setModuleGroup(${gi},false)">Clear</button></div><div class="module-list">${list}</div></div>`})}
+function renderEcosystem(){if(!el('ecosystem'))return;el('ecosystem').innerHTML=healthcareSystems.map((s,i)=>`<label><input type="checkbox" class="ecoCheck" onchange="calculate()"> <span>${s}</span></label>`).join('')}
+function renderChecklist(){
+ const c=el('checklist');c.innerHTML='';
+ const stages=[
+  {name:"Stage 1 — Discovery & Business Case",desc:"Establish the strategic, financial, healthcare, and technology case for ERP transformation.",sections:[0,1,12,13]},
+  {name:"Stage 2 — Vendor Selection & Pre-Implementation",desc:"Build the governance, staffing, foundational design, partner, and legacy transition plan needed before implementation.",sections:[2,3,4,5,10]},
+  {name:"Stage 3 — Implementation Readiness",desc:"Prepare the data, people, training, security, integrations, and technical foundation required for delivery.",sections:[6,7,8,9]},
+  {name:"Stage 4 — Testing & Go-Live",desc:"Validate testing, cutover, command-center, rollback, and business-continuity readiness.",sections:[14]},
+  {name:"Stage 5 — Stabilization & Optimization",desc:"Define the post-go-live support model, hypercare, optimization roadmap, and long-term operating model.",sections:[11]}
+ ];
+ let displayNumber=1;
+ stages.forEach(stage=>{
+  let html=`<div class="stage-group"><div class="stage-header"><h3>${stage.name}</h3><div class="small">${stage.desc}</div></div><div class="stage-content">`;
+  stage.sections.forEach(i=>{
+   const s=sections[i];
+   const qs=s.questions.map((q,j)=>`
+   <div class="question-row">
+     <label><input type="checkbox" id="q${i}_${j}" onchange="syncQuestionStatus(${i},${j});calculate()"> <span>${q}</span>
+       <input class="progress-note" id="note${i}_${j}" type="text" placeholder="Optional note / evidence" onchange="autosaveDraft()">
+     </label>
+     <select class="status-select" id="status${i}_${j}" onchange="syncQuestionCheckbox(${i},${j});calculate();autosaveDraft()">
+       <option value="Not Started">Not Started</option>
+       <option value="In Progress">In Progress</option>
+       <option value="Complete">Complete</option>
+       <option value="At Risk">At Risk</option>
+       <option value="Not Applicable">Not Applicable</option>
+     </select>
+   </div>`).join('');
+   html+=`<div class="section"><div class="section-header"><div><h3>${displayNumber}. ${s.name}</h3><div class="small">Weight: ${effectiveWeight(i)}% | Benchmark: ${s.benchmark}/${s.questions.length}</div></div><span id="badge${i}" class="badge red">0/${s.questions.length}</span></div><div class="questions">${qs}</div></div>`;
+   displayNumber++;
+  });
+  html+='</div></div>';
+  c.innerHTML+=html;
+ });
+}
+function escapeHtml(str){return str.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function checkedCount(i){let c=0;for(let j=0;j<sections[i].questions.length;j++) if(el(`q${i}_${j}`).checked)c++;return c}
+function sectionMax(i){return sections[i].questions.length}
+function normalizedScore(i,count){return (count/sectionMax(i))*5}
+function sectionPercent(i,count){return Math.round((count/sectionMax(i))*100)}
+
+function weightProfile(){
+ const stage=(el('lifecycleStage')&&el('lifecycleStage').value)||'Discovery';
+ if(stage==='Discovery')return APP_CONFIG.weightProfiles.discovery;
+ if(stage==='Business Case Creation')return APP_CONFIG.weightProfiles.businessCase;
+ if(stage==='Vendor Selection')return APP_CONFIG.weightProfiles.selection;
+ if(stage==='Implementation Planning')return APP_CONFIG.weightProfiles.planning;
+ if(stage==='Implementation')return APP_CONFIG.weightProfiles.implementation;
+ if(stage==='Testing')return APP_CONFIG.weightProfiles.testing;
+ if(stage==='Go-Live / Hypercare')return APP_CONFIG.weightProfiles.hypercare;
+ if(stage==='Optimization')return APP_CONFIG.weightProfiles.optimization;
+ return APP_CONFIG.weightProfiles.discovery;
+}
+function effectiveWeight(i){return weightProfile()[i]??sections[i].weight}
+function selectedModules(){return [...document.querySelectorAll('.moduleCheck:checked')].map(x=>({name:x.dataset.name,kind:x.dataset.kind,group:+x.dataset.group}))}
+function setAllModules(checked){document.querySelectorAll('.moduleCheck').forEach(x=>x.checked=checked);calculate()}
+function setModuleGroup(groupIndex,checked){document.querySelectorAll(`.moduleCheck[data-group=\"${groupIndex}\"]`).forEach(x=>x.checked=checked);calculate()}
+function ecosystemCount(){return document.querySelectorAll('.ecoCheck:checked').length}
+function complexityPoints(){
+ let pts=0;
+ selectedModules().forEach(m=>{
+  const n=m.name.toLowerCase(), k=m.kind.toLowerCase();
+  if(k.includes('finance')||k.includes('supply')) pts+=2; else pts+=1;
+  if(/payroll|time|absence|benefits|inventory|procurement|sourcing|contracts|grants|project|warehouse|manufacturing|maintenance|revenue|consolidation|close|integration|analytics|ai|extend|planning|epm|treasury|fixed assets|general ledger/.test(n)) pts+=2;
+ });
+ const eco=ecosystemCount(); pts+=Math.ceil(eco*.75);
+ const emp=el('employees')?el('employees').value:'';
+ if(emp.includes('40')) pts+=12; else if(emp.includes('15')) pts+=8; else if(emp.includes('5,000')) pts+=5; else if(emp.includes('1,000')) pts+=3;
+ const orgType=el('orgType')?el('orgType').value:'';
+ if(/Academic|Multi-State|IDN/.test(orgType)) pts+=5;
+ const legacy=el('legacy')?el('legacy').value.toLowerCase():'';
+ if(/lawson|peoplesoft|sap|oracle|infor/.test(legacy)) pts+=4;
+ return pts;
+}
+function scoreClass(score,benchmark){if(score>=benchmark)return'green';if(score>=Math.max(1,benchmark-1))return'yellow';return'red'}
+function statusLabel(score,benchmark){if(score>=benchmark)return'On Track';if(score>=Math.max(1,benchmark-1))return'Needs Attention';return'Priority Gap'}
+function riskLevel(v){if(v>=75)return['Low','green'];if(v>=55)return['Medium','yellow'];if(v>=35)return['Elevated','orange'];return['High','red']}
+function grade(score){if(score>=92)return'A';if(score>=85)return'A-';if(score>=78)return'B+';if(score>=70)return'B';if(score>=62)return'C+';if(score>=55)return'C';if(score>=45)return'D';return'F'}
+function calculate(){if(!selectedVendor)return;const raw=[];let weighted=0;sections.forEach((s,i)=>{const c=checkedCount(i);const max=sectionMax(i);raw.push(c);weighted+=(c/max)*effectiveWeight(i);const b=el('badge'+i);b.innerText=`${c}/${max}`;b.className='badge '+scoreClass(c,s.benchmark)});const mods=selectedModules();const modCount=mods.length, eco=ecosystemCount(), cpx=complexityPoints();const scopePenalty=Math.min(14, Math.floor(modCount/4)+Math.floor(eco/5)+Math.floor(cpx/3));const score=Math.max(0,Math.round(weighted-scopePenalty));const prob=Math.min(96,Math.max(15,Math.round(score*.86+11)));const [riskText,riskCls]=riskLevel(score);const complexity=projectComplexity(modCount,eco,cpx);el('score').innerText=score;el('scoreCircle').style.setProperty('--score',score);const stoplight=score>=75?'green':score>=55?'yellow':'red';el('stoplightIndicator').className='stoplight-indicator '+stoplight;el('prob').innerText=prob+'%';if(el('moduleCount'))el('moduleCount').innerText=modCount;if(el('selectedModuleCount'))el('selectedModuleCount').innerText=modCount;el('risk').innerText=riskText;el('risk').style.color=riskCls==='green'?'#2E7D32':riskCls==='yellow'?'#F9A825':riskCls==='orange'?'#EF6C00':'#C62828';renderProfileSummary(modCount,eco,complexity);renderExecutiveSummary(score,prob,riskText,modCount,eco);renderBars(raw);renderRadar(raw);renderHeat(raw);renderExecutiveReport(raw,score);renderFindings(raw,score,modCount,eco,complexity);renderImpact(raw,modCount,eco);renderServices(raw,modCount,eco);autosaveDraft()}
+function projectComplexity(m,e,c){const pts=m+e+(c*2);if(pts>=48)return'Very High';if(pts>=32)return'High';if(pts>=18)return'Medium';return'Low'}
+function renderProfileSummary(m,e,c){const org=el('org').value||'This organization', stage=el('stage').value||selectedJourneyStage||'not defined', timeline=el('timeline').value, legacy=el('legacy').value||'not defined';const evaluated=evaluatedErpSystems.map(k=>vendors[k]?.name).filter(Boolean).join(', ');const platformText=(selectedVendor==='other'&&evaluated)?`a general ERP evaluation across <strong>${evaluated}</strong>`:`<strong>${vendors[selectedVendor].name}</strong>`;el('profileSummary').innerHTML=`<strong>${org}</strong> is assessing ${platformText} at the <strong>${stage}</strong> stage. Current timeline is <strong>${timeline}</strong>, legacy platform is <strong>${legacy}</strong>, selected scope includes <strong>${m}</strong> items, and healthcare ecosystem scope includes <strong>${e}</strong> impacted systems.`}
+function renderExecutiveSummary(score,prob,risk,m,e){const org=el('org').value||'This organization';el('execSummary').innerHTML=`<strong>${score>=75?'Green':score>=55?'Yellow':'Red'} Readiness:</strong> ${org} has an ERP Readiness Score of <strong>${score}/100</strong> with an estimated success probability of <strong>${prob}</strong> and overall risk of <strong>${risk}</strong>. Scope assumptions include <strong>${m}</strong> selected vendor modules and <strong>${e}</strong> healthcare integration touchpoints.`}
+function renderBars(raw){const pct=i=>sectionPercent(i,raw[i]);const cats=[['Executive Readiness',pct(0)],['Governance',pct(2)],['Financial Readiness',Math.round((pct(1)+pct(10))/2)],['Staffing Readiness',pct(3)],['Foundational Design Readiness',pct(4)],['Data Readiness',pct(6)],['Technical Readiness',pct(9)],['Organizational Readiness',Math.round((pct(7)+pct(8))/2)],['Operating Model Readiness',pct(11)],['AI Readiness',pct(12)],['Healthcare Readiness',pct(13)],['Testing & Cutover Readiness',pct(14)]];el('categoryBars').innerHTML=cats.map(([n,v])=>`<div class="metric"><div class="metric-row"><span>${n}</span><span>${Math.round(v)}%</span></div><div class="track"><span style="width:${Math.round(v)}%"></span></div></div>`).join('')}
+function radarValueForDimension(dim,raw,mode='score'){const totalWeight=dim.sections.reduce((sum,i)=>sum+effectiveWeight(i),0)||1;return dim.sections.reduce((sum,i)=>{const value=mode==='benchmark'?normalizedScore(i,sections[i].benchmark):normalizedScore(i,raw[i]);return sum+(value*effectiveWeight(i));},0)/totalWeight}
+function renderRadar(raw){const ctx=el('radar');const dims=APP_CONFIG.radarDimensions;if(radarChart)radarChart.destroy();radarChart=new Chart(ctx,{type:'radar',data:{labels:dims.map(d=>d.label),datasets:[{label:'Your Stage-Weighted Readiness',data:dims.map(d=>radarValueForDimension(d,raw,'score')),fill:true,borderWidth:2,pointRadius:4},{label:'Stage-Weighted Benchmark',data:dims.map(d=>radarValueForDimension(d,raw,'benchmark')),fill:false,borderWidth:1,pointRadius:2}]},options:{responsive:true,maintainAspectRatio:false,scales:{r:{min:0,max:5,ticks:{stepSize:1}}},plugins:{legend:{position:'bottom'},tooltip:{callbacks:{afterLabel:function(context){const dim=dims[context.dataIndex];return 'Includes: '+dim.sections.map(i=>sections[i].short).join(', ');}}}}}})}
+function renderHeat(raw){const h=el('heat');h.innerHTML='';sections.forEach((s,i)=>{const max=sectionMax(i);const gap=Math.max(0,s.benchmark-raw[i]);const pri=gap>=3?'Critical':gap===2?'High':gap===1?'Medium':'Maintain';const pct=sectionPercent(i,raw[i]);h.innerHTML+=`<tr><td><strong>${s.name}</strong><br><span class="small">Weight: ${effectiveWeight(i)}%</span></td><td>${raw[i]}/${max}<div class="track"><span style="width:${pct}%"></span></div></td><td>${s.benchmark}/${max}</td><td>${gap}</td><td><span class="badge ${scoreClass(raw[i],s.benchmark)}">${statusLabel(raw[i],s.benchmark)}</span></td><td>${pri}</td></tr>`})}
+
+function readinessLabel(score){
+ if(score>=75)return "Green";
+ if(score>=55)return "Yellow";
+ return "Red";
+}
+
+function readinessNarrative(score,raw){
+ const org=el('org')?.value||'Your organization';
+ const status=readinessLabel(score);
+ const ranked=sections.map((s,i)=>({i,name:s.name,weight:effectiveWeight(i),gap:Math.max(0,s.benchmark-raw[i]),pct:sectionPercent(i,raw[i])}))
+   .filter(x=>x.gap>0)
+   .sort((a,b)=>(b.weight*b.gap)-(a.weight*a.gap));
+ const top=ranked.slice(0,3).map(x=>x.name.toLowerCase());
+ let gapText=top.length?` The most important gaps currently center on ${top.join(', ')}.`:' Core readiness areas are generally meeting benchmark expectations.';
+ let stageText="At this stage, the focus should be on validating the business case, confirming executive alignment, challenging total cost assumptions, defining high-level scope, and identifying the decisions that must be made before moving into detailed vendor selection and implementation planning.";
+ if(status==="Green") return `${org} demonstrates strong Discovery-stage ERP readiness with a score of ${score}/100.${gapText} ${stageText}`;
+ if(status==="Yellow") return `${org} demonstrates moderate Discovery-stage ERP readiness with a score of ${score}/100.${gapText} Addressing these items now can materially reduce downstream cost, schedule, and resource risk. ${stageText}`;
+ return `${org} demonstrates significant Discovery-stage readiness gaps with a score of ${score}/100.${gapText} Leadership should strengthen the foundational business, financial, governance, and planning elements before accelerating into later ERP phases. ${stageText}`;
+}
+
+function discoveryJourneyFocus(){
+ return `
+  <div class="exec-callout"><strong>Current Focus: Discovery & Business Case</strong><br>
+  <span class="exec-muted">The goal at this stage is to establish a credible foundation for ERP decision-making before detailed implementation execution begins.</span></div>
+  <ul>
+   <li>Executive alignment on why the organization is pursuing ERP transformation.</li>
+   <li>Clear business outcomes and measurable success criteria.</li>
+   <li>Realistic total cost of ownership and funding assumptions.</li>
+   <li>High-level functional, technical, and healthcare scope definition.</li>
+   <li>Early identification of organizational, financial, staffing, and integration dependencies.</li>
+  </ul>`;
+}
+
+function executivePriorityItems(raw){
+ const candidates=[
+  {i:0,title:"Strengthen Executive Alignment",body:"Confirm active sponsorship, measurable outcomes, cross-functional alignment, and decision-making expectations before major scope, funding, or vendor commitments are made."},
+  {i:1,title:"Validate Total Cost of Ownership",body:"Challenge the business case beyond software and SI fees. Include internal labor, SME backfill, testing, training, change management, data work, legacy overlap, contingency, and post-go-live support."},
+  {i:2,title:"Establish Governance Early",body:"Clarify executive steering, workstream ownership, decision rights, escalation paths, and scope control before the project enters formal selection or planning."},
+  {i:3,title:"Confirm Resource Capacity",body:"Identify project leadership, SME allocation, backfill needs, recruiting lead times, and specialized ERP talent requirements before internal teams become overcommitted."},
+  {i:4,title:"Address Foundational Design",body:"Begin organizational structure, job architecture, financial foundation, Chart of Accounts, reporting hierarchy, labor, and security-role planning early to avoid downstream redesign."},
+  {i:5,title:"Define Partner Strategy",body:"Separate advisory, implementation, staffing, and managed-services responsibilities and define procurement, legal, contracting, and accountability expectations."},
+  {i:6,title:"Start Data Planning Earlier",body:"Assign data ownership and begin cleansing, reporting, archive, reconciliation, and conversion planning before detailed design and testing."},
+  {i:7,title:"Build Change Readiness",body:"Identify change leadership, stakeholder groups, communication expectations, champions, and adoption measures before training becomes the focus."},
+  {i:8,title:"Plan for Training Capacity",body:"Account for role-based curriculum, super users, training environments, proficiency tracking, and operational coverage even though execution will occur later."},
+  {i:9,title:"Inventory Technical Dependencies",body:"Document integrations, identity, security, downstream workflows, vendor contacts, disaster recovery, and support dependencies early."},
+  {i:10,title:"Plan Legacy Retirement",body:"Inventory contracts, extension options, archive requirements, historical reporting, license overlap, support needs, and expected decommission timing."},
+  {i:11,title:"Design the Future Operating Model",body:"Begin thinking about hypercare, support tiers, AMS strategy, release management, optimization, and long-term ownership before go-live planning begins."},
+  {i:12,title:"Connect ERP to AI and Automation",body:"Identify realistic automation, analytics, and AI opportunities while ensuring data quality and governance expectations are understood."},
+  {i:13,title:"Validate Healthcare-Specific Requirements",body:"Confirm EHR integration, clinical supply chain, payroll complexity, item master, grants, physician compensation, privacy, audit, and regulatory requirements."},
+  {i:14,title:"Anticipate Testing & Cutover Needs",body:"Testing and cutover do not need to be fully designed in Discovery, but leadership should understand the future resource, timeline, and business-continuity implications."}
+ ];
+ return candidates.map(x=>({...x,weight:effectiveWeight(x.i),gap:Math.max(0,sections[x.i].benchmark-raw[x.i]),pct:sectionPercent(x.i,raw[x.i])}))
+   .filter(x=>x.gap>0)
+   .sort((a,b)=>(b.weight*b.gap)-(a.weight*a.gap)||(a.pct-b.pct))
+   .slice(0,5);
+}
+
+function renderExecutivePriorities(raw){
+ const items=executivePriorityItems(raw);
+ if(!items.length){
+   el('executivePriorities').innerHTML='<div class="exec-callout"><strong>Maintain Current Momentum</strong><br><span class="exec-muted">All major Discovery-stage categories are at or above benchmark. Focus on validating assumptions and preparing for the next ERP phase.</span></div>';
+   return;
+ }
+ el('executivePriorities').innerHTML=items.map((x,idx)=>`<div class="exec-priority"><strong>Priority ${idx+1} — ${x.title}</strong><br>${x.body}</div>`).join('');
+}
+
+function discoveryKeepInMind(raw){
+ const items=[
+  "Internal SME time and operational backfill are frequently underestimated in early ERP budgets.",
+  "Implementation partner, advisory, staffing, and managed-service costs should be modeled separately to avoid gaps or double counting.",
+  "Data cleansing, conversion, reporting redesign, and archive requirements often become critical-path work if they start too late.",
+  "Organizational design and financial foundation decisions can drive significant downstream configuration and redesign.",
+  "Healthcare integrations with the EHR, revenue cycle, workforce, supply chain, identity, and reporting ecosystem should be identified early.",
+  "Training and organizational change management require dedicated budget, leadership, and internal capacity.",
+  "Legacy system overlap, contract extensions, historical access, and decommissioning can materially affect total cost.",
+  "Testing, cutover, command-center, and stabilization activities will create major future staffing and business-continuity demands.",
+  "A risk-based contingency should be part of the business case rather than treated as an optional reserve."
+ ];
+ if(raw[1]<sections[1].benchmark) items.unshift("Your current TCO readiness is below benchmark, so cost assumptions should be challenged before funding decisions are finalized.");
+ if(raw[4]<sections[4].benchmark) items.unshift("Foundational design readiness is below benchmark; unresolved organizational or financial design decisions can create downstream rework.");
+ return items;
+}
+
+function discoveryNotYet(){
+ return [
+  "Detailed test scripts and full UAT execution plans.",
+  "Final cutover task lists, command-center procedures, and rollback runbooks.",
+  "Complete role-based training content and training schedules.",
+  "Final hypercare staffing and long-term AMS support structure.",
+  "Detailed configuration decisions that depend on final platform, scope, and implementation partner.",
+  "A fully finalized post-go-live optimization roadmap."
+ ];
+}
+
+function discoveryNextSteps(raw){
+ const ranked=executivePriorityItems(raw);
+ const base=[
+  "Validate business objectives, success measures, and executive sponsorship.",
+  "Complete or challenge the ERP total cost of ownership model.",
+  "Confirm governance, decision rights, and executive steering expectations.",
+  "Define high-level functional, technical, and healthcare scope.",
+  "Identify major organizational and financial design decisions.",
+  "Assess internal resource capacity, SME allocation, and anticipated backfill.",
+  "Document major healthcare integrations, data dependencies, and legacy systems.",
+  "Establish criteria for progressing into vendor selection or implementation planning."
+ ];
+ const dynamic=ranked.slice(0,3).map(x=>x.title.replace(/^(Strengthen|Validate|Establish|Confirm|Address|Define|Start|Build|Plan|Inventory|Design|Connect|Anticipate)\s+/,''));
+ return [...new Set(base)].slice(0,8);
+}
+
+
+function executiveActionTasks(raw){
+ const tasks=[
+  {i:0,title:"Confirm the executive sponsor and decision model",detail:"Name the accountable executive sponsor, define steering committee membership, and document who can approve scope, funding, timeline, and major policy decisions.",owner:"Executive Sponsor / Steering Committee",decision:"Governance"},
+  {i:1,title:"Approve a complete ERP cost framework",detail:"Require the business case to include software, SI, advisory, internal labor, SME backfill, data, testing, training, OCM, legacy overlap, contingency, and stabilization costs.",owner:"CFO / Finance / Executive Sponsor",decision:"Funding"},
+  {i:0,title:"Agree on 3–5 measurable business outcomes",detail:"Define the outcomes leadership expects the ERP program to improve, such as close cycle, workforce efficiency, supply chain performance, reporting, user experience, or operating cost.",owner:"Executive Leadership Team",decision:"Success Measures"},
+  {i:4,title:"Identify foundational design decisions that cannot wait",detail:"Surface major decisions involving organizational structures, job architecture, Chart of Accounts, cost centers, reporting hierarchies, labor impacts, and future-state security.",owner:"CFO / CHRO / Operations / IT",decision:"Design"},
+  {i:3,title:"Protect internal SME capacity",detail:"Identify critical leaders and SMEs who will be needed for the program and decide where backfill or temporary capacity is required so operations do not absorb the full project burden.",owner:"Executive Sponsor / HR / Functional Leaders",decision:"Capacity"},
+  {i:5,title:"Define the partner strategy before procurement accelerates",detail:"Clarify which work should be owned internally versus by advisory, implementation, staffing, or managed-service partners, and establish accountability expectations.",owner:"CIO / Procurement / Legal",decision:"Partner Model"},
+  {i:6,title:"Assign executive accountability for data readiness",detail:"Name data owners and require an early plan for cleansing, conversion, historical retention, reconciliation, reporting, and archive access.",owner:"CIO / CFO / Data Leadership",decision:"Data"},
+  {i:9,title:"Require a healthcare integration inventory",detail:"Identify major EHR, identity, payroll, revenue cycle, supply chain, banking, benefits, reporting, and third-party dependencies before detailed planning.",owner:"CIO / Enterprise Architecture",decision:"Technology"},
+  {i:13,title:"Validate healthcare-specific requirements",detail:"Confirm that clinical finance, item master, workforce complexity, grants, physician compensation, privacy, audit, regulatory, and EHR integration needs are represented in scope.",owner:"CFO / CIO / Clinical & Operational Leaders",decision:"Healthcare Scope"},
+  {i:10,title:"Set a legacy-system exit strategy",detail:"Inventory contracts, renewal dates, archive needs, historical reporting requirements, support overlap, and potential extension costs before they become unavoidable.",owner:"CIO / CFO / Procurement",decision:"Legacy"},
+  {i:7,title:"Appoint change leadership early",detail:"Identify who owns organizational change management and establish stakeholder, communication, champion, and adoption expectations before implementation activity intensifies.",owner:"CHRO / Executive Sponsor",decision:"Change"},
+  {i:14,title:"Reserve future testing and cutover capacity",detail:"Do not build detailed test scripts yet, but make sure leadership recognizes the future staffing, operational coverage, command-center, and business-continuity demands.",owner:"CIO / PMO / Operations",decision:"Go-Live Readiness"}
+ ];
+
+ // Prioritize gap-related tasks first, then critical Discovery-stage executive tasks.
+ return tasks.map((t,idx)=>({
+   ...t,
+   gap:Math.max(0,sections[t.i].benchmark-raw[t.i]),
+   weight:effectiveWeight(t.i),
+   order:idx
+ })).sort((a,b)=>{
+   const ap=(a.gap>0?100:0)+(a.weight*a.gap);
+   const bp=(b.gap>0?100:0)+(b.weight*b.gap);
+   return bp-ap || a.order-b.order;
+ }).slice(0,10);
+}
+
+function renderExecutiveActionChecklist(raw){
+ const tasks=executiveActionTasks(raw);
+ const container=el('executiveActionChecklist');
+ container.innerHTML=tasks.map((t,idx)=>`
+   <label class="exec-task">
+     <input type="checkbox" class="execActionCheck" onchange="updateExecutiveChecklistSummary()">
+     <div>
+       <div class="exec-task-title">${idx+1}. ${t.title}</div>
+       <div class="exec-task-detail">${t.detail}</div>
+       <span class="exec-decision">${t.decision}</span>
+     </div>
+     <div class="exec-task-meta">
+       <strong>Suggested Executive Owner</strong>
+       ${t.owner}
+     </div>
+   </label>`).join('');
+ updateExecutiveChecklistSummary();
+}
+
+function updateExecutiveChecklistSummary(){
+ const boxes=[...document.querySelectorAll('.execActionCheck')];
+ const done=boxes.filter(x=>x.checked).length;
+ const total=boxes.length;
+ const remaining=total-done;
+ const summary=el('executiveChecklistSummary');
+ if(summary) summary.innerHTML=`<span>Executive Actions: ${total}</span><span>Completed: ${done}</span><span>Remaining: ${remaining}</span>`;
+}
+function medixAdvisoryPerspective(raw){
+ const gaps=executivePriorityItems(raw).map(x=>x.i);
+ const areas=[];
+ if(gaps.includes(0)||gaps.includes(1)||gaps.includes(2)||gaps.includes(4)||gaps.includes(5))areas.push("ERP advisory, business-case validation, governance, TCO, and implementation planning");
+ if(gaps.includes(3))areas.push("project leadership, staffing strategy, SME backfill, and specialized ERP talent");
+ if(gaps.includes(6)||gaps.includes(9)||gaps.includes(13))areas.push("data, integration, reporting, healthcare workflow, and technical readiness");
+ if(gaps.includes(7)||gaps.includes(8))areas.push("organizational change management and training readiness");
+ if(gaps.includes(10)||gaps.includes(11)||gaps.includes(14))areas.push("legacy transition, testing, cutover, stabilization, and long-term support planning");
+ const focus=areas.length?areas.slice(0,3).join("; "):"validation of current assumptions, implementation planning, and targeted specialist support";
+ return `<p>Based on the current assessment, Medix may be most relevant in <strong>${focus}</strong>.</p><p class="exec-muted">The intent is to target support where readiness gaps or internal capacity constraints could affect the next phase—not to replace work the organization can effectively own internally.</p>`;
+}
+
+function renderExecutiveReport(raw,score){
+ el('executiveNarrative').innerText=readinessNarrative(score,raw);
+ el('journeyFocus').innerHTML=discoveryJourneyFocus();
+ renderExecutivePriorities(raw);
+ el('keepInMind').innerHTML=discoveryKeepInMind(raw).map(x=>`<li>${x}</li>`).join('');
+ el('notYet').innerHTML=discoveryNotYet().map(x=>`<li>${x}</li>`).join('');
+ el('recommendedNextSteps').innerHTML=discoveryNextSteps(raw).map(x=>`<li>${x}</li>`).join('');
+ renderExecutiveActionChecklist(raw);
+}
+
+
+const TRACKER_KEY='medixErpReadinessTrackerV2';
+let progressChart=null;
+let currentAssessmentId=null;
+
+function trackerState(){
+ try{return JSON.parse(localStorage.getItem(TRACKER_KEY))||{assessments:[],draft:null};}
+ catch(e){return {assessments:[],draft:null};}
+}
+function saveTrackerState(state){localStorage.setItem(TRACKER_KEY,JSON.stringify(state));}
+
+function collectAssessmentData(){
+ const raw=sections.map((s,i)=>checkedCount(i));
+ const questionStates=[];
+ sections.forEach((s,i)=>{
+   s.questions.forEach((q,j)=>{
+     questionStates.push({
+       i,j,
+       checked:!!el(`q${i}_${j}`)?.checked,
+       status:el(`status${i}_${j}`)?.value||'Not Started',
+       note:el(`note${i}_${j}`)?.value||''
+     });
+   });
+ });
+ const actionStates=[...document.querySelectorAll('.execActionCheck')].map((x,idx)=>({idx,checked:x.checked}));
+ return {
+   id:currentAssessmentId||('a_'+Date.now()),
+   savedAt:new Date().toISOString(),
+   org:el('org')?.value||'',
+   orgType:el('orgType')?.value||'',
+   employees:el('employees')?.value||'',
+   timeline:el('timeline')?.value||'',
+   lifecycleStage:el('lifecycleStage')?.value||'Discovery',
+   score:+(el('score')?.innerText||0),
+   prob:el('prob')?.innerText||'0%',
+   risk:el('risk')?.innerText||'High',
+   raw,
+   categoryPercents:sections.map((s,i)=>sectionPercent(i,raw[i])),
+   questionStates,
+   actionStates,
+   firstName:el('firstName')?.value||'',
+   lastName:el('lastName')?.value||'',
+   contactTitle:el('contactTitle')?.value||'',
+   email:el('email')?.value||'',
+   phone:el('phone')?.value||''
+ };
+}
+
+function saveAssessmentSnapshot(){
+ const state=trackerState();
+ const data=collectAssessmentData();
+ const existing=state.assessments.findIndex(a=>a.id===data.id);
+ if(existing>=0) state.assessments[existing]=data; else state.assessments.push(data);
+ state.draft=data;
+ currentAssessmentId=data.id;
+ saveTrackerState(state);
+ showTrackerMessage('Progress saved. You can return to this browser and resume from this assessment.');
+ renderHistorySummary();
+ renderLifecycleTracker();
+}
+
+function autosaveDraft(){
+ const state=trackerState();
+ state.draft=collectAssessmentData();
+ saveTrackerState(state);
+}
+
+function applyAssessmentData(data){
+ if(!data)return;
+ currentAssessmentId=data.id||null;
+ ['org','orgType','employees','timeline','firstName','lastName','contactTitle','email','phone'].forEach(id=>{
+   if(el(id)&&data[id]!==undefined) el(id).value=data[id];
+ });
+ if(el('lifecycleStage'))el('lifecycleStage').value=data.lifecycleStage||'Discovery';
+ (data.questionStates||[]).forEach(q=>{
+   if(el(`q${q.i}_${q.j}`))el(`q${q.i}_${q.j}`).checked=!!q.checked;
+   if(el(`status${q.i}_${q.j}`))el(`status${q.i}_${q.j}`).value=q.status||'Not Started';
+   if(el(`note${q.i}_${q.j}`))el(`note${q.i}_${q.j}`).value=q.note||'';
+ });
+ calculate();
+ setTimeout(()=>{
+   (data.actionStates||[]).forEach(a=>{
+     const box=document.querySelectorAll('.execActionCheck')[a.idx];
+     if(box)box.checked=!!a.checked;
+   });
+   updateExecutiveChecklistSummary();
+ },0);
+ renderLifecycleTracker();
+ renderHistorySummary();
+}
+
+function resumeLatestAssessment(){
+ const state=trackerState();
+ const latest=state.draft||state.assessments[state.assessments.length-1];
+ if(!latest){showTrackerMessage('No saved assessment was found in this browser.');return}
+ applyAssessmentData(latest);
+ showTrackerMessage('Last saved assessment restored.');
+}
+
+function startNewAssessmentVersion(){
+ const state=trackerState();
+ const latest=state.draft||state.assessments[state.assessments.length-1];
+ if(latest){
+   const copy=JSON.parse(JSON.stringify(latest));
+   copy.id='a_'+Date.now();
+   copy.savedAt=new Date().toISOString();
+   currentAssessmentId=copy.id;
+   applyAssessmentData(copy);
+   showTrackerMessage('A new assessment update has been started from your latest saved version.');
+ } else {
+   currentAssessmentId='a_'+Date.now();
+   showTrackerMessage('New assessment update started.');
+ }
+}
+
+function showAssessmentHistory(){
+ const card=el('historyCard');
+ card.classList.toggle('hidden');
+ const state=trackerState();
+ const list=el('savedAssessments');
+ if(!state.assessments.length){
+   list.innerHTML='<div class="small">No saved assessment history yet.</div>';
+   return;
+ }
+ const arr=[...state.assessments].sort((a,b)=>new Date(b.savedAt)-new Date(a.savedAt));
+ list.innerHTML=arr.map(a=>`
+   <div class="saved-item">
+     <div>
+       <strong>${a.org||'ERP Assessment'}</strong><br>
+       <span class="small">${new Date(a.savedAt).toLocaleString()} · ${a.lifecycleStage||'Discovery'} · Score ${a.score}/100</span>
+     </div>
+     <div class="saved-item-actions">
+       <button class="secondary mini-button" onclick="loadAssessmentById('${a.id}')">Open</button>
+       <button class="ghost mini-button" onclick="deleteAssessmentById('${a.id}')">Delete</button>
+     </div>
+   </div>`).join('');
+}
+
+function loadAssessmentById(id){
+ const a=trackerState().assessments.find(x=>x.id===id);
+ if(a){applyAssessmentData(a);showTrackerMessage('Historical assessment loaded. Save as a new update before making changes if you want to preserve this version.');}
+}
+function deleteAssessmentById(id){
+ const state=trackerState();
+ state.assessments=state.assessments.filter(x=>x.id!==id);
+ if(state.draft?.id===id)state.draft=null;
+ saveTrackerState(state);
+ showAssessmentHistory();
+ renderHistorySummary();
+}
+
+function showTrackerMessage(msg){
+ const b=el('trackerMessage');
+ if(!b)return;
+ b.innerText=msg;b.classList.add('show');
+ setTimeout(()=>b.classList.remove('show'),3500);
+}
+
+function syncQuestionStatus(i,j){
+ const box=el(`q${i}_${j}`),sel=el(`status${i}_${j}`);
+ if(!box||!sel)return;
+ if(box.checked&&sel.value!=='Not Applicable')sel.value='Complete';
+ else if(!box.checked&&sel.value==='Complete')sel.value='Not Started';
+ autosaveDraft();
+}
+function syncQuestionCheckbox(i,j){
+ const box=el(`q${i}_${j}`),sel=el(`status${i}_${j}`);
+ if(!box||!sel)return;
+ box.checked=(sel.value==='Complete'||sel.value==='Not Applicable');
+ autosaveDraft();
+}
+
+function lifecycleStages(){
+ return [
+  ['Discovery','Discovery'],['Business Case Creation','Business Case'],['Vendor Selection','Vendor Selection'],
+  ['Implementation Planning','Pre-Implementation'],['Implementation','Implementation'],['Testing','Testing'],
+  ['Go-Live / Hypercare','Go-Live'],['Optimization','Stabilization']
+ ];
+}
+function renderLifecycleTracker(){
+ const current=el('lifecycleStage')?.value||'Discovery';
+ const stages=lifecycleStages(); const curIdx=Math.max(0,stages.findIndex(s=>s[0]===current));
+ const state=trackerState();
+ const stageScores={};
+ state.assessments.forEach(a=>{stageScores[a.lifecycleStage]=a.score});
+ el('lifecycleTracker').innerHTML=stages.map((s,idx)=>{
+   const cls=idx<curIdx?'complete':idx===curIdx?'current':'upcoming';
+   const score=stageScores[s[0]];
+   return `<div class="lifecycle-step ${cls}"><strong>${s[1]}</strong><div class="small">${idx<curIdx?'Completed':idx===curIdx?'Current Stage':'Upcoming'}</div><div class="small">${score!==undefined?'Latest Score: '+score+'/100':''}</div></div>`;
+ }).join('');
+}
+function onLifecycleStageChange(){
+ renderChecklist();
+ setTimeout(()=>{calculate();renderLifecycleTracker();autosaveDraft();},0);
+}
+
+function renderHistorySummary(){
+ const state=trackerState();
+ const arr=[...state.assessments].sort((a,b)=>new Date(a.savedAt)-new Date(b.savedAt));
+ if(arr.length<2){
+   ['changeScore','actionsCompletedChange','categoriesImproved','categoriesDeclined'].forEach(id=>{if(el(id))el(id).innerText='—'});
+   if(el('improvementList'))el('improvementList').innerHTML='<li>Save at least two assessment snapshots to see progress.</li>';
+   if(el('declineList'))el('declineList').innerHTML='<li>No comparison available yet.</li>';
+   renderProgressChart(arr);
+   return;
+ }
+ const prev=arr[arr.length-2],curr=arr[arr.length-1];
+ const delta=curr.score-prev.score;
+ el('changeScore').innerHTML=`<span class="${delta>0?'change-up':delta<0?'change-down':'change-flat'}">${delta>0?'+':''}${delta}</span>`;
+ const prevActions=(prev.actionStates||[]).filter(x=>x.checked).length;
+ const currActions=(curr.actionStates||[]).filter(x=>x.checked).length;
+ el('actionsCompletedChange').innerText=`${currActions}/${Math.max(curr.actionStates?.length||0,1)}`;
+ let improved=[],declined=[];
+ curr.categoryPercents.forEach((v,i)=>{
+   const d=v-(prev.categoryPercents?.[i]||0);
+   if(d>0)improved.push({i,d}); else if(d<0)declined.push({i,d});
+ });
+ el('categoriesImproved').innerText=improved.length;
+ el('categoriesDeclined').innerText=declined.length;
+ el('improvementList').innerHTML=improved.sort((a,b)=>b.d-a.d).slice(0,5).map(x=>`<li><strong>${sections[x.i].name}:</strong> +${x.d}%</li>`).join('')||'<li>No categories improved in the latest comparison.</li>';
+ el('declineList').innerHTML=declined.sort((a,b)=>a.d-b.d).slice(0,5).map(x=>`<li><strong>${sections[x.i].name}:</strong> ${x.d}%</li>`).join('')||'<li>No categories declined in the latest comparison.</li>';
+ renderProgressChart(arr);
+}
+function renderProgressChart(arr){
+ const ctx=el('progressChart'); if(!ctx)return;
+ if(progressChart)progressChart.destroy();
+ progressChart=new Chart(ctx,{type:'line',data:{
+   labels:arr.map(a=>new Date(a.savedAt).toLocaleDateString()),
+   datasets:[{label:'ERP Readiness Score',data:arr.map(a=>a.score),borderWidth:2,pointRadius:4,fill:false}]
+ },options:{responsive:true,maintainAspectRatio:false,scales:{y:{min:0,max:100}},plugins:{legend:{position:'bottom'}}}});
+}
+function renderFindings(raw,score,m,e,complexity){let list=[];const v=vendors[selectedVendor].name;if(m===0)list.push(`<li><strong>Scope Definition:</strong> ${v} has been selected, but no vendor modules have been checked. Define module scope before finalizing staffing, timeline, training, and partner estimates.</li>`);if(raw[4]<sections[4].benchmark)list.push(`<li><strong>Foundational Design Gap:</strong> Organizational design, position/job rationalization, financial foundation redesign, labor considerations, or future-state security role strategy may need attention before detailed solution design begins.</li>`);if(m>=16&&raw[3]<sections[3].benchmark)list.push(`<li><strong>Staffing Exposure:</strong> The selected ${v} module footprint is broad while staffing readiness is below benchmark. Consider SME backfill and temporary project resources before design workshops begin.</li>`);if(e>=8&&raw[9]<sections[9].benchmark)list.push(`<li><strong>Integration Exposure:</strong> Healthcare ecosystem scope includes ${e} impacted systems while technical readiness is below benchmark. Prioritize integration inventory, identity, security, and downstream workflow testing.</li>`);if(raw[1]<sections[1].benchmark&&raw[10]<sections[10].benchmark)list.push(`<li><strong>Cost Control:</strong> TCO and legacy retirement are both below benchmark. Budget risk may increase if legacy overlap, archiving, licenses, and support costs are not validated.</li>`);if(raw[6]<sections[6].benchmark&&raw[13]<sections[13].benchmark)list.push(`<li><strong>Healthcare Data Risk:</strong> Data readiness and healthcare-specific readiness are below benchmark. EHR, supply chain, payroll, reporting, and regulatory data should be addressed early.</li>`);if(raw[7]<sections[7].benchmark||raw[8]<sections[8].benchmark)list.push(`<li><strong>Adoption Risk:</strong> Change management or training is below benchmark. This can increase post-go-live support volume and slow value realization.</li>`);if(complexity==='High'||complexity==='Very High')list.push(`<li><strong>Scope Finding:</strong> Current scope increases implementation risk. Consider formal PMO governance, test strategy, phased deployment planning, and hypercare capacity modeling.</li>`);if(score>=80)list.push(`<li><strong>Positive Finding:</strong> Readiness is strong. Next steps should focus on validation, detailed implementation planning, conversion testing, and post-go-live operating model design.</li>`);if(!list.length)list.push(`<li><strong>Initial Finding:</strong> The assessment is ready for refinement. Select vendor modules, healthcare systems, and readiness items to generate a more detailed executive report.</li>`);el('findings').innerHTML=list.join('')}
+function renderImpact(raw,m,e){let items=[];if(raw[1]<sections[1].benchmark)items.push('<li><strong>Budget Exposure:</strong> Incomplete TCO can create unplanned spend for staffing, integrations, testing, training, legacy overlap, and stabilization.</li>');if(raw[4]<sections[4].benchmark)items.push('<li><strong>Foundational Design Exposure:</strong> Delayed organizational design, position/job rationalization, Chart of Accounts planning, or labor impact planning can create downstream redesign and schedule risk.</li>');if(raw[3]<sections[3].benchmark)items.push('<li><strong>Operational Capacity:</strong> Without backfill, operational leaders may be expected to run the business while also supporting design, testing, and go-live work.</li>');if(raw[6]<sections[6].benchmark)items.push('<li><strong>Reporting and Conversion:</strong> Delayed data planning can create rework during testing and increase cutover risk.</li>');if(raw[9]<sections[9].benchmark)items.push('<li><strong>Technical Risk:</strong> Security, identity, integration, and downstream workflow gaps can surface late if not actively managed.</li>');if(raw[11]<sections[11].benchmark)items.push('<li><strong>Stabilization Risk:</strong> Underplanned hypercare can delay value realization and increase support volume after go-live.</li>');if(m>=14)items.push('<li><strong>Module Scope:</strong> Broad vendor module scope increases demand for PMO, testing, training, reporting, conversion, and post-go-live support.</li>');if(e>=8)items.push('<li><strong>Healthcare Integration:</strong> Multiple healthcare systems increase the need for interface validation, cross-functional testing, security review, and operational cutover planning.</li>');el('impact').innerHTML=items.join('')||'<li>No major financial or operational exposure areas were identified based on the current responses.</li>'}
+function renderServices(raw,m,e){let sv=[['ERP Advisory','Business case, readiness, governance, scope, and TCO validation.'],['PMO Support','Project managers, workstream leads, RAID management, and decision support.'],['Staff Augmentation','Functional SMEs, analysts, trainers, project coordinators, and backfill resources.'],['Foundational Design Advisory','Operating model, organization design, COA planning, position/job rationalization, and labor impact planning.'],['Data Conversion','Data cleansing, migration, reconciliation, reporting, and archive support.'],['Integration Support','Interface analysts, testing support, EHR/ERP integration, identity and access support.'],['Testing & Training','Test coordination, UAT support, training development, super user support.'],['Hypercare / MedixFlex','Post-go-live stabilization, ticket support, release support, run and maintain.'],['Optimization','Reporting, workflow optimization, release management, adoption, and value realization.']];let recommended=new Set();if(raw[0]<sections[0].benchmark||raw[1]<sections[1].benchmark||raw[2]<sections[2].benchmark)recommended.add('ERP Advisory');if(raw[2]<sections[2].benchmark||m>=12)recommended.add('PMO Support');if(raw[3]<sections[3].benchmark||m>=10)recommended.add('Staff Augmentation');if(raw[4]<sections[4].benchmark)recommended.add('Foundational Design Advisory');if(raw[6]<sections[6].benchmark)recommended.add('Data Conversion');if(raw[9]<sections[9].benchmark||e>=6)recommended.add('Integration Support');if(raw[7]<sections[7].benchmark||raw[8]<sections[8].benchmark)recommended.add('Testing & Training');if(raw[11]<sections[11].benchmark)recommended.add('Hypercare / MedixFlex');if(raw[12]<sections[12].benchmark||raw[11]>=sections[11].benchmark)recommended.add('Optimization');el('services').innerHTML=sv.map(([n,d])=>`<div class="service"><strong>${recommended.has(n)?'✓ ':''}${n}</strong><p class="small">${d}</p></div>`).join('')}
+
+function clearFieldError(id){const f=el(id), msg=el('err_'+id);if(f&&f.value.trim()){f.classList.remove('field-error');if(msg)msg.classList.remove('show')}}
+function validateFields(includeContact=false){let ok=true;const fields=[...document.querySelectorAll('[data-required="true"]')];if(includeContact)fields.push(...document.querySelectorAll('[data-contact-required="true"]'));fields.forEach(f=>{let valid=!!String(f.value||'').trim();if(f.type==='email'&&valid)valid=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.value.trim());if(f.type==='number'&&valid)valid=parseInt(f.value,10)>0;const msg=el('err_'+f.id);if(!valid){ok=false;f.classList.add('field-error');if(msg)msg.classList.add('show')}else{f.classList.remove('field-error');if(msg)msg.classList.remove('show')}});el('profileValidation').classList.toggle('show',!ok&&!includeContact);el('saveValidation').classList.toggle('show',!ok&&includeContact);return ok}
+function getScores(){const raw=[];let weighted=0;sections.forEach((s,i)=>{const c=checkedCount(i);const max=sectionMax(i);raw.push({workstream:s.name,short:s.short,score:c,maxScore:max,percentComplete:sectionPercent(i,c),benchmark:s.benchmark,weight:effectiveWeight(i),gap:Math.max(0,s.benchmark-c)});weighted+=(c/max)*effectiveWeight(i)});const mods=selectedModules();const eco=ecosystemCount();const cpx=complexityPoints();const scopePenalty=Math.min(14, Math.floor(mods.length/4)+Math.floor(eco/5)+Math.floor(cpx/3));const readiness=Math.max(0,Math.round(weighted-scopePenalty));return{readinessScore:readiness,readinessStatus:readiness>=75?'On Track':readiness>=55?'Needs Attention':'Priority Gap',projectedSuccessProbability:Math.min(96,Math.max(15,Math.round(readiness*.86+11))),overallRisk:riskLevel(readiness)[0],hiddenProjectComplexityIndex:cpx+mods.length+eco,workstreams:raw}}
+function selectedEcosystem(){return [...document.querySelectorAll('.ecoCheck:checked')].map(x=>x.parentElement.innerText.trim())}
+function checklistResponses(){return sections.map((s,i)=>({workstream:s.name,answers:s.questions.map((q,j)=>({question:q,checked:el(`q${i}_${j}`).checked}))}))}
+function listItemsFromElement(id){const node=el(id);return node?[...node.querySelectorAll('li')].map(li=>li.innerText.trim()).filter(Boolean):[]}
+function buildAssessmentPayload(){const scores=getScores();return{application:'Medix ERP Readiness Snapshot™',version:'ERPQuick V1.6',submittedAt:new Date().toISOString(),organization:{name:el('org').value.trim(),organizationType:el('orgType').value,numberOfEmployees:parseInt(el('employees').value,10),currentErpPlatform:el('legacy')?.value||null,currentEhr:el('currentEhr')?.value||null,projectStage:el('stage')?.value||null,targetTimeline:el('timeline').value,targetErpPlatform:vendors[selectedVendor]?.name||null,erpSystemsBeingEvaluated:evaluatedErpSystems.map(k=>vendors[k]?.name).filter(Boolean)},contact:{firstName:el('firstName').value.trim(),lastName:el('lastName').value.trim(),title:el('contactTitle').value.trim(),businessEmail:el('email').value.trim(),phone:el('phone').value.trim()||null},scope:{selectedCategories:selectedModules().map(m=>m.name),selectedModules:selectedModules().map(m=>({name:m.name,category:m.kind,group:vendors[selectedVendor].groups[m.group].name})),healthcareEcosystem:selectedEcosystem()},scores,checklistResponses:checklistResponses(),executiveOutputs:{summary:el('execSummary').innerText,findings:listItemsFromElement('findings'),impact:listItemsFromElement('impact'),medixOpportunityReport:el('services').innerText}}}
+function submitAssessment(){
+ if(!validateFields(true)){el('saveAssessmentCard').scrollIntoView({behavior:'smooth',block:'start'});return}
+ calculate();
+ const payload=buildAssessmentPayload();
+ // Future HubSpot integration point: POST payload to HubSpot Forms/API or a secure middleware endpoint.
+ window.medixLastAssessmentSubmission = payload;
+ localStorage.setItem('medixErpTransformationAdvisorLastSubmission',JSON.stringify(payload));
+ el('saveSuccess').classList.add('show');
+ el('saveAssessmentCard').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+
+function reportSafe(value){return String(value??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function reportListFromText(text){return String(text||'').split(/\n+/).map(x=>x.trim()).filter(Boolean).map(x=>`<li>${reportSafe(x)}</li>`).join('')||'<li>No items captured yet.</li>'}
+function reportFileName(){const org=(el('org').value||'organization').trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'organization';return `${org}-erp-transformation-executive-report.html`}
+function buildInteractiveReportHtml(payload){
+ const score=payload.scores.readinessScore;
+ const risk=payload.scores.overallRisk;
+ const org=payload.organization.name||'Organization';
+ const platform=payload.organization.targetErpPlatform||'ERP Assessment';
+ const evaluated=(payload.organization.erpSystemsBeingEvaluated||[]).join(', ');
+ const modules=payload.scope.selectedModules||[];
+ const ecosystems=payload.scope.healthcareEcosystem||[];
+ const workstreams=payload.scores.workstreams||[];
+ const strengths=workstreams.filter(w=>w.gap===0).slice(0,8);
+ const gaps=workstreams.filter(w=>w.gap>0).sort((a,b)=>b.gap-a.gap || b.weight-a.weight).slice(0,8);
+ const chartLabels=workstreams.map(w=>reportSafe(w.short));
+ const chartScores=workstreams.map(w=>Math.round((w.score/(sections.find(s=>s.name===w.workstream)?.questions.length||5))*100));
+ const heatRows=workstreams.map(w=>{
+   const max=(sections.find(s=>s.name===w.workstream)?.questions.length)||5;
+   const pct=Math.round((w.score/max)*100);
+   const status=w.gap===0?'On Track':w.gap<=1?'Watch':'Priority Gap';
+   return `<tr><td><strong>${reportSafe(w.workstream)}</strong></td><td>${w.score}/${max}</td><td>${w.benchmark}/${max}</td><td>${w.gap}</td><td><span class="status ${status==='On Track'?'green':status==='Watch'?'yellow':'red'}">${status}</span></td><td><div class="bar"><span style="width:${pct}%"></span></div></td></tr>`
+ }).join('');
+ const moduleGroups=modules.reduce((acc,m)=>{(acc[m.group]=acc[m.group]||[]).push(m.name);return acc},{})
+ const moduleHtml=Object.entries(moduleGroups).map(([group,items])=>`<details open><summary>${reportSafe(group)} <em>${items.length}</em></summary><ul>${items.map(i=>`<li>${reportSafe(i)}</li>`).join('')}</ul></details>`).join('') || '<p class="muted">No scope items selected.</p>';
+ const ecoHtml=ecosystems.map(x=>`<span class="chip">${reportSafe(x)}</span>`).join('') || '<span class="muted">No healthcare ecosystem systems selected.</span>';
+ const strengthsHtml=strengths.map(w=>`<li><strong>${reportSafe(w.workstream)}</strong> is at or above benchmark.</li>`).join('') || '<li>No strengths identified yet. Complete more readiness items to populate this section.</li>';
+ const gapsHtml=gaps.map(w=>`<li><strong>${reportSafe(w.workstream)}</strong>: ${w.gap} item gap against benchmark.</li>`).join('') || '<li>No priority gaps identified based on current responses.</li>';
+ return `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${reportSafe(org)} ERP Readiness Snapshot Report</title><script src="https://cdn.jsdelivr.net/npm/chart.js"><\/script><style>
+ :root{--primary:#0075C9;--secondary:#63E6B8;--navy:#002454;--line:#D8E3ED;--text:#101828;--muted:#475467;--green:#2E7D32;--yellow:#F9A825;--red:#C62828;--orange:#EF6C00;--panel:#fff;--bg:#F7FBFE}*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);line-height:1.45}.wrap{max-width:1280px;margin:0 auto;padding:28px}.hero{background:linear-gradient(135deg,#002454,#004582 58%,#0075C9);color:#fff;border-radius:24px;padding:30px;border-bottom:5px solid var(--secondary);box-shadow:0 16px 40px rgba(0,36,84,.22)}.kicker{text-transform:uppercase;letter-spacing:1.5px;color:var(--secondary);font-size:12px;font-weight:900}h1{margin:8px 0 6px;font-size:34px}.hero p{max-width:900px}.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:20px;margin-top:18px;box-shadow:0 12px 32px rgba(0,36,84,.08)}.kpi{border:1px solid var(--line);border-radius:16px;padding:16px;background:#FBFDFF}.num{font-size:34px;font-weight:900;color:var(--primary)}.label{font-size:12px;color:var(--muted);font-weight:700}.score{display:flex;align-items:center;gap:18px}.scoreCircle{width:132px;height:132px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:conic-gradient(var(--primary) ${score}%,#E5E7EB 0);position:relative}.scoreCircle:before{content:"";position:absolute;width:96px;height:96px;background:#fff;border-radius:50%}.scoreCircle span{position:relative;font-size:34px;font-weight:900;color:var(--navy)}.reportStoplight{width:76px;height:76px;border-radius:50%;box-shadow:inset 0 0 0 7px rgba(255,255,255,.35),0 8px 20px rgba(15,23,42,.14);margin-bottom:8px}.reportStoplight.green{background:var(--green)}.reportStoplight.yellow{background:var(--yellow)}.reportStoplight.red{background:var(--red)}table{width:100%;border-collapse:collapse}th,td{border-bottom:1px solid var(--line);padding:10px;text-align:left;font-size:14px}th{background:#F7FBFE;color:var(--navy)}.bar{height:10px;background:#E5E7EB;border-radius:999px;overflow:hidden}.bar span{display:block;height:100%;background:linear-gradient(90deg,var(--primary),var(--secondary))}.status{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:900;color:#fff}.status.green{background:var(--green)}.status.yellow{background:var(--yellow);color:#222}.status.red{background:var(--red)}.chip{display:inline-flex;margin:4px;padding:7px 10px;background:#EAF6FE;border:1px solid #C9E7FA;border-radius:999px;font-weight:800;color:var(--navy);font-size:12px}details{border:1px solid var(--line);border-radius:14px;padding:12px;margin:10px 0;background:#FBFDFF}summary{cursor:pointer;font-weight:900;color:var(--navy)}summary em{font-style:normal;color:var(--muted);font-size:12px}.muted{color:var(--muted)}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.btn{border:0;border-radius:12px;padding:11px 14px;font-weight:900;cursor:pointer;background:#EAF6FE;color:var(--navy)}.btn.primary{background:linear-gradient(135deg,#004582,#0075C9);color:#fff}.chartWrap{height:420px}@media(max-width:900px){.grid,.grid3{grid-template-columns:1fr}.wrap{padding:14px}.score{align-items:flex-start;flex-direction:column}}@media print{.actions{display:none}.card,.hero{box-shadow:none}body{background:#fff}}
+ </style></head><body><div class="wrap"><div class="hero"><div class="kicker">Medix ERP Readiness Snapshot™</div><h1>${reportSafe(org)} ERP Readiness Snapshot Report</h1><p>Interactive executive report generated from the Medix ERP Readiness Snapshot™. Use the expandable sections below to review scope, strengths, gaps, heat map, findings, impact, and Medix opportunity areas.</p><div class="actions"><button class="btn primary" onclick="window.print()">Print / Save as PDF</button><button class="btn" onclick="document.querySelectorAll('details').forEach(d=>d.open=true)">Expand All</button><button class="btn" onclick="document.querySelectorAll('details').forEach(d=>d.open=false)">Collapse All</button></div></div>
+ <div class="grid"><div class="card"><h2>Executive Summary</h2><p>${reportSafe(payload.executiveOutputs.summary)}</p><div class="grid3"><div class="kpi"><div class="num">${reportSafe(platform)}</div><div class="label">Assessment Path</div></div><div class="kpi"><div class="num">${reportSafe(payload.organization.projectStage)}</div><div class="label">ERP Journey Stage</div></div><div class="kpi"><div class="num">${reportSafe(payload.organization.targetTimeline)}</div><div class="label">Target Timeline</div></div></div>${evaluated?`<p><strong>ERP systems being evaluated:</strong> ${reportSafe(evaluated)}</p>`:''}</div><div class="card"><h2>Readiness Score</h2><div class="score"><div class="scoreCircle"><span>${score}</span></div><div><div class="reportStoplight ${score>=75?'green':score>=55?'yellow':'red'}" role="img" aria-label="Readiness status indicator"></div><div class="label">Readiness Status</div><p><strong>Projected Success Probability:</strong> ${payload.scores.projectedSuccessProbability}%<br><strong>Overall Risk:</strong> ${reportSafe(risk)}</p></div></div></div></div>
+ <div class="grid"><div class="card"><h2>Top Strengths</h2><ul>${strengthsHtml}</ul></div><div class="card"><h2>Priority Gaps</h2><ul>${gapsHtml}</ul></div></div>
+ <div class="card"><h2>Strengths & Gaps Radar</h2><div class="chartWrap"><canvas id="reportRadar"></canvas></div></div>
+ <div class="card"><h2>Executive Heat Map</h2><table><thead><tr><th>Workstream</th><th>Your Score</th><th>Benchmark</th><th>Gap</th><th>Status</th><th>Progress</th></tr></thead><tbody>${heatRows}</tbody></table></div>
+ <div class="grid"><div class="card"><h2>AI-Style Executive Findings</h2><ul>${reportListFromText(payload.executiveOutputs.findings)}</ul></div><div class="card"><h2>Financial & Operational Impact</h2><ul>${reportListFromText(payload.executiveOutputs.impact)}</ul></div></div>
+ <div class="card"><h2>Selected Scope</h2><div class="grid"><div><h3>ERP Functional / Technical Scope</h3>${moduleHtml}</div><div><h3>Healthcare Ecosystem & Integration Scope</h3>${ecoHtml}</div></div></div>
+ <div class="card"><h2>Medix Opportunity Report</h2><p class="muted">Recommended support areas based on scope and readiness gaps.</p><ul>${reportListFromText(payload.executiveOutputs.medixOpportunityReport)}</ul></div>
+ <div class="card"><h2>Report Metadata</h2><p><strong>Generated:</strong> ${reportSafe(new Date(payload.submittedAt).toLocaleString())}<br><strong>Version:</strong> ${reportSafe(payload.version)}<br><strong>Contact:</strong> ${reportSafe(payload.contact.firstName)} ${reportSafe(payload.contact.lastName)} ${payload.contact.businessEmail?`(${reportSafe(payload.contact.businessEmail)})`:''}</p></div>
+ </div><script>new Chart(document.getElementById('reportRadar'),{type:'radar',data:{labels:${JSON.stringify(chartLabels)},datasets:[{label:'Readiness %',data:${JSON.stringify(chartScores)},fill:true,borderWidth:2,pointRadius:3},{label:'Target Benchmark',data:${JSON.stringify(workstreams.map(w=>Math.round((w.benchmark/(sections.find(s=>s.name===w.workstream)?.questions.length||5))*100)))},fill:false,borderWidth:1,pointRadius:2}]},options:{responsive:true,maintainAspectRatio:false,scales:{r:{min:0,max:100,ticks:{stepSize:20}}},plugins:{legend:{position:'bottom'}}}});<\/script></body></html>`
+}
+function downloadInteractiveReport(){
+ if(!selectedVendor){return}
+ calculate();
+ const payload=buildAssessmentPayload();
+ const html=buildInteractiveReportHtml(payload);
+ const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement('a');
+ a.href=url;
+ a.download=reportFileName();
+ document.body.appendChild(a);
+ a.click();
+ a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+function resetAssessment(){document.querySelectorAll('#assessment input[type=checkbox]').forEach(x=>x.checked=false);['org','employees','firstName','lastName','contactTitle','email','phone'].forEach(id=>{if(el(id))el(id).value=''});['legacy','timeline','orgType','currentEhr'].forEach(id=>{if(el(id))el(id).selectedIndex=0});if(el('stage'))el('stage').value='';evaluatedErpSystems=[];document.querySelectorAll('#evaluationGrid .platform-card').forEach(c=>c.classList.remove('selected'));if(el('continueEvaluationButton'))el('continueEvaluationButton').disabled=true;el('saveSuccess').classList.remove('show');document.querySelectorAll('.field-error').forEach(x=>x.classList.remove('field-error'));document.querySelectorAll('.error-message').forEach(x=>x.classList.remove('show'));calculate()}
+// ERPQuick streamlined overrides
+
+function weightProfile(){
+ const stage=(el('lifecycleStage')&&el('lifecycleStage').value)||'Discovery';
+ if(stage==='Discovery')return APP_CONFIG.weightProfiles.discovery;
+ if(stage==='Business Case Creation')return APP_CONFIG.weightProfiles.businessCase;
+ if(stage==='Vendor Selection')return APP_CONFIG.weightProfiles.selection;
+ if(stage==='Implementation Planning')return APP_CONFIG.weightProfiles.planning;
+ if(stage==='Implementation')return APP_CONFIG.weightProfiles.implementation;
+ if(stage==='Testing')return APP_CONFIG.weightProfiles.testing;
+ if(stage==='Go-Live / Hypercare')return APP_CONFIG.weightProfiles.hypercare;
+ if(stage==='Optimization')return APP_CONFIG.weightProfiles.optimization;
+ return APP_CONFIG.weightProfiles.discovery;
+}
+function effectiveWeight(i){return weightProfile()[i]??sections[i].weight}
+function ecosystemCount(){return 0}
+function selectedEcosystem(){return []}
+function renderHeat(){}
+function renderEcosystem(){}
+function renderVendorScope(){
+  const groups=vendors.other.groups;
+  el('moduleGroups').innerHTML=groups.map((g,gi)=>`<label class="scope-card"><input type="checkbox" class="moduleCheck" data-group="${gi}" data-kind="${g.kind}" data-name="${escapeHtml(g.items[0])}" onchange="calculate()"><span>${g.name}</span></label>`).join('');
+}
+function complexityPoints(){
+  let pts=selectedModules().length*2;
+  const emp=parseInt(el('employees')?.value||'0',10);
+  if(emp>=40000)pts+=12;else if(emp>=15000)pts+=8;else if(emp>=5000)pts+=5;else if(emp>=1000)pts+=3;
+  const orgType=el('orgType')?.value||'';
+  if(/Academic|IDN/.test(orgType))pts+=5;
+  return pts;
+}
+function renderProfileSummary(m,e,c){
+  const org=el('org').value||'This organization';
+  const timeline=el('timeline').value||'not defined';
+  const selected=selectedModules().map(x=>x.name).join(', ')||'no categories selected';
+  el('profileSummary').innerHTML=`<strong>${org}</strong> is completing a rapid ERP readiness assessment with a target timeline of <strong>${timeline}</strong>. Selected ERP scope: <strong>${selected}</strong>.`;
+}
+function renderExecutiveSummary(score,prob,risk,m,e){
+  const org=el('org').value||'This organization';
+  const status=score>=75?'On Track':score>=55?'Needs Attention':'Priority Gap';
+  el('execSummary').innerHTML=`<strong>${status}:</strong> ${org} has an ERP Readiness Score of <strong>${score}/100</strong>, a projected success probability of <strong>${prob}%</strong>, and overall project risk of <strong>${risk}</strong>.`;
+}
+function buildAssessmentPayload(){
+ const scores=getScores();
+ return{application:'Medix ERP Readiness Snapshot™',project:'ERPQuick',version:'ERPQuick V1.0',submittedAt:new Date().toISOString(),organization:{name:el('org').value.trim(),organizationType:el('orgType').value,numberOfEmployees:parseInt(el('employees').value,10)||null,targetTimeline:el('timeline').value},contact:{firstName:el('firstName').value.trim(),lastName:el('lastName').value.trim(),title:el('contactTitle').value.trim(),businessEmail:el('email').value.trim(),phone:el('phone').value.trim()||null},scope:{selectedCategories:selectedModules().map(m=>m.name)},scores,checklistResponses:checklistResponses(),executiveOutputs:{summary:el('execSummary').innerText,findings:el('findings').innerText,impact:el('impact').innerText,medixOpportunityReport:el('services').innerText}};
+}
+function reportValue(value,fallback='Not provided'){
+  const cleaned=String(value??'').trim();
+  return cleaned||fallback;
+}
+function executiveReportElement(payload){
+  const scores=payload.scores;
+  const answered=scores.workstreams.reduce((sum,w)=>sum+w.score,0);
+  const possible=scores.workstreams.reduce((sum,w)=>sum+w.maxScore,0);
+  const completion=possible?Math.round((answered/possible)*100):0;
+  const selectedCategories=payload.scope.selectedCategories||[];
+  const workstreams=scores.workstreams||[];
+  const strengths=workstreams.filter(w=>w.score>0).sort((a,b)=>b.percentComplete-a.percentComplete||b.weight-a.weight).slice(0,5);
+  const gaps=workstreams.filter(w=>w.gap>0).sort((a,b)=>b.gap-a.gap||b.weight-a.weight).slice(0,5);
+  const checkedResponses=(payload.checklistResponses||[]).flatMap(group=>group.answers||[]).filter(r=>r.checked);
+  const root=document.createElement('div');
+  root.id='pdfExecutiveReport';
+  root.style.cssText='width:7.7in;background:#fff;color:#101828;font-family:Arial,Helvetica,sans-serif;padding:0;margin:0;';
+  const strengthHtml=strengths.length?strengths.map(w=>`<li><strong>${reportSafe(w.workstream)}:</strong> ${w.score}/${w.maxScore} items addressed (${w.percentComplete}%).</li>`).join(''):'<li>No checklist strengths have been recorded yet.</li>';
+  const gapHtml=gaps.length?gaps.map(w=>`<li><strong>${reportSafe(w.workstream)}:</strong> ${w.gap} item${w.gap===1?'':'s'} below benchmark. ${reportSafe(sections.find(s=>s.name===w.workstream)?.rec||'Continue readiness planning in this area.')}</li>`).join(''):'<li>No benchmark gaps are currently identified.</li>';
+  const scopeHtml=selectedCategories.length?selectedCategories.map(x=>`<span style="display:inline-block;margin:3px 5px 3px 0;padding:6px 9px;border-radius:999px;background:#EAF6FE;color:#002454;font-size:11px;font-weight:700">${reportSafe(x)}</span>`).join(''):'<span style="color:#475467">No ERP scope categories selected.</span>';
+  const answeredHtml=checkedResponses.length?checkedResponses.slice(0,20).map(r=>`<li>${reportSafe(r.question)}</li>`).join(''):'<li>No readiness checklist items have been selected.</li>';
+  const topStrength=strengths[0]?.workstream||'No clear strength identified yet';
+  const topGap=gaps[0]?.workstream||'No benchmark gap identified';
+  const executiveNarrative=`${reportValue(payload.organization.name,'The organization')} currently has a readiness score of ${scores.readinessScore}/100 and is classified as ${scores.readinessStatus}, with ${scores.overallRisk.toLowerCase()} overall project risk. The assessment is ${completion}% complete. ${selectedCategories.length?`The defined ERP scope includes ${selectedCategories.join(', ')}.`:'ERP scope categories have not yet been selected.'} The strongest area currently recorded is ${topStrength}, while the highest-priority gap is ${topGap}. Leadership should use this snapshot to confirm scope, assign accountable owners, and close the highest-weighted readiness gaps before finalizing implementation commitments.`;
+  root.innerHTML=`
+    <div style="background:linear-gradient(135deg,#002454,#004582 58%,#0075C9);color:#fff;padding:24px 26px;border-bottom:5px solid #63E6B8">
+      <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#63E6B8;font-weight:800">Medix ERP Readiness Snapshot™</div>
+      <h1 style="margin:7px 0 4px;font-size:27px">${reportSafe(reportValue(payload.organization.name,'Executive Summary'))}</h1>
+      <div style="font-size:14px;opacity:.95">Executive Summary of Current Assessment Responses</div>
+    </div>
+    <div style="padding:20px 24px">
+      <table style="width:100%;border-collapse:separate;border-spacing:8px 0;margin:0 -8px 16px">
+        <tr>
+          <td style="width:25%;border:1px solid #D8E3ED;border-radius:12px;padding:12px"><div style="font-size:25px;font-weight:800;color:#0075C9">${scores.readinessScore}</div><div style="font-size:10px;color:#475467">Readiness Score</div></td>
+          <td style="width:25%;border:1px solid #D8E3ED;border-radius:12px;padding:12px"><div style="font-size:20px;font-weight:800;color:#002454">${reportSafe(scores.readinessStatus)}</div><div style="font-size:10px;color:#475467">Readiness Status</div></td>
+          <td style="width:25%;border:1px solid #D8E3ED;border-radius:12px;padding:12px"><div style="font-size:20px;font-weight:800;color:#002454">${reportSafe(scores.overallRisk)}</div><div style="font-size:10px;color:#475467">Overall Risk</div></td>
+          <td style="width:25%;border:1px solid #D8E3ED;border-radius:12px;padding:12px"><div style="font-size:20px;font-weight:800;color:#002454">${completion}%</div><div style="font-size:10px;color:#475467">Form Completion</div></td>
+        </tr>
+      </table>
+      <div style="border:1px solid #D8E3ED;border-radius:14px;padding:15px;margin-bottom:14px;page-break-inside:avoid">
+        <h2 style="font-size:17px;color:#002454;margin:0 0 9px">Executive Overview</h2>
+        <p style="font-size:12px;line-height:1.55;margin:0">${reportSafe(executiveNarrative)}</p>
+        <p style="font-size:11px;color:#475467;margin:9px 0 0">This report reflects the information entered at the time of download. Blank fields and unanswered checklist items do not prevent report generation.</p>
+      </div>
+      <div style="border:1px solid #D8E3ED;border-radius:14px;padding:15px;margin-bottom:14px;page-break-inside:avoid">
+        <h2 style="font-size:17px;color:#002454;margin:0 0 9px">Organization & Project Profile</h2>
+        <table style="width:100%;border-collapse:collapse;font-size:11px">
+          <tr><td style="padding:5px 8px 5px 0;color:#475467;width:32%">Organization</td><td style="padding:5px 0;font-weight:700">${reportSafe(reportValue(payload.organization.name))}</td></tr>
+          <tr><td style="padding:5px 8px 5px 0;color:#475467">Organization Type</td><td style="padding:5px 0;font-weight:700">${reportSafe(reportValue(payload.organization.organizationType))}</td></tr>
+          <tr><td style="padding:5px 8px 5px 0;color:#475467">Number of Employees</td><td style="padding:5px 0;font-weight:700">${reportSafe(payload.organization.numberOfEmployees||'Not provided')}</td></tr>
+          <tr><td style="padding:5px 8px 5px 0;color:#475467">Target Timeline</td><td style="padding:5px 0;font-weight:700">${reportSafe(reportValue(payload.organization.targetTimeline))}</td></tr>
+          <tr><td style="padding:5px 8px 5px 0;color:#475467">Checklist Responses</td><td style="padding:5px 0;font-weight:700">${answered} of ${possible} selected</td></tr>
+        </table>
+      </div>
+      <div style="border:1px solid #D8E3ED;border-radius:14px;padding:15px;margin-bottom:14px;page-break-inside:avoid">
+        <h2 style="font-size:17px;color:#002454;margin:0 0 9px">Selected ERP Scope</h2>${scopeHtml}
+      </div>
+      <table style="width:100%;border-collapse:separate;border-spacing:10px 0;margin:0 -10px 14px">
+        <tr>
+          <td style="width:50%;vertical-align:top;border:1px solid #D8E3ED;border-radius:14px;padding:15px;page-break-inside:avoid"><h2 style="font-size:17px;color:#002454;margin:0 0 9px">Current Strengths</h2><ul style="font-size:11px;line-height:1.45;padding-left:18px;margin:0">${strengthHtml}</ul></td>
+          <td style="width:50%;vertical-align:top;border:1px solid #D8E3ED;border-radius:14px;padding:15px;page-break-inside:avoid"><h2 style="font-size:17px;color:#002454;margin:0 0 9px">Priority Gaps</h2><ul style="font-size:11px;line-height:1.45;padding-left:18px;margin:0">${gapHtml}</ul></td>
+        </tr>
+      </table>
+      <div style="border:1px solid #D8E3ED;border-radius:14px;padding:15px;margin-bottom:14px">
+        <h2 style="font-size:17px;color:#002454;margin:0 0 9px">Executive Findings</h2><ul style="font-size:11px;line-height:1.5;padding-left:18px;margin:0">${reportListFromText(payload.executiveOutputs.findings)}</ul>
+      </div>
+      <div style="border:1px solid #D8E3ED;border-radius:14px;padding:15px;margin-bottom:14px">
+        <h2 style="font-size:17px;color:#002454;margin:0 0 9px">Financial & Operational Impact</h2><ul style="font-size:11px;line-height:1.5;padding-left:18px;margin:0">${reportListFromText(payload.executiveOutputs.impact)}</ul>
+      </div>
+      <div style="border:1px solid #D8E3ED;border-radius:14px;padding:15px;margin-bottom:14px">
+        <h2 style="font-size:17px;color:#002454;margin:0 0 9px">Readiness Items Addressed</h2><ul style="font-size:11px;line-height:1.45;padding-left:18px;margin:0">${answeredHtml}</ul>
+      </div>
+      <div style="border:1px solid #D8E3ED;border-radius:14px;padding:15px;margin-bottom:14px">
+        <h2 style="font-size:17px;color:#002454;margin:0 0 9px">Medix Opportunity Report</h2><ul style="font-size:11px;line-height:1.5;padding-left:18px;margin:0">${reportListFromText(payload.executiveOutputs.medixOpportunityReport)}</ul>
+      </div>
+      <div style="font-size:9px;color:#667085;text-align:center;margin-top:15px">Generated ${reportSafe(new Date(payload.submittedAt).toLocaleString())} • ${reportSafe(payload.version)}</div>
+    </div>`;
+  return root;
+}
+async function downloadPDFReport(){
+  try{
+    calculate();
+    if(!window.jspdf||!window.jspdf.jsPDF)throw new Error('The PDF library did not load. Refresh the page and try again.');
+
+    const payload=buildAssessmentPayload();
+    const {jsPDF}=window.jspdf;
+    const doc=new jsPDF({unit:'pt',format:'letter',orientation:'portrait'});
+    const pageWidth=doc.internal.pageSize.getWidth();
+    const pageHeight=doc.internal.pageSize.getHeight();
+    const margin=48;
+    const contentWidth=pageWidth-(margin*2);
+    let y=46;
+
+    const colors={navy:[0,36,84],blue:[0,117,201],blue2:[0,69,130],mint:[99,230,184],sky:[234,246,254],ice:[248,252,255],text:[16,24,40],muted:[71,84,103],line:[216,227,237],green:[46,125,50],yellow:[249,168,37],red:[198,40,40],orange:[239,108,0],white:[255,255,255]};
+    const scores=payload.scores;
+    const workstreams=scores.workstreams||[];
+    const answered=workstreams.reduce((sum,w)=>sum+w.score,0);
+    const possible=workstreams.reduce((sum,w)=>sum+w.maxScore,0);
+    const completion=possible?Math.round((answered/possible)*100):0;
+    const scope=payload.scope.selectedCategories||[];
+    const strengths=workstreams.filter(w=>w.score>0).sort((a,b)=>b.percentComplete-a.percentComplete||b.weight-a.weight).slice(0,4);
+    const gaps=workstreams.filter(w=>w.gap>0).sort((a,b)=>b.gap-a.gap||b.weight-a.weight).slice(0,5);
+    const checked=(payload.checklistResponses||[]).flatMap(group=>group.answers||[]).filter(a=>a.checked);
+
+    function clean(text){
+      return String(text??'').replace(/\s+/g,' ').trim();
+    }
+    function ensureSpace(height=60){
+      if(y+height>pageHeight-44){
+        doc.addPage();
+        y=48;
+      }
+    }
+    function addWrapped(text,{size=10,bold=false,color=colors.text,indent=0,after=6,lineHeight=1.35}={}){
+      const value=clean(text);
+      if(!value)return;
+      doc.setFont('helvetica',bold?'bold':'normal');
+      doc.setFontSize(size);
+      doc.setTextColor(...color);
+      const lines=doc.splitTextToSize(value,contentWidth-indent);
+      const height=lines.length*size*lineHeight;
+      ensureSpace(height+after);
+      doc.text(lines,margin+indent,y);
+      y+=height+after;
+    }
+    function heading(text){
+      ensureSpace(42);
+      y+=5;
+      doc.setFillColor(...colors.sky);
+      doc.setDrawColor(...colors.line);
+      doc.roundedRect(margin,y,contentWidth,28,6,6,'FD');
+      doc.setFillColor(...colors.blue);
+      doc.roundedRect(margin,y,5,28,3,3,'F');
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(12.5);
+      doc.setTextColor(...colors.navy);
+      doc.text(text,margin+15,y+19);
+      y+=39;
+    }
+    function bullet(text){
+      const value=clean(text);
+      if(!value)return;
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(9.5);
+      doc.setTextColor(...colors.text);
+      const lines=doc.splitTextToSize(value,contentWidth-18);
+      const height=lines.length*12.5;
+      ensureSpace(height+4);
+      doc.text('•',margin,y);
+      doc.text(lines,margin+14,y);
+      y+=height+4;
+    }
+    function labelValue(label,value){
+      const val=clean(value)||'Not provided';
+      ensureSpace(18);
+      doc.setFontSize(9.5);
+      doc.setTextColor(...colors.muted);
+      doc.setFont('helvetica','bold');
+      doc.text(label,margin,y);
+      doc.setFont('helvetica','normal');
+      doc.setTextColor(...colors.text);
+      const lines=doc.splitTextToSize(val,contentWidth-150);
+      doc.text(lines,margin+150,y);
+      y+=Math.max(16,lines.length*12);
+    }
+    function textItems(raw){
+      const items=Array.isArray(raw)?raw:String(raw??'').split(/\n+/);
+      return items.map(x=>clean(x).replace(/^[•\-✓]+\s*/,'').trim()).filter(Boolean);
+    }
+
+    async function getLogoData(){
+      const img=document.querySelector('.medix-logo');
+      if(!img)return null;
+      try{
+        if(!img.complete)await new Promise((resolve,reject)=>{img.addEventListener('load',resolve,{once:true});img.addEventListener('error',reject,{once:true});setTimeout(reject,2500)});
+        const canvas=document.createElement('canvas');
+        canvas.width=img.naturalWidth||600; canvas.height=img.naturalHeight||160;
+        const ctx=canvas.getContext('2d'); ctx.drawImage(img,0,0,canvas.width,canvas.height);
+        return canvas.toDataURL('image/png');
+      }catch(e){return null;}
+    }
+
+    // White brand header matching the assessment
+    const logoData=await getLogoData();
+    const headerX=margin;
+    const headerY=28;
+    const headerH=78;
+    doc.setFillColor(...colors.white);
+    doc.setDrawColor(...colors.line);
+    doc.roundedRect(headerX,headerY,contentWidth,headerH,12,12,'FD');
+    if(logoData){
+      try{doc.addImage(logoData,'PNG',headerX+15,headerY+15,132,42,undefined,'FAST');}catch(e){}
+    }else{
+      doc.setTextColor(...colors.navy);
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(20);
+      doc.text('MEDIX',headerX+18,headerY+35);
+      doc.setTextColor(...colors.blue);
+      doc.setFontSize(8);
+      doc.text('TECHNOLOGY',headerX+20,headerY+48);
+    }
+    doc.setFillColor(...colors.mint);
+    doc.roundedRect(headerX+158,headerY+14,4,48,2,2,'F');
+    doc.setTextColor(...colors.navy);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(11.5);
+    doc.text('ERP Readiness Snapshot™',headerX+174,headerY+31);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(8.5);
+    doc.setTextColor(...colors.muted);
+    const sub=doc.splitTextToSize('Healthcare-focused assessment. Data-driven insights. Smarter ERP decisions.',220);
+    doc.text(sub,headerX+174,headerY+47);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(11);
+    doc.setTextColor(...colors.mint);
+    doc.text('People. Technology. Solutions.',headerX+contentWidth-16,headerY+41,{align:'right'});
+
+    const orgName=clean(payload.organization.name)||'Organization Not Provided';
+    y=135;
+    doc.setTextColor(...colors.navy);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(22);
+    doc.text('Executive Summary',margin,y);
+    y+=17;
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(9.5);
+    doc.setTextColor(...colors.muted);
+    doc.text(`${orgName}  •  ${new Date(payload.submittedAt).toLocaleDateString()}`,margin,y);
+    y+=24;
+
+    // KPI row
+    const kpis=[
+      ['Readiness Score',`${scores.readinessScore}/100`],
+      ['Status',scores.readinessStatus],
+      ['Overall Risk',scores.overallRisk],
+      ['Form Complete',`${completion}%`]
+    ];
+    const boxGap=8;
+    const boxWidth=(contentWidth-(boxGap*3))/4;
+    kpis.forEach(([label,value],i)=>{
+      const x=margin+i*(boxWidth+boxGap);
+      let accent=colors.blue;
+      if(label==='Status')accent=scores.readinessScore>=75?colors.green:scores.readinessScore>=55?colors.yellow:colors.red;
+      if(label==='Overall Risk')accent=String(scores.overallRisk).toLowerCase()==='low'?colors.green:String(scores.overallRisk).toLowerCase()==='medium'?colors.yellow:String(scores.overallRisk).toLowerCase()==='elevated'?colors.orange:colors.red;
+      if(label==='Form Complete')accent=completion>=75?colors.green:completion>=40?colors.yellow:colors.red;
+      doc.setFillColor(...colors.ice);
+      doc.setDrawColor(...colors.line);
+      doc.roundedRect(x,y,boxWidth,58,7,7,'FD');
+      doc.setFillColor(...accent);
+      doc.roundedRect(x,y,boxWidth,5,3,3,'F');
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(i===0?16:10.5);
+      doc.setTextColor(...accent);
+      const valueLines=doc.splitTextToSize(clean(value),boxWidth-12);
+      doc.text(valueLines,x+7,y+25);
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(7.5);
+      doc.setTextColor(...colors.muted);
+      doc.text(label,x+7,y+49);
+    });
+    y+=76;
+
+    const topStrength=strengths[0]?.workstream||'No clear strength has been recorded yet';
+    const topGap=gaps[0]?.workstream||'No benchmark gap is currently identified';
+    const scopeSentence=scope.length?`The selected ERP scope includes ${scope.join(', ')}.`:'No ERP scope categories have been selected yet.';
+    const narrative=`${orgName} currently has an ERP readiness score of ${scores.readinessScore}/100 and is classified as ${scores.readinessStatus}, with ${String(scores.overallRisk).toLowerCase()} overall project risk. The assessment is ${completion}% complete. ${scopeSentence} The strongest recorded area is ${topStrength}; the highest-priority gap is ${topGap}. Leadership should confirm scope, assign accountable owners, and close the highest-weighted gaps before finalizing implementation commitments.`;
+    heading('Executive Overview');
+    addWrapped(narrative,{size:10.5,after:4});
+    addWrapped('This report reflects all information entered at the time of download. Blank fields and unanswered checklist items do not prevent report generation.',{size:8.5,color:colors.muted,after:4});
+
+    heading('Organization & Project Profile');
+    labelValue('Organization',payload.organization.name);
+    labelValue('Organization Type',payload.organization.organizationType);
+    labelValue('Number of Employees',payload.organization.numberOfEmployees);
+    labelValue('Target Timeline',payload.organization.targetTimeline);
+    labelValue('Checklist Responses',`${answered} of ${possible} selected`);
+
+    heading('Selected ERP Scope');
+    if(scope.length)scope.forEach(item=>bullet(item));
+    else bullet('No ERP scope categories selected.');
+
+    heading('Current Strengths');
+    if(strengths.length){
+      strengths.forEach(w=>bullet(`${w.workstream}: ${w.score}/${w.maxScore} readiness items addressed (${w.percentComplete}%).`));
+    }else bullet('No checklist strengths have been recorded yet.');
+
+    heading('Priority Gaps');
+    if(gaps.length){
+      gaps.forEach(w=>{
+        const rec=sections.find(s=>s.name===w.workstream)?.rec||'Continue readiness planning in this area.';
+        bullet(`${w.workstream}: ${w.gap} item${w.gap===1?'':'s'} below benchmark. ${rec}`);
+      });
+    }else bullet('No benchmark gaps are currently identified.');
+
+    heading('Executive Findings');
+    const findings=textItems(payload.executiveOutputs.findings);
+    (findings.length?findings:['No additional executive findings are available from the current responses.']).slice(0,6).forEach(bullet);
+
+    heading('Financial & Operational Impact');
+    const impacts=textItems(payload.executiveOutputs.impact);
+    (impacts.length?impacts:['No major financial or operational exposure areas were identified from the current responses.']).slice(0,6).forEach(bullet);
+
+    heading('Readiness Items Addressed');
+    if(checked.length)checked.slice(0,20).forEach(item=>bullet(item.question));
+    else bullet('No readiness checklist items have been selected.');
+
+    heading('Readiness by Category');
+    const categoryRows=workstreams.map(w=>({name:w.workstream,value:w.percentComplete}));
+    categoryRows.forEach(row=>{
+      ensureSpace(30);
+      const barX=margin+190;
+      const barW=contentWidth-235;
+      const pct=Math.max(0,Math.min(100,Number(row.value)||0));
+      const fill=pct>=75?colors.green:pct>=55?colors.yellow:colors.red;
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(8.5);
+      doc.setTextColor(...colors.navy);
+      const labelLines=doc.splitTextToSize(row.name,175);
+      doc.text(labelLines,margin,y+9);
+      doc.setFillColor(229,231,235);
+      doc.roundedRect(barX,y,barW,10,5,5,'F');
+      if(pct>0){doc.setFillColor(...fill);doc.roundedRect(barX,y,Math.max(4,barW*pct/100),10,5,5,'F');}
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(8);
+      doc.setTextColor(...colors.muted);
+      doc.text(`${pct}%`,pageWidth-margin,y+9,{align:'right'});
+      y+=Math.max(22,labelLines.length*10+5);
+    });
+
+    heading('Recommended Medix Support Areas');
+    const supportCatalog=[
+      ['ERP Advisory','Business case, readiness, governance, scope, and TCO validation.'],
+      ['PMO Support','Project managers, workstream leads, RAID management, and decision support.'],
+      ['Staff Augmentation','Functional SMEs, analysts, trainers, project coordinators, and backfill resources.'],
+      ['Foundational Design Advisory','Operating model, organization design, Chart of Accounts planning, position and job rationalization, and labor-impact planning.'],
+      ['Data Conversion','Data cleansing, migration, reconciliation, reporting, and archive support.'],
+      ['Integration Support','Interface analysts, testing support, EHR/ERP integration, and identity and access support.'],
+      ['Testing & Training','Test coordination, UAT support, training development, and super-user support.'],
+      ['Hypercare / MedixFlex','Post-go-live stabilization, ticket support, release support, and run-and-maintain services.'],
+      ['Optimization','Reporting, workflow optimization, release management, adoption, and value realization.']
+    ];
+    const opportunityText=String(payload.executiveOutputs.medixOpportunityReport||'');
+    let recommended=supportCatalog.filter(([name])=>{
+      const escaped=name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+      return new RegExp('✓\\s*'+escaped,'i').test(opportunityText);
+    });
+    // Fallback for browsers that do not preserve the checkmark in innerText.
+    if(!recommended.length){
+      recommended=supportCatalog.filter(([name])=>opportunityText.toLowerCase().includes(name.toLowerCase())).slice(0,6);
+    }
+    if(!recommended.length){
+      addWrapped('Recommendations will become more specific as additional assessment responses are entered.',{size:9.5,color:colors.muted});
+    }else{
+      const cardGap=10;
+      const cardWidth=(contentWidth-cardGap)/2;
+      const cardHeight=78;
+      recommended.slice(0,8).forEach(([name,description],index)=>{
+        const col=index%2;
+        if(col===0)ensureSpace(cardHeight+cardGap);
+        const x=margin+col*(cardWidth+cardGap);
+        const cardY=y;
+        doc.setFillColor(...colors.ice);
+        doc.setDrawColor(...colors.line);
+        doc.roundedRect(x,cardY,cardWidth,cardHeight,8,8,'FD');
+        doc.setFillColor(...colors.blue);
+        doc.roundedRect(x,cardY,cardWidth,4,3,3,'F');
+        doc.setFillColor(...colors.mint);
+        doc.circle(x+18,cardY+20,8,'F');
+        doc.setTextColor(...colors.navy);
+        doc.setFont('helvetica','bold');
+        doc.setFontSize(8);
+        doc.text('✓',x+15.3,cardY+22.8);
+        doc.setTextColor(...colors.navy);
+        doc.setFont('helvetica','bold');
+        doc.setFontSize(10.5);
+        const titleLines=doc.splitTextToSize(name,cardWidth-48);
+        doc.text(titleLines,x+34,cardY+23);
+        doc.setTextColor(...colors.muted);
+        doc.setFont('helvetica','normal');
+        doc.setFontSize(8.5);
+        const descY=cardY+40+(titleLines.length-1)*10;
+        const descLines=doc.splitTextToSize(description,cardWidth-20);
+        doc.text(descLines,x+10,descY);
+        if(col===1||index===Math.min(recommended.length,8)-1)y+=cardHeight+cardGap;
+      });
+    }
+
+    heading('Recommended Immediate Actions');
+    const nextSteps=[];
+    gaps.slice(0,5).forEach(w=>{
+      const rec=sections.find(s=>s.name===w.workstream)?.rec||`Advance readiness planning for ${w.workstream}.`;
+      nextSteps.push(rec);
+    });
+    if(!scope.length)nextSteps.unshift('Confirm the ERP functional and technical scope before finalizing staffing, timeline, and partner commitments.');
+    if(!nextSteps.length)nextSteps.push('Validate the current readiness position with executive sponsors and convert the assessment into a sequenced implementation roadmap.');
+    nextSteps.slice(0,5).forEach((step,index)=>bullet(`${index+1}. ${step}`));
+
+    // Footer on every page
+    const pageCount=doc.getNumberOfPages();
+    for(let i=1;i<=pageCount;i++){
+      doc.setPage(i);
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(8);
+      doc.setTextColor(...colors.muted);
+      doc.text(`Medix ERP Readiness Snapshot™  •  Generated ${new Date(payload.submittedAt).toLocaleString()}`,margin,pageHeight-24);
+      doc.text(`Page ${i} of ${pageCount}`,pageWidth-margin,pageHeight-24,{align:'right'});
+    }
+
+    const org=(payload.organization.name||'Organization').replace(/[^a-z0-9]+/gi,'_').replace(/^_|_$/g,'')||'Organization';
+    doc.save(`${org}_ERP_Readiness_Executive_Summary.pdf`);
+  }catch(error){
+    const existing=el('pdfErrorBanner');
+    if(existing)existing.remove();
+    const banner=document.createElement('div');
+    banner.id='pdfErrorBanner';
+    banner.className='validation-banner show';
+    banner.textContent=`The PDF could not be created: ${error.message}`;
+    const firstButton=document.querySelector('button[onclick="downloadPDFReport()"]');
+    firstButton?.closest('.card')?.prepend(banner);
+    console.error(error);
+  }
+}
+function resetAssessment(){
+  document.querySelectorAll('#assessment input, #assessment select, #assessment textarea').forEach(field=>{
+    if(field.type==='checkbox'||field.type==='radio')field.checked=false;
+    else if(field.tagName==='SELECT')field.selectedIndex=0;
+    else field.value='';
+  });
+  selectedVendor='other';
+  selectedJourneyStage='General Assessment';
+  evaluatedErpSystems=[];
+  window.medixLastAssessmentSubmission=null;
+  try{
+    localStorage.removeItem('medixErpTransformationAdvisorLastSubmission');
+    localStorage.removeItem('medixErpReadinessSnapshotLastSubmission');
+  }catch(e){}
+  document.querySelectorAll('.field-error').forEach(x=>x.classList.remove('field-error'));
+  document.querySelectorAll('.error-message,.validation-banner,.success-banner').forEach(x=>x.classList.remove('show'));
+  document.querySelectorAll('.platform-card').forEach(x=>x.classList.remove('selected'));
+  if(el('continueEvaluationButton'))el('continueEvaluationButton').disabled=true;
+  if(radarChart){radarChart.destroy();radarChart=null;}
+  renderVendorScope();
+  renderChecklist();
+  calculate();
+  window.scrollTo({top:0,behavior:'smooth'});
+  setTimeout(()=>el('org')?.focus(),350);
+}
+function randomizeAssessment(){
+  const pick=items=>items[Math.floor(Math.random()*items.length)];
+  const chance=probability=>Math.random()<probability;
+  const orgPrefixes=['North Valley','Summit','Lakeside','Pioneer','Evergreen','Riverbend','Central Plains','Blue Ridge','Oakwood','Horizon'];
+  const orgSuffixes=['Health System','Medical Center','Regional Health','Healthcare Network','Community Hospital','Health Alliance'];
+  const firstNames=['Alex','Jordan','Taylor','Morgan','Casey','Riley','Jamie','Cameron'];
+  const lastNames=['Smith','Johnson','Davis','Miller','Wilson','Anderson','Thomas','Clark'];
+  const titles=['Chief Information Officer','ERP Program Director','VP of Finance','Director of Applications','PMO Director','Chief Human Resources Officer'];
+  const employeeSizes=[350,650,1200,2500,4800,7500,12000,18500,26000,42000];
+
+  selectedVendor='other';
+  selectedJourneyStage='General Assessment';
+  evaluatedErpSystems=[];
+  if(!document.querySelector('.moduleCheck'))renderVendorScope();
+  if(!document.querySelector('#checklist input[type=checkbox]'))renderChecklist();
+
+  const orgName=`${pick(orgPrefixes)} ${pick(orgSuffixes)}`;
+  if(el('org'))el('org').value=orgName;
+  if(el('orgType'))el('orgType').value=pick([...el('orgType').options].map(o=>o.value).filter(Boolean));
+  if(el('employees'))el('employees').value=pick(employeeSizes);
+  if(el('timeline'))el('timeline').value=pick([...el('timeline').options].map(o=>o.value).filter(Boolean));
+
+  document.querySelectorAll('.moduleCheck').forEach(box=>box.checked=chance(.6));
+  if(!document.querySelector('.moduleCheck:checked')){
+    const modules=[...document.querySelectorAll('.moduleCheck')];
+    if(modules.length)pick(modules).checked=true;
+  }
+  document.querySelectorAll('#checklist input[type=checkbox]').forEach(box=>box.checked=chance(.55));
+
+  const first=pick(firstNames),last=pick(lastNames);
+  if(el('firstName'))el('firstName').value=first;
+  if(el('lastName'))el('lastName').value=last;
+  if(el('contactTitle'))el('contactTitle').value=pick(titles);
+  if(el('email'))el('email').value=`${first}.${last}${Math.floor(Math.random()*900+100)}@example.org`.toLowerCase();
+  if(el('phone'))el('phone').value=`(555) ${Math.floor(Math.random()*800+100)}-${String(Math.floor(Math.random()*10000)).padStart(4,'0')}`;
+
+  document.querySelectorAll('.field-error').forEach(x=>x.classList.remove('field-error'));
+  document.querySelectorAll('.error-message,.validation-banner,.success-banner').forEach(x=>x.classList.remove('show'));
+  calculate();
+}
+
+function quickInit(){
+ selectedVendor='other';selectedJourneyStage='General Assessment';
+ renderVendorScope();renderChecklist();calculate();
+}
+quickInit();
+
+</script>
+</body>
+</html>
