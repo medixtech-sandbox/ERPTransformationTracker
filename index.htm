@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Medix ERP Transformation Readiness Tracker™</title>
-<!-- Internal version tracking: ERP Transformation Readiness Tracker V8.0 -->
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V8.1 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -377,6 +377,36 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 /* Hard screen isolation */
 .app-screen{display:none!important}
 .app-screen.active{display:block!important}
+
+/* V8.1 compact Executive Dashboard metrics */
+.exec-dashboard-v2{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  align-items:stretch;
+}
+.exec-dashboard-hero{
+  grid-column:1/-1;
+}
+#statusCard,#probabilityCard,#riskCard{
+  grid-column:auto !important;
+  min-height:84px;
+  padding:12px 14px;
+}
+#statusCard .readiness-stoplight-wrap,
+#riskCard .readiness-stoplight-wrap{
+  min-height:52px;
+}
+#probabilityCard{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+@media(max-width:760px){
+  .exec-dashboard-v2{grid-template-columns:1fr}
+  .exec-dashboard-hero{grid-column:1}
+}
+
 </style>
 </head><body><div class="wrapper"><div class="app-screen active" id="screenLanding">
 <div class="landing-shell">
@@ -1367,6 +1397,26 @@ function medixAdvisoryPerspective(raw){
  return `<p>Based on the current assessment, Medix may be most relevant in <strong>${focus}</strong>.</p><p class="exec-muted">The intent is to target support where readiness gaps or internal capacity constraints could affect the next phase—not to replace work the organization can effectively own internally.</p>`;
 }
 
+
+function removeEmptyExecutiveBoxes(){
+ const report=document.getElementById('screenReport');
+ if(!report)return;
+
+ report.querySelectorAll('.card, .exec-panel, .service').forEach(box=>{
+   const text=(box.textContent||'').replace(/\s+/g,' ').trim();
+   const hasData=
+     box.querySelector('li, .metric, canvas, table, .service, .exec-task, .history-card') ||
+     box.querySelector('p:not(.small), strong');
+
+   // Remove boxes that are effectively empty or placeholders.
+   if(!hasData && (text==='' || text==='-' || /not applicable|not needed at this stage/i.test(text))){
+     box.style.display='none';
+   } else if(box.style.display==='none' && hasData){
+     box.style.display='';
+   }
+ });
+}
+
 function renderDetailedExecutiveFindings(){
  const findingsEl=el('findings'), impactEl=el('impact'), servicesEl=el('services');
  if(!findingsEl&&!impactEl&&!servicesEl)return;
@@ -1430,9 +1480,16 @@ function renderDetailedExecutiveFindings(){
   'Go-Live & Stabilization':'Go-live command-center support, activation staffing, stabilization resources, optimization, and long-term sustainment.'
  };
  if(servicesEl){
-   servicesEl.innerHTML=(low.length?low.slice(0,5).map(x=>`<div class="service"><h3>${x.name}</h3><p>${medixAdvice[x.name]||'Targeted ERP advisory and specialized project talent to close this readiness gap without unnecessarily expanding the core implementation team.'}</p></div>`):'<div class="service"><h3>Complete the Assessment</h3><p>Medix recommendations will be generated from the identified readiness gaps.</p></div>')+
-   `<div class="service"><h3>Recommended Engagement Strategy</h3><p>${scope.length?`For the selected scope of ${scope.join(', ')}, `:''}prioritize the two or three gaps that most affect the next lifecycle stage, then determine whether advisory support, specialized project staffing, internal backfill, or a blended model is the best fit.</p></div>`;
+   const headers = low.length
+     ? low.slice(0,5).map(x=>x.name)
+     : ['ERP Advisory','Program Staffing','Implementation Support'];
+
+   servicesEl.innerHTML = headers
+     .map(name=>`<div class="service"><h3>${name}</h3></div>`)
+     .join('');
  }
+
+ try{removeEmptyExecutiveBoxes()}catch(e){}
 }
 function renderExecutiveReport(raw,score){
  if(el('execCurrentScore'))el('execCurrentScore').innerText=score+'/100';
@@ -1448,6 +1505,8 @@ function renderExecutiveReport(raw,score){
  renderHistorySummary();
 
  try{renderDetailedExecutiveFindings()}catch(e){console.warn('Findings render issue:',e)}
+
+ try{removeEmptyExecutiveBoxes()}catch(e){}
 }
 
 
