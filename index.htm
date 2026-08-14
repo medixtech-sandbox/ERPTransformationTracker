@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Medix ERP Transformation Readiness Tracker™</title>
-<!-- Internal version tracking: ERP Transformation Readiness Tracker V6.4 -->
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V6.5 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -829,7 +829,7 @@ function renderChecklist(){
   let html=`<div class="stage-group"><div class="stage-header"><h3>${stage.name}</h3><div class="small">${stage.desc}</div></div><div class="stage-content">`;
   stage.sections.forEach(i=>{
    const s=sections[i];
-   const qs=s.questions.map((q,j)=>`<label><input type="checkbox" id="q${i}_${j}" onchange="calculate();targetedFiveSecondRefresh();try{autosaveDraft()}catch(e){}"> <span>${q}</span></label>`).join('');
+   const qs=s.questions.map((q,j)=>`<label><input type="checkbox" id="q${i}_${j}" onchange="calculate();updateCategoryReadinessNow();refreshReadinessRadarOnly();try{autosaveDraft()}catch(e){}"> <span>${q}</span></label>`).join('');
    html+=`<div class="section"><div class="section-header"><div><h3>${displayNumber}. ${s.name}</h3><div class="small">Weight: ${effectiveWeight(i)}% | Benchmark: ${s.benchmark}/${s.questions.length}</div></div><span id="badge${i}" class="badge red">0/${s.questions.length}</span></div><div class="questions">${qs}</div></div>`;
    displayNumber++;
   });
@@ -837,6 +837,7 @@ function renderChecklist(){
   c.innerHTML+=html;
  });
  updateReadinessDashboardVisibility();
+ try{updateCategoryReadinessNow()}catch(e){}
 }
 function escapeHtml(str){return str.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 function checkedCount(i){let c=0;for(let j=0;j<sections[i].questions.length;j++) if(el(`q${i}_${j}`).checked)c++;return c}
@@ -984,6 +985,12 @@ function buildAssessmentSummary(raw,score,prob,riskText){
 
 
 let targetedRefreshTimer=null;
+
+function updateCategoryReadinessNow(){
+ const raw=currentReadinessRaw();
+ renderBars(raw);
+}
+
 function currentReadinessRaw(){return sections.map((s,i)=>checkedCount(i));}
 
 function refreshExecutiveDashboardOnly(){
@@ -1008,8 +1015,7 @@ function refreshExecutiveDashboardOnly(){
  updateReadinessDashboardVisibility();
 }
 function refreshReadinessCategoryOnly(){
- const raw=currentReadinessRaw();
- renderBars(raw);
+ updateCategoryReadinessNow();
 }
 function refreshReadinessRadarOnly(){
  const raw=currentReadinessRaw();
@@ -1027,35 +1033,22 @@ function projectComplexity(m,e,c){const pts=m+e+(c*2);if(pts>=48)return'Very Hig
 function renderProfileSummary(m,e,c){const org=el('org').value||'This organization', stage=el('stage').value||selectedJourneyStage||'not defined', timeline=el('timeline').value, legacy=el('legacy').value||'not defined';const evaluated=evaluatedErpSystems.map(k=>vendors[k]?.name).filter(Boolean).join(', ');const platformText=(selectedVendor==='other'&&evaluated)?`a general ERP evaluation across <strong>${evaluated}</strong>`:`<strong>${vendors[selectedVendor].name}</strong>`;el('profileSummary').innerHTML=`<strong>${org}</strong> is assessing ${platformText} at the <strong>${stage}</strong> stage. Current timeline is <strong>${timeline}</strong>, legacy platform is <strong>${legacy}</strong>, selected scope includes <strong>${m}</strong> items, and healthcare ecosystem scope includes <strong>${e}</strong> impacted systems.`}
 function renderExecutiveSummary(score,prob,risk,m,e){const org=el('org').value||'This organization';el('execSummary').innerHTML=`<strong>${score>=75?'Green':score>=55?'Yellow':'Red'} Readiness:</strong> ${org} has an ERP Readiness Score of <strong>${score}/100</strong> with an estimated success probability of <strong>${prob}</strong> and overall risk of <strong>${risk}</strong>. Scope assumptions include <strong>${m}</strong> selected vendor modules and <strong>${e}</strong> healthcare integration touchpoints.`}
 function categoryReadinessData(raw){
- const pct=i=>sectionPercent(i,Number(raw[i]||0));
-
- const weightedAverage=(indices)=>{
-   const totalWeight=indices.reduce((sum,i)=>sum+effectiveWeight(i),0)||1;
-   return Math.round(indices.reduce((sum,i)=>sum+(pct(i)*effectiveWeight(i)),0)/totalWeight);
+ const pct=i=>{
+   const max=sectionMax(i);
+   const count=Number(raw[i]||0);
+   return max ? Math.round((count/max)*100) : 0;
  };
-
- return [
-   {name:'Executive Alignment & Business Case',value:pct(0),sections:[0]},
-   {name:'Financial Planning & TCO',value:pct(1),sections:[1]},
-   {name:'Governance & Decision Making',value:pct(2),sections:[2]},
-   {name:'Program Staffing & Resource Planning',value:pct(3),sections:[3]},
-   {name:'Foundational Design Planning',value:pct(4),sections:[4]},
-   {name:'Implementation Partner Strategy',value:pct(5),sections:[5]},
-   {name:'Data Migration, Reporting & Analytics',value:pct(6),sections:[6]},
-   {name:'Organizational Change Management',value:pct(7),sections:[7]},
-   {name:'Training & Organizational Readiness',value:pct(8),sections:[8]},
-   {name:'Technical Readiness, Security & Integrations',value:pct(9),sections:[9]},
-   {name:'Legacy System Retirement',value:pct(10),sections:[10]},
-   {name:'Stabilization, Operating Model & Optimization',value:pct(11),sections:[11]},
-   {name:'AI, Automation & Platform Readiness',value:pct(12),sections:[12]},
-   {name:'Healthcare-Specific ERP Readiness',value:pct(13),sections:[13]},
-   {name:'Testing & Cutover Readiness',value:pct(14),sections:[14]}
- ];
+ return sections.map((s,i)=>({
+   name:s.name,
+   value:pct(i),
+   sectionIndex:i
+ }));
 }
 
 function renderBars(raw){
  const target=el('categoryBars');
  if(!target)return;
+
  const cats=categoryReadinessData(raw);
  target.innerHTML=cats.map(c=>`
    <div class="metric">
@@ -1063,8 +1056,11 @@ function renderBars(raw){
        <span>${c.name}</span>
        <span>${c.value}%</span>
      </div>
-     <div class="track"><span style="width:${Math.max(0,Math.min(100,c.value))}%"></span></div>
-   </div>`).join('');
+     <div class="track">
+       <span style="width:${c.value}%"></span>
+     </div>
+   </div>
+ `).join('');
 }
 function radarValueForDimension(dim,raw,mode='score'){const totalWeight=dim.sections.reduce((sum,i)=>sum+effectiveWeight(i),0)||1;return dim.sections.reduce((sum,i)=>{const value=mode==='benchmark'?normalizedScore(i,sections[i].benchmark):normalizedScore(i,raw[i]);return sum+(value*effectiveWeight(i));},0)/totalWeight}
 function renderRadar(raw){
@@ -1554,6 +1550,7 @@ function advanceScopeToReadiness(){
  try{autosaveDraft()}catch(e){}
 
  setActiveScreenHard('screenAssessment');
+ setTimeout(()=>{updateCategoryReadinessNow();refreshReadinessRadarOnly();refreshExecutiveDashboardOnly();},50);
  setTimeout(()=>targetedFiveSecondRefresh(),50);
 }
 
