@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Medix ERP Transformation Readiness Tracker™</title>
-<!-- Internal version tracking: ERP Transformation Readiness Tracker V6.5 -->
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V6.7 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -507,7 +507,7 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
         <h2>Readiness Checklist</h2>
         <p class="small">Check each item your organization has already addressed. Workstreams are weighted based on ERP implementation risk in healthcare environments.</p>
         <div id="checklist"></div>
-        <div class="button-row"><button class="primary" onclick="downloadPDFReport()">Download PDF Report</button><button class="secondary" onclick="resetAssessment()">Reset Assessment</button></div>
+        <div class="button-row"><button class="secondary" onclick="resetAssessment()">Reset Assessment</button></div>
       </div>
       <div>
         <div class="card">
@@ -829,7 +829,7 @@ function renderChecklist(){
   let html=`<div class="stage-group"><div class="stage-header"><h3>${stage.name}</h3><div class="small">${stage.desc}</div></div><div class="stage-content">`;
   stage.sections.forEach(i=>{
    const s=sections[i];
-   const qs=s.questions.map((q,j)=>`<label><input type="checkbox" id="q${i}_${j}" onchange="calculate();updateCategoryReadinessNow();refreshReadinessRadarOnly();try{autosaveDraft()}catch(e){}"> <span>${q}</span></label>`).join('');
+   const qs=s.questions.map((q,j)=>`<label><input type="checkbox" id="q${i}_${j}" onchange="calculate();updateCategoryReadinessNow();refreshReadinessRadarOnly();refreshExecutiveDashboardOnly();try{autosaveDraft()}catch(e){}"> <span>${q}</span></label>`).join('');
    html+=`<div class="section"><div class="section-header"><div><h3>${displayNumber}. ${s.name}</h3><div class="small">Weight: ${effectiveWeight(i)}% | Benchmark: ${s.benchmark}/${s.questions.length}</div></div><span id="badge${i}" class="badge red">0/${s.questions.length}</span></div><div class="questions">${qs}</div></div>`;
    displayNumber++;
   });
@@ -838,6 +838,7 @@ function renderChecklist(){
  });
  updateReadinessDashboardVisibility();
  try{updateCategoryReadinessNow()}catch(e){}
+ try{bindReadinessLiveUpdates()}catch(e){}
 }
 function escapeHtml(str){return str.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 function checkedCount(i){let c=0;for(let j=0;j<sections[i].questions.length;j++) if(el(`q${i}_${j}`).checked)c++;return c}
@@ -889,11 +890,19 @@ function readinessStatusLabel(score){
 function updateReadinessStoplight(score){
  const status=score>=75?'Green':score>=55?'Yellow':'Red';
  const cls=status.toLowerCase();
- if(el('readinessStatusText'))el('readinessStatusText').innerText=status;
+
+ const textNode=el('readinessStatusText');
+ if(textNode)textNode.innerText=status;
+
  const light=el('readinessStoplight');
  if(light){
    light.className='readiness-stoplight '+cls;
    light.setAttribute('aria-label','Readiness status: '+status);
+ }
+
+ const card=el('statusCard');
+ if(card){
+   card.className='exec-stat-card';
  }
  return status;
 }
@@ -986,9 +995,24 @@ function buildAssessmentSummary(raw,score,prob,riskText){
 
 let targetedRefreshTimer=null;
 
+
+function bindReadinessLiveUpdates(){
+ const checklist=document.getElementById('checklist');
+ if(!checklist || checklist.dataset.liveBound==='true')return;
+ checklist.dataset.liveBound='true';
+
+ checklist.addEventListener('change',function(event){
+   const target=event.target;
+   if(target && target.matches('input[type="checkbox"][id^="q"]')){
+     try{renderBars()}catch(e){console.warn('Category update issue:',e)}
+     try{refreshReadinessRadarOnly()}catch(e){}
+     try{refreshExecutiveDashboardOnly()}catch(e){}
+   }
+ });
+}
+
 function updateCategoryReadinessNow(){
- const raw=currentReadinessRaw();
- renderBars(raw);
+ renderBars();
 }
 
 function currentReadinessRaw(){return sections.map((s,i)=>checkedCount(i));}
@@ -1004,8 +1028,8 @@ function refreshExecutiveDashboardOnly(){
  const [riskText]=riskLevel(score);
  const statusText=updateReadinessStoplight(score);
 
- if(el('score'))el('score').innerText=score;updateReadinessStoplight(score);
- if(el('readinessStatusText'))el('readinessStatusText').innerText=statusText;
+ if(el('score'))el('score').innerText=score;updateReadinessStoplight(score);updateReadinessStoplight(score);updateReadinessStoplight(score);
+ 
  if(el('prob'))el('prob').innerText=prob+'%';
  if(el('risk'))el('risk').innerText=riskText;
  const riskCard=el('riskCard');
@@ -1028,28 +1052,30 @@ function targetedFiveSecondRefresh(){
 }
 function startTargetedRefresh(){if(targetedRefreshTimer)clearInterval(targetedRefreshTimer);targetedRefreshTimer=setInterval(targetedFiveSecondRefresh,5000);}
 
-function calculate(){if(!selectedVendor)return;updateReadinessDashboardVisibility();const raw=[];let weighted=0;sections.forEach((s,i)=>{const c=checkedCount(i);const max=sectionMax(i);raw.push(c);weighted+=(c/max)*effectiveWeight(i);const b=el('badge'+i);b.innerText=`${c}/${max}`;b.className='badge '+scoreClass(c,s.benchmark)});const mods=selectedModules();const modCount=mods.length, eco=ecosystemCount(), cpx=complexityPoints();const scopePenalty=Math.min(14, Math.floor(modCount/4)+Math.floor(eco/5)+Math.floor(cpx/3));const score=Math.max(0,Math.round(weighted-scopePenalty));const prob=Math.min(96,Math.max(15,Math.round(score*.86+11)));const [riskText,riskCls]=riskLevel(score);const complexity=projectComplexity(modCount,eco,cpx);el('score').innerText=score;const stoplight=score>=75?'green':score>=55?'yellow':'red';el('prob').innerText=prob+'%';if(el('moduleCount'))el('moduleCount').innerText=modCount;if(el('selectedModuleCount'))el('selectedModuleCount').innerText=modCount;el('risk').innerText=riskText;el('risk').style.color=riskCls==='green'?'#2E7D32':riskCls==='yellow'?'#F9A825':riskCls==='orange'?'#EF6C00':'#C62828';if(el('execAssessmentSummary'))el('execAssessmentSummary').innerHTML=buildAssessmentSummary(raw,score,prob,riskText);updateReadinessDashboardVisibility();renderProfileSummary(modCount,eco,complexity);renderExecutiveSummary(score,prob,riskText,modCount,eco);renderBars(raw);renderRadar(raw);renderHeat(raw);renderExecutiveReport(raw,score);renderFindings(raw,score,modCount,eco,complexity);renderImpact(raw,modCount,eco);renderServices(raw,modCount,eco);autosaveDraft()}
+function calculate(){if(!selectedVendor)return;updateReadinessDashboardVisibility();const raw=[];let weighted=0;sections.forEach((s,i)=>{const c=checkedCount(i);const max=sectionMax(i);raw.push(c);weighted+=(c/max)*effectiveWeight(i);const b=el('badge'+i);b.innerText=`${c}/${max}`;b.className='badge '+scoreClass(c,s.benchmark)});const mods=selectedModules();const modCount=mods.length, eco=ecosystemCount(), cpx=complexityPoints();const scopePenalty=Math.min(14, Math.floor(modCount/4)+Math.floor(eco/5)+Math.floor(cpx/3));const score=Math.max(0,Math.round(weighted-scopePenalty));const prob=Math.min(96,Math.max(15,Math.round(score*.86+11)));const [riskText,riskCls]=riskLevel(score);const complexity=projectComplexity(modCount,eco,cpx);el('score').innerText=score;const stoplight=score>=75?'green':score>=55?'yellow':'red';el('prob').innerText=prob+'%';if(el('moduleCount'))el('moduleCount').innerText=modCount;if(el('selectedModuleCount'))el('selectedModuleCount').innerText=modCount;el('risk').innerText=riskText;el('risk').style.color=riskCls==='green'?'#2E7D32':riskCls==='yellow'?'#F9A825':riskCls==='orange'?'#EF6C00':'#C62828';if(el('execAssessmentSummary'))el('execAssessmentSummary').innerHTML=buildAssessmentSummary(raw,score,prob,riskText);updateReadinessDashboardVisibility();renderProfileSummary(modCount,eco,complexity);renderExecutiveSummary(score,prob,riskText,modCount,eco);renderBars();renderRadar(raw);renderHeat(raw);renderExecutiveReport(raw,score);renderFindings(raw,score,modCount,eco,complexity);renderImpact(raw,modCount,eco);renderServices(raw,modCount,eco);autosaveDraft()}
 function projectComplexity(m,e,c){const pts=m+e+(c*2);if(pts>=48)return'Very High';if(pts>=32)return'High';if(pts>=18)return'Medium';return'Low'}
 function renderProfileSummary(m,e,c){const org=el('org').value||'This organization', stage=el('stage').value||selectedJourneyStage||'not defined', timeline=el('timeline').value, legacy=el('legacy').value||'not defined';const evaluated=evaluatedErpSystems.map(k=>vendors[k]?.name).filter(Boolean).join(', ');const platformText=(selectedVendor==='other'&&evaluated)?`a general ERP evaluation across <strong>${evaluated}</strong>`:`<strong>${vendors[selectedVendor].name}</strong>`;el('profileSummary').innerHTML=`<strong>${org}</strong> is assessing ${platformText} at the <strong>${stage}</strong> stage. Current timeline is <strong>${timeline}</strong>, legacy platform is <strong>${legacy}</strong>, selected scope includes <strong>${m}</strong> items, and healthcare ecosystem scope includes <strong>${e}</strong> impacted systems.`}
 function renderExecutiveSummary(score,prob,risk,m,e){const org=el('org').value||'This organization';el('execSummary').innerHTML=`<strong>${score>=75?'Green':score>=55?'Yellow':'Red'} Readiness:</strong> ${org} has an ERP Readiness Score of <strong>${score}/100</strong> with an estimated success probability of <strong>${prob}</strong> and overall risk of <strong>${risk}</strong>. Scope assumptions include <strong>${m}</strong> selected vendor modules and <strong>${e}</strong> healthcare integration touchpoints.`}
-function categoryReadinessData(raw){
- const pct=i=>{
-   const max=sectionMax(i);
-   const count=Number(raw[i]||0);
-   return max ? Math.round((count/max)*100) : 0;
- };
- return sections.map((s,i)=>({
-   name:s.name,
-   value:pct(i),
-   sectionIndex:i
- }));
+function categoryReadinessData(){
+ return sections.map((s,i)=>{
+   const boxes=[...document.querySelectorAll(`#checklist input[type="checkbox"][id^="q${i}_"]`)];
+   const total=boxes.length || s.questions.length || 1;
+   const checked=boxes.filter(box=>box.checked).length;
+   return {
+     name:s.name,
+     value:Math.round((checked/total)*100),
+     checked,
+     total,
+     sectionIndex:i
+   };
+ });
 }
 
-function renderBars(raw){
- const target=el('categoryBars');
+function renderBars(){
+ const target=document.getElementById('categoryBars');
  if(!target)return;
+ const cats=categoryReadinessData();
 
- const cats=categoryReadinessData(raw);
  target.innerHTML=cats.map(c=>`
    <div class="metric">
      <div class="metric-row">
@@ -1550,7 +1576,7 @@ function advanceScopeToReadiness(){
  try{autosaveDraft()}catch(e){}
 
  setActiveScreenHard('screenAssessment');
- setTimeout(()=>{updateCategoryReadinessNow();refreshReadinessRadarOnly();refreshExecutiveDashboardOnly();},50);
+ setTimeout(()=>{bindReadinessLiveUpdates();updateCategoryReadinessNow();refreshReadinessRadarOnly();refreshExecutiveDashboardOnly();},50);
  setTimeout(()=>targetedFiveSecondRefresh(),50);
 }
 
