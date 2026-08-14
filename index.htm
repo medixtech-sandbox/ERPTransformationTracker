@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Medix ERP Transformation Readiness Tracker™</title>
-<!-- Internal version tracking: ERP Transformation Readiness Tracker V2.5 -->
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V3.0 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -118,6 +118,53 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 .exec-accordion-body{padding:16px 18px}
 .exec-accordion .exec-report-grid{margin-top:0}
 .exec-section-kicker{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--primary-step-1);font-weight:900;margin-bottom:4px}
+
+.exec-command-center{margin-top:18px}
+.exec-summary-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+.exec-summary-tile{border:1px solid var(--line);border-radius:16px;padding:16px;background:#FBFDFF}
+.exec-summary-tile .num{font-size:28px;font-weight:900;color:var(--blue);line-height:1.1}
+.exec-summary-tile .label{font-size:12px;color:var(--muted);margin-top:6px}
+.exec-nav{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.exec-nav button{padding:9px 12px;font-size:12px}
+.exec-section-panel{display:none}
+.exec-section-panel.active{display:block}
+.backup-panel{border:1px solid var(--line);border-radius:16px;padding:14px;background:#FBFDFF;margin-top:14px}
+.backup-panel strong{color:var(--navy)}
+.backup-file-input{display:none}
+
+.app-screen{display:none}
+.app-screen.active{display:block}
+.landing-shell{min-height:72vh;display:flex;align-items:center;justify-content:center;padding:28px 0}
+.landing-card{width:min(980px,100%);background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);overflow:hidden}
+.landing-top{padding:32px;background:radial-gradient(circle at 86% 18%,rgba(99,230,184,.22),transparent 24%),linear-gradient(135deg,var(--primary-step-2),var(--primary-step-1) 58%,var(--primary));color:#fff;border-bottom:5px solid var(--secondary)}
+.landing-top h1{margin:8px 0;color:#fff}
+.landing-body{padding:26px}
+.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+.choice-card{border:1px solid var(--line);border-radius:18px;padding:22px;background:#FBFDFF}
+.choice-card h3{font-size:20px;margin:0 0 8px;color:var(--navy)}
+.choice-card p{color:var(--muted);font-size:14px;min-height:44px}
+.choice-card button{width:100%;margin-top:10px}
+.screen-shell{max-width:1180px;margin:0 auto}
+.screen-header{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:16px}
+.screen-header h2{margin:0;color:var(--navy);font-size:28px}
+.screen-nav{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;margin-top:20px}
+.screen-nav .right{display:flex;gap:10px;flex-wrap:wrap;margin-left:auto}
+.wizard-steps{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 20px}
+.wizard-step{padding:8px 11px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--muted);font-size:12px;font-weight:800}
+.wizard-step.active{background:var(--primary);border-color:var(--primary);color:#fff}
+.wizard-step.done{background:#F1FAF2;border-color:#BFE5C2;color:var(--green)}
+.upload-zone{border:2px dashed #BFD5E7;border-radius:18px;padding:24px;text-align:center;background:#FBFDFF}
+.upload-zone input{margin-top:10px}
+.confirm-banner{background:#F1FAF7;border:1px solid #BFE8D8;border-radius:14px;padding:14px;margin-top:12px}
+.scope-simple-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.scope-simple-card{border:1px solid var(--line);border-radius:16px;padding:18px;background:#FBFDFF;cursor:pointer;font-weight:900;color:var(--navy)}
+.scope-simple-card input{margin-right:8px}
+.scope-simple-card:has(input:checked){border:2px solid var(--primary);background:#EFF8FF}
+.assessment-screen .card{margin-top:16px}
+@media(max-width:900px){.choice-grid,.scope-simple-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:650px){.choice-grid,.scope-simple-grid{grid-template-columns:1fr}}
+@media(max-width:900px){.exec-summary-strip{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.exec-summary-strip{grid-template-columns:1fr}}
 @media(max-width:900px){.exec-task{grid-template-columns:30px 1fr}.exec-task-meta{grid-column:2;border-left:0;border-top:1px solid var(--line);padding:8px 0 0}}
 @media(max-width:900px){.exec-report-grid{grid-template-columns:1fr}}
 @media(max-width:900px){.brand-header{align-items:flex-start;flex-direction:column}.brand-tagline{white-space:normal}.medix-logo{height:52px}.brand-lockup{border-left:0;border-top:4px solid var(--secondary);padding-left:0;padding-top:12px}}
@@ -128,7 +175,7 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 </head>
 <body>
 <div class="wrapper">
-  <div class="brand-header">
+  <div class="brand-header hidden" id="legacyBrandHeader">
     <div class="logo-wrap">
       <img src="medix-technology-logo.png" alt="Medix Technology" class="medix-logo">
       <div class="brand-lockup">
@@ -139,14 +186,131 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
     <div class="brand-tagline">People. Technology. Solutions.</div>
   </div>
 
-  <div class="hero">
+  <div class="hero hidden" id="legacyHero">
     <div class="kicker">Healthcare ERP Advisory Portal</div>
     <h1>Medix ERP Transformation Readiness Tracker™</h1>
     <p>A longitudinal ERP readiness and transformation tracking tool designed to help executive teams assess progress, manage key actions, and monitor readiness throughout the ERP lifecycle.</p>
     <span class="pill">Executive Assessment</span><span class="pill">Progress Tracking</span><span class="pill">Lifecycle Readiness</span>
   </div>
 
-  <div class="card">
+  
+  <div class="app-screen active" id="screenLanding">
+    <div class="landing-shell">
+      <div class="landing-card">
+        <div class="landing-top">
+          <div class="kicker">Healthcare ERP Advisory Portal</div>
+          <h1>Medix ERP Transformation Readiness Tracker™</h1>
+          <p>Assess readiness, track progress, and guide executive decision-making throughout the ERP lifecycle.</p>
+        </div>
+        <div class="landing-body">
+          <h2>How would you like to begin?</h2>
+          <div class="choice-grid">
+            <div class="choice-card">
+              <h3>Start a New Assessment</h3>
+              <p>Create a new ERP readiness assessment and establish your organization and project profile.</p>
+              <button class="primary" type="button" onclick="startNewAssessmentFlow()">Start New Assessment</button>
+            </div>
+            <div class="choice-card">
+              <h3>Continue an Assessment</h3>
+              <p>Restore a previously downloaded backup and continue from your latest saved progress.</p>
+              <button class="secondary" type="button" onclick="document.getElementById('landingBackupInput').click()">Upload Assessment Backup</button>
+              <input id="landingBackupInput" class="backup-file-input" type="file" accept=".json,application/json" onchange="continueAssessmentFromLanding(event)">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-screen" id="screenProfile">
+    <div class="screen-shell">
+      <div class="wizard-steps" id="wizardProfile"></div>
+      <div class="screen-header">
+        <div>
+          <div class="kicker" style="color:var(--primary-step-1)">Step 1</div>
+          <h2 id="profileScreenTitle">Organization & Project Profile</h2>
+          <p class="small" id="profileScreenHelp">Enter the basic information for this ERP transformation.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="profile-grid">
+          <label>Organization Name <span class="required-star">*</span><br><input id="wizardOrg" type="text" placeholder="Health System / Organization"></label>
+          <label>Organization Type <span class="required-star">*</span><br>
+            <select id="wizardOrgType">
+              <option value="">Select Organization Type</option>
+              <option>Academic Medical Center</option><option>Integrated Delivery Network (IDN)</option>
+              <option>Community Health System</option><option>Critical Access Hospital</option>
+              <option>Children's Hospital</option><option>Specialty Hospital</option>
+              <option>Ambulatory / Physician Group</option><option>Government / VA</option>
+              <option>Behavioral Health</option><option>Other Healthcare Organization</option>
+            </select>
+          </label>
+          <label>Number of Employees <span class="required-star">*</span><br><input id="wizardEmployees" type="number" min="1" placeholder="Example: 12500"></label>
+          <label>Target Timeline <span class="required-star">*</span><br>
+            <select id="wizardTimeline">
+              <option value="">Select Target Timeline</option>
+              <option>0–6 Months</option><option>6–12 Months</option><option>12–18 Months</option><option>18–30 Months</option><option>30+ Months</option>
+            </select>
+          </label>
+          <label>Current ERP Lifecycle Stage <span class="required-star">*</span><br>
+            <select id="wizardLifecycleStage">
+              <option value="Discovery">Discovery</option>
+              <option value="Business Case Creation">Business Case</option>
+              <option value="Vendor Selection">Vendor Selection</option>
+              <option value="Implementation Planning">Pre-Implementation</option>
+              <option value="Implementation">Implementation</option>
+              <option value="Testing">Testing</option>
+              <option value="Go-Live / Hypercare">Go-Live / Hypercare</option>
+              <option value="Optimization">Stabilization / Optimization</option>
+            </select>
+          </label>
+        </div>
+        <div id="profileConfirmBanner" class="confirm-banner hidden"></div>
+      </div>
+
+      <div class="screen-nav">
+        <button class="ghost" type="button" onclick="showScreen('screenLanding')">Back</button>
+        <div class="right">
+          <button class="primary" type="button" onclick="saveWizardProfileAndNext()">Continue</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-screen" id="screenScope">
+    <div class="screen-shell">
+      <div class="wizard-steps" id="wizardScope"></div>
+      <div class="screen-header">
+        <div>
+          <div class="kicker" style="color:var(--primary-step-1)">Step 2</div>
+          <h2>General ERP Evaluation Scope</h2>
+          <p class="small">Select the top-level ERP areas included in the initiative.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="scope-simple-grid">
+          <label class="scope-simple-card"><input type="checkbox" id="wizardScopeHCM"> Human Capital Management</label>
+          <label class="scope-simple-card"><input type="checkbox" id="wizardScopeFinance"> Financial Management</label>
+          <label class="scope-simple-card"><input type="checkbox" id="wizardScopeSupply"> Supply Chain Management</label>
+          <label class="scope-simple-card"><input type="checkbox" id="wizardScopePlatform"> Platform, Reporting & AI</label>
+        </div>
+      </div>
+
+      <div class="screen-nav">
+        <button class="ghost" type="button" onclick="showScreen('screenProfile')">Back</button>
+        <div class="right">
+          <button class="primary" type="button" onclick="saveWizardScopeAndNext()">Continue to Readiness Assessment</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-screen assessment-screen" id="screenAssessment">
+    <div class="screen-shell">
+      <div class="wizard-steps" id="wizardAssessment"></div>
+<div class="card">
     <h2>ERP Transformation Tracker</h2>
     <p class="small">Save your progress, return later, compare assessment snapshots, and track executive actions throughout the ERP lifecycle.</p>
     <div class="tracker-toolbar">
@@ -154,6 +318,13 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
       <button class="secondary" type="button" onclick="resumeLatestAssessment()">Resume Last Assessment</button>
       <button class="secondary" type="button" onclick="showAssessmentHistory()">Assessment History</button>
       <button class="ghost" type="button" onclick="startNewAssessmentVersion()">Start New Update</button>
+      <button class="secondary" type="button" onclick="exportTrackerBackup()">Download Backup</button>
+      <button class="ghost" type="button" onclick="document.getElementById('backupImportInput').click()">Restore Backup</button>
+      <input id="backupImportInput" class="backup-file-input" type="file" accept=".json,application/json" onchange="importTrackerBackup(event)">
+    </div>
+    <div class="backup-panel">
+      <strong>Portable Backup</strong>
+      <div class="small">Download a dated backup of the full tracker history. The file can be restored later even if browser storage is cleared or the assessment is opened on another device.</div>
     </div>
     <div id="trackerMessage" class="success-banner"></div>
     <div class="lifecycle" id="lifecycleTracker"></div>
@@ -238,79 +409,95 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
       </div>
     </div>
 
-    <div class="card executive-report" id="executiveReadinessReport">
+    
+      <div class="screen-nav">
+        <button class="ghost" type="button" onclick="showScreen('screenScope')">Back</button>
+        <div class="right">
+          <button class="secondary" type="button" onclick="saveAssessmentSnapshot()">Save Progress</button>
+          <button class="primary" type="button" onclick="goToExecutiveReport()">Continue to Executive Report</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-screen" id="screenReport">
+    <div class="screen-shell">
+      <div class="wizard-steps" id="wizardReport"></div>
+<div class="card executive-report exec-command-center" id="executiveReadinessReport">
       <div class="exec-report-header">
-        <h2>Executive Readiness Report</h2>
-        <p id="executiveNarrative">Complete the assessment to generate an executive-level summary of readiness, progress, priorities, and recommended next steps.</p>
+        <h2>Executive Readiness Command Center</h2>
+        <p id="executiveNarrative">Complete the assessment to generate an executive-level view of readiness, progress, priorities, and recommended actions.</p>
       </div>
 
-      <details class="exec-accordion" open>
-        <summary><span><div class="exec-section-kicker">Executive Overview</div>Readiness & ERP Journey Position</span></summary>
-        <div class="exec-accordion-body">
-          <div class="exec-report-grid">
-            <div class="exec-panel">
-              <h3>Where You Are in the ERP Journey</h3>
-              <div id="journeyFocus"></div>
-            </div>
-            <div class="exec-panel">
-              <h3>Top Executive Priorities</h3>
-              <div id="executivePriorities"></div>
-            </div>
-          </div>
-        </div>
-      </details>
+      <div class="exec-summary-strip">
+        <div class="exec-summary-tile"><div class="num" id="execCurrentScore">0</div><div class="label">Current Readiness Score</div></div>
+        <div class="exec-summary-tile"><div class="num" id="execScoreChange">—</div><div class="label">Change Since Last Assessment</div></div>
+        <div class="exec-summary-tile"><div class="num" id="execPriorityCount">0</div><div class="label">Priority Areas</div></div>
+        <div class="exec-summary-tile"><div class="num" id="execActionProgress">0/0</div><div class="label">Executive Actions Complete</div></div>
+      </div>
 
-      <details class="exec-accordion">
-        <summary><span><div class="exec-section-kicker">Progress</div>Since Your Last Assessment</span></summary>
-        <div class="exec-accordion-body">
-          <div class="history-grid">
-            <div class="history-card"><div class="num" id="changeScore">—</div><div class="small">Readiness Score Change</div></div>
-            <div class="history-card"><div class="num" id="actionsCompletedChange">—</div><div class="small">Executive Actions Completed</div></div>
-            <div class="history-card"><div class="num" id="categoriesImproved">—</div><div class="small">Categories Improved</div></div>
-            <div class="history-card"><div class="num" id="categoriesDeclined">—</div><div class="small">Categories Declined</div></div>
-          </div>
-          <div class="exec-report-grid" style="margin-top:14px">
-            <div class="exec-panel"><h3>What Improved</h3><ul id="improvementList"></ul></div>
-            <div class="exec-panel"><h3>What Needs Attention</h3><ul id="declineList"></ul></div>
-          </div>
-          <div class="timeline-chart-wrap"><canvas id="progressChart"></canvas></div>
-        </div>
-      </details>
+      <div class="exec-nav">
+        <button class="primary" type="button" onclick="showExecSection('overview',this)">Executive Overview</button>
+        <button class="secondary" type="button" onclick="showExecSection('progress',this)">Progress</button>
+        <button class="secondary" type="button" onclick="showExecSection('guidance',this)">Guidance</button>
+        <button class="secondary" type="button" onclick="showExecSection('actions',this)">Next Steps</button>
+      </div>
 
-      <details class="exec-accordion">
-        <summary><span><div class="exec-section-kicker">Executive Guidance</div>Things to Keep in Mind</span></summary>
-        <div class="exec-accordion-body">
-          <div class="exec-report-grid">
-            <div class="exec-panel">
-              <h3>Things to Keep in Mind</h3>
-              <ul id="keepInMind"></ul>
-            </div>
-            <div class="exec-panel">
-              <h3>What Does Not Need to Be Fully Solved Yet</h3>
-              <ul id="notYet"></ul>
-            </div>
-          </div>
-        </div>
-      </details>
-
-      <details class="exec-accordion">
-        <summary><span><div class="exec-section-kicker">Action</div>Recommended Next Steps</span></summary>
-        <div class="exec-accordion-body">
+      <div class="exec-section-panel active" id="execSection_overview">
+        <div class="exec-report-grid">
           <div class="exec-panel">
-            <h3>Recommended Next Steps</h3>
-            <ol class="exec-next-steps" id="recommendedNextSteps"></ol>
+            <h3>Where You Are in the ERP Journey</h3>
+            <div id="journeyFocus"></div>
           </div>
-
-          <div class="exec-checklist-wrap">
-            <div class="exec-checklist-header">
-              <h3>Executive Action Checklist</h3>
-              <p>Leadership actions to complete before moving confidently into the next ERP phase. The checklist adapts to the most important readiness gaps identified in the assessment.</p>
-            </div>
-            <div id="executiveActionChecklist"></div>
-            <div class="exec-checklist-summary" id="executiveChecklistSummary"></div>
+          <div class="exec-panel">
+            <h3>Top Executive Priorities</h3>
+            <div id="executivePriorities"></div>
           </div>
         </div>
-      </details>
+      </div>
+
+      <div class="exec-section-panel" id="execSection_progress">
+        <div class="history-grid">
+          <div class="history-card"><div class="num" id="changeScore">—</div><div class="small">Readiness Score Change</div></div>
+          <div class="history-card"><div class="num" id="actionsCompletedChange">—</div><div class="small">Executive Actions Completed</div></div>
+          <div class="history-card"><div class="num" id="categoriesImproved">—</div><div class="small">Categories Improved</div></div>
+          <div class="history-card"><div class="num" id="categoriesDeclined">—</div><div class="small">Categories Declined</div></div>
+        </div>
+        <div class="exec-report-grid" style="margin-top:14px">
+          <div class="exec-panel"><h3>What Improved</h3><ul id="improvementList"></ul></div>
+          <div class="exec-panel"><h3>What Needs Attention</h3><ul id="declineList"></ul></div>
+        </div>
+        <div class="timeline-chart-wrap"><canvas id="progressChart"></canvas></div>
+      </div>
+
+      <div class="exec-section-panel" id="execSection_guidance">
+        <div class="exec-report-grid">
+          <div class="exec-panel">
+            <h3>Things to Keep in Mind</h3>
+            <ul id="keepInMind"></ul>
+          </div>
+          <div class="exec-panel">
+            <h3>What Does Not Need to Be Fully Solved Yet</h3>
+            <ul id="notYet"></ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="exec-section-panel" id="execSection_actions">
+        <div class="exec-panel">
+          <h3>Recommended Next Steps</h3>
+          <ol class="exec-next-steps" id="recommendedNextSteps"></ol>
+        </div>
+
+        <div class="exec-checklist-wrap">
+          <div class="exec-checklist-header">
+            <h3>Executive Action Checklist</h3>
+            <p>Leadership actions to complete before moving confidently into the next ERP phase.</p>
+          </div>
+          <div id="executiveActionChecklist"></div>
+          <div class="exec-checklist-summary" id="executiveChecklistSummary"></div>
+        </div>
+      </div>
     </div>
 
     <div class="grid">
@@ -341,6 +528,15 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
         <button class="ghost" onclick="downloadPDFReport()">Download PDF Report</button>
       </div>
       <!-- HubSpot-ready structured assessment data is generated by buildAssessmentPayload() and stored internally for future CRM integration. -->
+    </div>
+
+      <div class="screen-nav">
+        <button class="ghost" type="button" onclick="showScreen('screenAssessment')">Back to Assessment</button>
+        <div class="right">
+          <button class="secondary" type="button" onclick="exportTrackerBackup()">Download Backup</button>
+          <button class="primary" type="button" onclick="saveAssessmentSnapshot()">Save Progress</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -466,7 +662,7 @@ const sections=[
 ]
 let selectedVendor=null,selectedJourneyStage=null,evaluatedErpSystems=[],radarChart=null;
 function el(id){return document.getElementById(id)}
-function init(){renderJourneyCards();renderPlatformCards();renderEvaluationCards();renderChecklist();renderEcosystem();renderLifecycleTracker();renderHistorySummary();}
+function init(){renderJourneyCards();renderPlatformCards();renderEvaluationCards();renderChecklist();renderEcosystem();renderLifecycleTracker();renderHistorySummary();renderWizardSteps('screenLanding');}
 function earlyEvaluationStage(stage){return APP_CONFIG.earlyEvaluationStages.includes(stage)}
 function renderJourneyCards(){const jg=el('journeyGrid');if(!jg)return;jg.innerHTML='';journeyStages.forEach(stage=>{jg.innerHTML+=`<div class="platform-card" id="stage_${safeId(stage.key)}" onclick="selectJourneyStage('${stage.key}')"><span class="platform-tag">${stage.tag}</span><strong>${stage.key}</strong><div class="small">${stage.desc}</div></div>`})}
 function renderPlatformCards(){const pg=el('platformGrid');if(!pg)return;pg.innerHTML='';Object.entries(vendors).filter(([key])=>key!=='other').forEach(([key,v])=>{pg.innerHTML+=`<div class="platform-card" id="plat_${key}" onclick="selectPlatform('${key}')"><span class="platform-tag">${v.tag}</span><strong>${v.name}</strong><div class="small">${v.desc}</div></div>`})}
@@ -720,6 +916,7 @@ function updateExecutiveChecklistSummary(){
  const remaining=total-done;
  const summary=el('executiveChecklistSummary');
  if(summary) summary.innerHTML=`<span>Executive Actions: ${total}</span><span>Completed: ${done}</span><span>Remaining: ${remaining}</span>`;
+ if(el('execActionProgress'))el('execActionProgress').innerText=`${done}/${total}`;
 }
 function medixAdvisoryPerspective(raw){
  const gaps=executivePriorityItems(raw).map(x=>x.i);
@@ -734,6 +931,9 @@ function medixAdvisoryPerspective(raw){
 }
 
 function renderExecutiveReport(raw,score){
+ if(el('execCurrentScore'))el('execCurrentScore').innerText=score+'/100';
+ const priorityItems=executivePriorityItems(raw);
+ if(el('execPriorityCount'))el('execPriorityCount').innerText=priorityItems.length;
  el('executiveNarrative').innerText=readinessNarrative(score,raw);
  el('journeyFocus').innerHTML=discoveryJourneyFocus();
  renderExecutivePriorities(raw);
@@ -744,6 +944,200 @@ function renderExecutiveReport(raw,score){
  renderHistorySummary();
 }
 
+
+
+
+let assessmentFlowMode='new';
+
+function showScreen(id){
+ document.querySelectorAll('.app-screen').forEach(s=>s.classList.remove('active'));
+ const target=el(id);if(target)target.classList.add('active');
+ renderWizardSteps(id);
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderWizardSteps(screenId){
+ const steps=[
+  ['screenProfile','1 Profile'],
+  ['screenScope','2 ERP Scope'],
+  ['screenAssessment','3 Readiness'],
+  ['screenReport','4 Executive Report']
+ ];
+ const currentIndex=Math.max(0,steps.findIndex(s=>s[0]===screenId));
+ ['wizardProfile','wizardScope','wizardAssessment','wizardReport'].forEach(containerId=>{
+   const c=el(containerId);if(!c)return;
+   c.innerHTML=steps.map((s,i)=>`<span class="wizard-step ${i<currentIndex?'done':i===currentIndex?'active':''}">${s[1]}</span>`).join('');
+ });
+}
+
+function startNewAssessmentFlow(){
+ assessmentFlowMode='new';
+ currentAssessmentId='a_'+Date.now();
+ ['wizardOrg','wizardEmployees'].forEach(id=>{if(el(id))el(id).value=''});
+ if(el('wizardOrgType'))el('wizardOrgType').value='';
+ if(el('wizardTimeline'))el('wizardTimeline').value='';
+ if(el('wizardLifecycleStage'))el('wizardLifecycleStage').value='Discovery';
+ ['wizardScopeHCM','wizardScopeFinance','wizardScopeSupply','wizardScopePlatform'].forEach(id=>{if(el(id))el(id).checked=false});
+ el('profileScreenTitle').innerText='Organization & Project Profile';
+ el('profileScreenHelp').innerText='Enter the basic information for this ERP transformation.';
+ el('profileConfirmBanner').classList.add('hidden');
+ showScreen('screenProfile');
+}
+
+function continueAssessmentFromLanding(event){
+ const file=event.target.files&&event.target.files[0];
+ if(!file)return;
+ const reader=new FileReader();
+ reader.onload=function(){
+   try{
+     const payload=JSON.parse(reader.result);
+     const state=payload.state||payload;
+     if(!state||!Array.isArray(state.assessments))throw new Error('Invalid backup');
+     saveTrackerState(state);
+     const latest=state.draft||state.assessments[state.assessments.length-1];
+     if(!latest)throw new Error('No assessment found');
+     applyAssessmentData(latest);
+     assessmentFlowMode='continue';
+     currentAssessmentId=latest.id||('a_'+Date.now());
+
+     if(el('wizardOrg'))el('wizardOrg').value=latest.org||'';
+     if(el('wizardOrgType'))el('wizardOrgType').value=latest.orgType||'';
+     if(el('wizardEmployees'))el('wizardEmployees').value=latest.employees||'';
+     if(el('wizardTimeline'))el('wizardTimeline').value=latest.timeline||'';
+     if(el('wizardLifecycleStage'))el('wizardLifecycleStage').value=latest.lifecycleStage||'Discovery';
+
+     syncWizardScopeFromModules();
+
+     el('profileScreenTitle').innerText='Confirm Organization & Project Profile';
+     el('profileScreenHelp').innerText='Review the previously saved information below and make any updates before continuing.';
+     el('profileConfirmBanner').innerHTML=`<strong>Assessment restored:</strong> ${latest.org||'ERP Project'} · ${latest.lifecycleStage||'Discovery'} · Last saved ${new Date(latest.savedAt).toLocaleString()}`;
+     el('profileConfirmBanner').classList.remove('hidden');
+     showScreen('screenProfile');
+   }catch(err){
+     alert('That backup file could not be restored.');
+   }finally{
+     event.target.value='';
+   }
+ };
+ reader.readAsText(file);
+}
+
+function saveWizardProfileAndNext(){
+ const org=el('wizardOrg').value.trim(),orgType=el('wizardOrgType').value,employees=el('wizardEmployees').value,timeline=el('wizardTimeline').value,stage=el('wizardLifecycleStage').value;
+ if(!org||!orgType||!employees||!timeline){alert('Please complete the required organization and project profile fields.');return}
+ if(el('org'))el('org').value=org;
+ if(el('orgType'))el('orgType').value=orgType;
+ if(el('employees'))el('employees').value=employees;
+ if(el('timeline'))el('timeline').value=timeline;
+ if(el('lifecycleStage'))el('lifecycleStage').value=stage;
+ renderLifecycleTracker();
+ renderChecklist();
+ calculate();
+ showScreen('screenScope');
+}
+
+function syncWizardScopeFromModules(){
+ const modules=[...document.querySelectorAll('.moduleCheck')];
+ const names=modules.filter(x=>x.checked).map(x=>x.dataset.kind||x.dataset.name);
+ if(el('wizardScopeHCM'))el('wizardScopeHCM').checked=names.some(x=>/HCM/i.test(x));
+ if(el('wizardScopeFinance'))el('wizardScopeFinance').checked=names.some(x=>/Finance/i.test(x));
+ if(el('wizardScopeSupply'))el('wizardScopeSupply').checked=names.some(x=>/Supply/i.test(x));
+ if(el('wizardScopePlatform'))el('wizardScopePlatform').checked=names.some(x=>/Platform/i.test(x));
+}
+
+function saveWizardScopeAndNext(){
+ const selected=[
+   ['wizardScopeHCM','HCM'],
+   ['wizardScopeFinance','Finance'],
+   ['wizardScopeSupply','Supply Chain'],
+   ['wizardScopePlatform','Platform']
+ ].filter(([id])=>el(id)?.checked).map(x=>x[1]);
+ if(!selected.length){alert('Please select at least one ERP scope area.');return}
+
+ selectedVendor='other';
+ if(!document.querySelector('.moduleCheck'))renderVendorScope();
+ document.querySelectorAll('.moduleCheck').forEach(box=>{
+   const kind=(box.dataset.kind||'');
+   const name=(box.dataset.name||'');
+   box.checked =
+     (selected.includes('HCM') && /HCM/i.test(kind+name)) ||
+     (selected.includes('Finance') && /Finance/i.test(kind+name)) ||
+     (selected.includes('Supply Chain') && /Supply/i.test(kind+name)) ||
+     (selected.includes('Platform') && /Platform/i.test(kind+name));
+ });
+ calculate();
+ showScreen('screenAssessment');
+}
+
+function goToExecutiveReport(){
+ calculate();
+ saveAssessmentSnapshot();
+ showScreen('screenReport');
+}
+
+function showExecSection(name,btn){
+ document.querySelectorAll('.exec-section-panel').forEach(x=>x.classList.remove('active'));
+ const panel=el('execSection_'+name);if(panel)panel.classList.add('active');
+ document.querySelectorAll('.exec-nav button').forEach(b=>{b.classList.remove('primary');b.classList.add('secondary')});
+ if(btn){btn.classList.remove('secondary');btn.classList.add('primary')}
+ if(name==='progress')setTimeout(()=>renderHistorySummary(),0);
+}
+
+function safeBackupNamePart(value){
+ return (value||'ERP_Project').toString().trim().replace(/[^a-z0-9]+/gi,'_').replace(/^_+|_+$/g,'').slice(0,60)||'ERP_Project';
+}
+
+function exportTrackerBackup(){
+ const state=trackerState();
+ state.draft=collectAssessmentData();
+ saveTrackerState(state);
+
+ const now=new Date();
+ const pad=n=>String(n).padStart(2,'0');
+ const stamp=`${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}_${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(now.getSeconds())}`;
+ const org=safeBackupNamePart(el('org')?.value||state.draft?.org||'ERP_Project');
+ const stage=safeBackupNamePart(el('lifecycleStage')?.value||state.draft?.lifecycleStage||'Assessment');
+ const filename=`${org}_${stage}_ERP_Readiness_Backup_${stamp}.json`;
+
+ const payload={
+   backupType:'Medix ERP Transformation Readiness Tracker',
+   version:'2.6',
+   exportedAt:now.toISOString(),
+   state
+ };
+ const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement('a');
+ a.href=url;a.download=filename;
+ document.body.appendChild(a);a.click();a.remove();
+ URL.revokeObjectURL(url);
+ showTrackerMessage(`Backup downloaded: ${filename}`);
+}
+
+function importTrackerBackup(event){
+ const file=event.target.files&&event.target.files[0];
+ if(!file)return;
+ const reader=new FileReader();
+ reader.onload=function(){
+   try{
+     const payload=JSON.parse(reader.result);
+     const state=payload.state||payload;
+     if(!state||!Array.isArray(state.assessments))throw new Error('Invalid backup format');
+     saveTrackerState(state);
+     const latest=state.draft||state.assessments[state.assessments.length-1];
+     if(latest)applyAssessmentData(latest);
+     showAssessmentHistory();
+     renderHistorySummary();
+     renderLifecycleTracker();
+     showTrackerMessage(`Backup restored from ${file.name}`);
+   }catch(err){
+     showTrackerMessage('That file could not be restored. Please select a valid ERP Readiness Tracker backup.');
+   }finally{
+     event.target.value='';
+   }
+ };
+ reader.readAsText(file);
+}
 
 const TRACKER_KEY='medixErpReadinessTrackerV2';
 let progressChart=null;
@@ -923,7 +1317,7 @@ function renderHistorySummary(){
  const state=trackerState();
  const arr=[...state.assessments].sort((a,b)=>new Date(a.savedAt)-new Date(b.savedAt));
  if(arr.length<2){
-   ['changeScore','actionsCompletedChange','categoriesImproved','categoriesDeclined'].forEach(id=>{if(el(id))el(id).innerText='—'});
+   ['changeScore','actionsCompletedChange','categoriesImproved','categoriesDeclined','execScoreChange'].forEach(id=>{if(el(id))el(id).innerText='—'});
    if(el('improvementList'))el('improvementList').innerHTML='<li>Save at least two assessment snapshots to see progress.</li>';
    if(el('declineList'))el('declineList').innerHTML='<li>No comparison available yet.</li>';
    renderProgressChart(arr);
@@ -932,6 +1326,7 @@ function renderHistorySummary(){
  const prev=arr[arr.length-2],curr=arr[arr.length-1];
  const delta=curr.score-prev.score;
  el('changeScore').innerHTML=`<span class="${delta>0?'change-up':delta<0?'change-down':'change-flat'}">${delta>0?'+':''}${delta}</span>`;
+ if(el('execScoreChange'))el('execScoreChange').innerHTML=`<span class="${delta>0?'change-up':delta<0?'change-down':'change-flat'}">${delta>0?'+':''}${delta}</span>`;
  const prevActions=(prev.actionStates||[]).filter(x=>x.checked).length;
  const currActions=(curr.actionStates||[]).filter(x=>x.checked).length;
  el('actionsCompletedChange').innerText=`${currActions}/${Math.max(curr.actionStates?.length||0,1)}`;
