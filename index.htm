@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Medix ERP Transformation Readiness Tracker™</title>
-<!-- Internal version tracking: ERP Transformation Readiness Tracker V2.0 -->
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V2.2 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -102,16 +102,22 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 .saved-list{display:grid;gap:10px}
 .saved-item{display:flex;justify-content:space-between;gap:12px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
 .saved-item-actions{display:flex;gap:8px;flex-wrap:wrap}
-.status-select{min-width:140px;padding:7px;border:1px solid var(--line);border-radius:9px;background:#fff;font-size:12px}
-.question-row{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:10px;align-items:start;padding:5px 0}
-.question-row label{padding:0!important}
-.progress-note{width:100%;margin-top:5px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;font-size:12px}
 .timeline-chart-wrap{height:280px}
 .compare-table{width:100%;border-collapse:collapse}
 .compare-table th,.compare-table td{padding:9px;border-bottom:1px solid var(--line);font-size:13px;text-align:left}
 .compare-table th{background:#F7FBFE;color:var(--navy)}
 @media(max-width:1120px){.lifecycle{grid-template-columns:repeat(4,1fr)}.history-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:720px){.lifecycle,.history-grid{grid-template-columns:1fr}.question-row{grid-template-columns:1fr}}
+@media(max-width:720px){.lifecycle,.history-grid{grid-template-columns:1fr}}
+
+.exec-accordion{margin-top:14px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff}
+.exec-accordion summary{list-style:none;cursor:pointer;padding:16px 18px;background:#F7FBFE;color:var(--navy);font-weight:900;font-size:18px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.exec-accordion summary::-webkit-details-marker{display:none}
+.exec-accordion summary:after{content:"+";font-size:24px;line-height:1;color:var(--primary);font-weight:900}
+.exec-accordion[open] summary:after{content:"–"}
+.exec-accordion[open] summary{border-bottom:1px solid var(--line);background:#EFF8FF}
+.exec-accordion-body{padding:16px 18px}
+.exec-accordion .exec-report-grid{margin-top:0}
+.exec-section-kicker{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--primary-step-1);font-weight:900;margin-bottom:4px}
 @media(max-width:900px){.exec-task{grid-template-columns:30px 1fr}.exec-task-meta{grid-column:2;border-left:0;border-top:1px solid var(--line);padding:8px 0 0}}
 @media(max-width:900px){.exec-report-grid{grid-template-columns:1fr}}
 @media(max-width:900px){.brand-header{align-items:flex-start;flex-direction:column}.brand-tagline{white-space:normal}.medix-logo{height:52px}.brand-lockup{border-left:0;border-top:4px solid var(--secondary);padding-left:0;padding-top:12px}}
@@ -151,21 +157,6 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
     </div>
     <div id="trackerMessage" class="success-banner"></div>
     <div class="lifecycle" id="lifecycleTracker"></div>
-  </div>
-
-  <div class="card" id="sinceLastCard">
-    <h2>Since Your Last Assessment</h2>
-    <div class="history-grid">
-      <div class="history-card"><div class="num" id="changeScore">—</div><div class="small">Readiness Score Change</div></div>
-      <div class="history-card"><div class="num" id="actionsCompletedChange">—</div><div class="small">Executive Actions Completed</div></div>
-      <div class="history-card"><div class="num" id="categoriesImproved">—</div><div class="small">Categories Improved</div></div>
-      <div class="history-card"><div class="num" id="categoriesDeclined">—</div><div class="small">Categories Declined</div></div>
-    </div>
-    <div class="exec-report-grid" style="margin-top:14px">
-      <div class="exec-panel"><h3>What Improved</h3><ul id="improvementList"></ul></div>
-      <div class="exec-panel"><h3>What Needs Attention</h3><ul id="declineList"></ul></div>
-    </div>
-    <div class="timeline-chart-wrap"><canvas id="progressChart"></canvas></div>
   </div>
 
   <div class="card hidden" id="historyCard">
@@ -250,44 +241,76 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
     <div class="card executive-report" id="executiveReadinessReport">
       <div class="exec-report-header">
         <h2>Executive Readiness Report</h2>
-        <p id="executiveNarrative">Complete the assessment to generate an executive-level summary of readiness, priorities, stage considerations, and recommended next steps.</p>
+        <p id="executiveNarrative">Complete the assessment to generate an executive-level summary of readiness, progress, priorities, and recommended next steps.</p>
       </div>
 
-      <div class="exec-report-grid">
-        <div class="exec-panel">
-          <h3>Where You Are in the ERP Journey</h3>
-          <div id="journeyFocus"></div>
+      <details class="exec-accordion" open>
+        <summary><span><div class="exec-section-kicker">Executive Overview</div>Readiness & ERP Journey Position</span></summary>
+        <div class="exec-accordion-body">
+          <div class="exec-report-grid">
+            <div class="exec-panel">
+              <h3>Where You Are in the ERP Journey</h3>
+              <div id="journeyFocus"></div>
+            </div>
+            <div class="exec-panel">
+              <h3>Top Executive Priorities</h3>
+              <div id="executivePriorities"></div>
+            </div>
+          </div>
         </div>
-        <div class="exec-panel">
-          <h3>Top Executive Priorities</h3>
-          <div id="executivePriorities"></div>
-        </div>
-      </div>
+      </details>
 
-      <div class="exec-report-grid">
-        <div class="exec-panel">
-          <h3>Things to Keep in Mind</h3>
-          <ul id="keepInMind"></ul>
+      <details class="exec-accordion">
+        <summary><span><div class="exec-section-kicker">Progress</div>Since Your Last Assessment</span></summary>
+        <div class="exec-accordion-body">
+          <div class="history-grid">
+            <div class="history-card"><div class="num" id="changeScore">—</div><div class="small">Readiness Score Change</div></div>
+            <div class="history-card"><div class="num" id="actionsCompletedChange">—</div><div class="small">Executive Actions Completed</div></div>
+            <div class="history-card"><div class="num" id="categoriesImproved">—</div><div class="small">Categories Improved</div></div>
+            <div class="history-card"><div class="num" id="categoriesDeclined">—</div><div class="small">Categories Declined</div></div>
+          </div>
+          <div class="exec-report-grid" style="margin-top:14px">
+            <div class="exec-panel"><h3>What Improved</h3><ul id="improvementList"></ul></div>
+            <div class="exec-panel"><h3>What Needs Attention</h3><ul id="declineList"></ul></div>
+          </div>
+          <div class="timeline-chart-wrap"><canvas id="progressChart"></canvas></div>
         </div>
-        <div class="exec-panel">
-          <h3>What Does Not Need to Be Fully Solved Yet</h3>
-          <ul id="notYet"></ul>
-        </div>
-      </div>
+      </details>
 
-      <div class="exec-panel" style="margin-top:16px">
-        <h3>Recommended Next Steps</h3>
-        <ol class="exec-next-steps" id="recommendedNextSteps"></ol>
-      </div>
-
-      <div class="exec-checklist-wrap">
-        <div class="exec-checklist-header">
-          <h3>Executive Action Checklist</h3>
-          <p>Leadership actions to complete before moving confidently into the next ERP phase. The checklist adapts to the most important readiness gaps identified in the assessment.</p>
+      <details class="exec-accordion">
+        <summary><span><div class="exec-section-kicker">Executive Guidance</div>Things to Keep in Mind</span></summary>
+        <div class="exec-accordion-body">
+          <div class="exec-report-grid">
+            <div class="exec-panel">
+              <h3>Things to Keep in Mind</h3>
+              <ul id="keepInMind"></ul>
+            </div>
+            <div class="exec-panel">
+              <h3>What Does Not Need to Be Fully Solved Yet</h3>
+              <ul id="notYet"></ul>
+            </div>
+          </div>
         </div>
-        <div id="executiveActionChecklist"></div>
-        <div class="exec-checklist-summary" id="executiveChecklistSummary"></div>
-      </div>
+      </details>
+
+      <details class="exec-accordion">
+        <summary><span><div class="exec-section-kicker">Action</div>Recommended Next Steps</span></summary>
+        <div class="exec-accordion-body">
+          <div class="exec-panel">
+            <h3>Recommended Next Steps</h3>
+            <ol class="exec-next-steps" id="recommendedNextSteps"></ol>
+          </div>
+
+          <div class="exec-checklist-wrap">
+            <div class="exec-checklist-header">
+              <h3>Executive Action Checklist</h3>
+              <p>Leadership actions to complete before moving confidently into the next ERP phase. The checklist adapts to the most important readiness gaps identified in the assessment.</p>
+            </div>
+            <div id="executiveActionChecklist"></div>
+            <div class="exec-checklist-summary" id="executiveChecklistSummary"></div>
+          </div>
+        </div>
+      </details>
     </div>
 
     <div class="grid">
@@ -471,19 +494,7 @@ function renderChecklist(){
   let html=`<div class="stage-group"><div class="stage-header"><h3>${stage.name}</h3><div class="small">${stage.desc}</div></div><div class="stage-content">`;
   stage.sections.forEach(i=>{
    const s=sections[i];
-   const qs=s.questions.map((q,j)=>`
-   <div class="question-row">
-     <label><input type="checkbox" id="q${i}_${j}" onchange="syncQuestionStatus(${i},${j});calculate()"> <span>${q}</span>
-       <input class="progress-note" id="note${i}_${j}" type="text" placeholder="Optional note / evidence" onchange="autosaveDraft()">
-     </label>
-     <select class="status-select" id="status${i}_${j}" onchange="syncQuestionCheckbox(${i},${j});calculate();autosaveDraft()">
-       <option value="Not Started">Not Started</option>
-       <option value="In Progress">In Progress</option>
-       <option value="Complete">Complete</option>
-       <option value="At Risk">At Risk</option>
-       <option value="Not Applicable">Not Applicable</option>
-     </select>
-   </div>`).join('');
+   const qs=s.questions.map((q,j)=>`<label><input type="checkbox" id="q${i}_${j}" onchange="calculate();autosaveDraft()"> <span>${q}</span></label>`).join('');
    html+=`<div class="section"><div class="section-header"><div><h3>${displayNumber}. ${s.name}</h3><div class="small">Weight: ${effectiveWeight(i)}% | Benchmark: ${s.benchmark}/${s.questions.length}</div></div><span id="badge${i}" class="badge red">0/${s.questions.length}</span></div><div class="questions">${qs}</div></div>`;
    displayNumber++;
   });
@@ -730,6 +741,7 @@ function renderExecutiveReport(raw,score){
  el('notYet').innerHTML=discoveryNotYet().map(x=>`<li>${x}</li>`).join('');
  el('recommendedNextSteps').innerHTML=discoveryNextSteps(raw).map(x=>`<li>${x}</li>`).join('');
  renderExecutiveActionChecklist(raw);
+ renderHistorySummary();
 }
 
 
@@ -748,12 +760,7 @@ function collectAssessmentData(){
  const questionStates=[];
  sections.forEach((s,i)=>{
    s.questions.forEach((q,j)=>{
-     questionStates.push({
-       i,j,
-       checked:!!el(`q${i}_${j}`)?.checked,
-       status:el(`status${i}_${j}`)?.value||'Not Started',
-       note:el(`note${i}_${j}`)?.value||''
-     });
+     questionStates.push({i,j,checked:!!el(`q${i}_${j}`)?.checked});
    });
  });
  const actionStates=[...document.querySelectorAll('.execActionCheck')].map((x,idx)=>({idx,checked:x.checked}));
@@ -808,8 +815,6 @@ function applyAssessmentData(data){
  if(el('lifecycleStage'))el('lifecycleStage').value=data.lifecycleStage||'Discovery';
  (data.questionStates||[]).forEach(q=>{
    if(el(`q${q.i}_${q.j}`))el(`q${q.i}_${q.j}`).checked=!!q.checked;
-   if(el(`status${q.i}_${q.j}`))el(`status${q.i}_${q.j}`).value=q.status||'Not Started';
-   if(el(`note${q.i}_${q.j}`))el(`note${q.i}_${q.j}`).value=q.note||'';
  });
  calculate();
  setTimeout(()=>{
@@ -890,15 +895,7 @@ function showTrackerMessage(msg){
  setTimeout(()=>b.classList.remove('show'),3500);
 }
 
-function syncQuestionStatus(i,j){
- const box=el(`q${i}_${j}`),sel=el(`status${i}_${j}`);
- if(!box||!sel)return;
- if(box.checked&&sel.value!=='Not Applicable')sel.value='Complete';
- else if(!box.checked&&sel.value==='Complete')sel.value='Not Started';
- autosaveDraft();
-}
-function syncQuestionCheckbox(i,j){
- const box=el(`q${i}_${j}`),sel=el(`status${i}_${j}`);
+_${j}`),sel=el(`status${i}_${j}`);
  if(!box||!sel)return;
  box.checked=(sel.value==='Complete'||sel.value==='Not Applicable');
  autosaveDraft();
