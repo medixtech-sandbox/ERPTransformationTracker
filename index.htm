@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Medix ERP Transformation Readiness Tracker™</title>
-<!-- Internal version tracking: ERP Transformation Readiness Tracker V3.3 -->
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V3.8 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -149,17 +149,31 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 .screen-header h2{margin:0;color:var(--navy);font-size:28px}
 .screen-nav{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;margin-top:20px}
 .screen-nav .right{display:flex;gap:10px;flex-wrap:wrap;margin-left:auto}
-.wizard-steps{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 20px}
-.wizard-step{padding:8px 11px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--muted);font-size:12px;font-weight:800}
-.wizard-step.active{background:var(--primary);border-color:var(--primary);color:#fff}
-.wizard-step.done{background:#F1FAF2;border-color:#BFE5C2;color:var(--green)}
+.wizard-steps{display:flex;align-items:center;gap:0;margin:18px 0 24px;overflow-x:auto;padding:4px 2px 8px}
+.wizard-step{position:relative;display:flex;align-items:center;justify-content:center;min-width:175px;min-height:54px;padding:10px 28px 10px 22px;background:#F7FAFC;border-top:1px solid var(--line);border-bottom:1px solid var(--line);color:var(--muted);font-size:12px;font-weight:900;text-align:center}
+.wizard-step:first-child{border-left:1px solid var(--line);border-radius:12px 0 0 12px}
+.wizard-step:last-child{border-right:1px solid var(--line);border-radius:0 12px 12px 0}
+.wizard-step:not(:last-child):after{content:"";position:absolute;right:-18px;top:8px;width:36px;height:36px;background:inherit;border-top:1px solid var(--line);border-right:1px solid var(--line);transform:rotate(45deg);z-index:2}
+.wizard-step:not(:first-child){padding-left:34px}
+.wizard-step .step-num{position:relative;z-index:3;display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;border-radius:50%;background:#E7EEF4;color:var(--navy);margin-right:8px;font-size:11px}
+.wizard-step .step-text{position:relative;z-index:3}
+.wizard-step.active{background:linear-gradient(135deg,var(--primary-step-1),var(--primary));color:#fff;border-color:var(--primary);box-shadow:0 5px 14px rgba(0,117,201,.14)}
+.wizard-step.active .step-num{background:#fff;color:var(--primary)}
+.wizard-step.active:not(:last-child):after{border-color:var(--primary)}
+
+.wizard-step.done{background:#F1FAF2;color:var(--green);border-color:#BFE5C2}
+.wizard-step.done .step-num{background:var(--green);color:#fff}
+.wizard-step.done:not(:last-child):after{border-color:#BFE5C2}
+
 .upload-zone{border:2px dashed #BFD5E7;border-radius:18px;padding:24px;text-align:center;background:#FBFDFF}
 .upload-zone input{margin-top:10px}
 .confirm-banner{background:#F1FAF7;border:1px solid #BFE8D8;border-radius:14px;padding:14px;margin-top:12px}
-.scope-simple-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.scope-simple-card{border:1px solid var(--line);border-radius:16px;padding:18px;background:#FBFDFF;cursor:pointer;font-weight:900;color:var(--navy)}
-.scope-simple-card input{margin-right:8px}
-.scope-simple-card:has(input:checked){border:2px solid var(--primary);background:#EFF8FF}
+.scope-simple-grid{display:flex;flex-direction:column;gap:14px;max-width:760px;margin:18px auto 6px}
+.scope-simple-card{position:relative;display:flex;align-items:center;gap:16px;width:100%;min-height:82px;border:2px solid var(--line);border-radius:18px;padding:20px 24px;background:#fff;cursor:pointer;font-weight:900;font-size:18px;color:var(--navy);box-shadow:0 5px 14px rgba(0,36,84,.06);transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease,background .15s ease}
+.scope-simple-card input{width:22px;height:22px;flex:0 0 22px;margin:0;accent-color:var(--primary)}
+.scope-simple-card:hover{transform:translateY(-1px);border-color:#A9CDE5;box-shadow:0 8px 18px rgba(0,36,84,.09)}
+.scope-simple-card:has(input:checked){border-color:var(--primary);background:#EFF8FF;box-shadow:0 8px 20px rgba(0,117,201,.13)}
+.scope-simple-card:has(input:checked):after{content:"Selected";margin-left:auto;padding:6px 10px;border-radius:999px;background:var(--primary);color:#fff;font-size:10px;text-transform:uppercase;letter-spacing:.6px}
 .assessment-screen .card{margin-top:16px}
 
 /* Graphical lifecycle journey */
@@ -190,9 +204,23 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 .profile-actions-inline button{font-size:12px;padding:9px 12px}
 
 @media(max-width:1000px){.exec-switcher{grid-template-columns:1fr 1fr}.lifecycle-node{min-width:140px}}
+
+@media(max-width:760px){
+ .wizard-step{min-width:145px;min-height:50px;font-size:11px}
+ .wizard-step .step-num{width:22px;height:22px}
+}
 @media(max-width:600px){.exec-switcher{grid-template-columns:1fr}.lifecycle-node{min-width:135px}}
-@media(max-width:900px){.choice-grid,.scope-simple-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:650px){.choice-grid,.scope-simple-grid{grid-template-columns:1fr}}
+
+.page-brand-banner{margin-bottom:18px;padding:22px 26px;border-radius:20px;background:radial-gradient(circle at 88% 20%,rgba(99,230,184,.20),transparent 25%),linear-gradient(135deg,var(--primary-step-2),var(--primary-step-1) 58%,var(--primary));color:#fff;border-bottom:5px solid var(--secondary);box-shadow:var(--shadow)}
+.page-brand-banner .kicker{color:#D9F8EC;margin-bottom:5px}
+.page-brand-banner h1{margin:0 0 6px;color:#fff;font-size:27px}
+.page-brand-banner p{margin:0;opacity:.95;font-size:14px}
+
+.org-personalized-label{opacity:.92}
+.org-personalized-name{font-weight:900}
+.org-personalized-name:not(:empty):before{content:" · ";font-weight:400;opacity:.8}
+@media(max-width:900px){.choice-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:650px){.choice-grid{grid-template-columns:1fr}.scope-simple-card{font-size:16px;min-height:72px;padding:18px}}
 @media(max-width:900px){.exec-summary-strip{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.exec-summary-strip{grid-template-columns:1fr}}
 @media(max-width:900px){.exec-task{grid-template-columns:30px 1fr}.exec-task-meta{grid-column:2;border-left:0;border-top:1px solid var(--line);padding:8px 0 0}}
@@ -257,6 +285,12 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 
   <div class="app-screen" id="screenProfile">
     <div class="screen-shell">
+      <div class="page-brand-banner">
+        <div class="kicker">Healthcare ERP Advisory Portal</div>
+        <h1>Medix ERP Transformation Readiness Tracker™</h1>
+        <p><span class="org-personalized-label">ERP readiness journey</span><span class="org-personalized-name"></span></p>
+      </div>
+
       <div class="wizard-steps" id="wizardProfile"></div>
       <div class="screen-header">
         <div>
@@ -309,7 +343,7 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
         <button class="ghost" type="button" onclick="showScreen('screenLanding')">Back</button>
         <div class="right">
           <button class="secondary" type="button" onclick="saveAndExitWizard('profile')">Save & Exit</button>
-          <button class="primary" type="button" onclick="saveWizardProfileAndNext()">Continue</button>
+          <button class="primary" type="button" onclick="saveWizardProfileAndNext()">Save & Continue</button>
         </div>
       </div>
     </div>
@@ -317,12 +351,18 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 
   <div class="app-screen" id="screenScope">
     <div class="screen-shell">
+      <div class="page-brand-banner">
+        <div class="kicker">Healthcare ERP Advisory Portal</div>
+        <h1>Medix ERP Transformation Readiness Tracker™</h1>
+        <p><span class="org-personalized-label">ERP readiness journey</span><span class="org-personalized-name"></span></p>
+      </div>
+
       <div class="wizard-steps" id="wizardScope"></div>
       <div class="screen-header">
         <div>
           <div class="kicker" style="color:var(--primary-step-1)">Step 2</div>
           <h2>General ERP Evaluation Scope</h2>
-          <p class="small">Select the top-level ERP areas included in the initiative.</p>
+          <p class="small">Select all ERP areas included in the initiative. You can choose more than one.</p>
         </div>
       </div>
 
@@ -339,7 +379,7 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
         <button class="ghost" type="button" onclick="showScreen('screenProfile')">Back</button>
         <div class="right">
           <button class="secondary" type="button" onclick="saveAndExitWizard('scope')">Save & Exit</button>
-          <button class="primary" type="button" onclick="saveWizardScopeAndNext()">Continue to Readiness Assessment</button>
+          <button class="primary" type="button" onclick="saveWizardScopeAndNext()">Save & Continue</button>
         </div>
       </div>
     </div>
@@ -347,6 +387,12 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 
   <div class="app-screen assessment-screen" id="screenAssessment">
     <div class="screen-shell">
+      <div class="page-brand-banner">
+        <div class="kicker">Healthcare ERP Advisory Portal</div>
+        <h1>Medix ERP Transformation Readiness Tracker™</h1>
+        <p><span class="org-personalized-label">ERP readiness journey</span><span class="org-personalized-name"></span></p>
+      </div>
+
       <div class="wizard-steps" id="wizardAssessment"></div>
 
 
@@ -359,31 +405,7 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 </div>
       
     </div>
-
-    <div class="grid">
-      <div class="card">
-        <h2>Organization & Project Profile</h2>
-        <div class="profile-grid">
-          <label>Organization Name <span class="required-star">*</span><br><input id="org" type="text" placeholder="Health System / Organization" oninput="calculate();clearFieldError('org')" data-required="true"><div class="error-message" id="err_org">Organization Name is required.</div></label>
-          <label>Organization Type <span class="required-star">*</span><br><select id="orgType" onchange="calculate();clearFieldError('orgType')" data-required="true"><option value="">Select Organization Type</option><option>Academic Medical Center</option><option>Integrated Delivery Network (IDN)</option><option>Community Health System</option><option>Critical Access Hospital</option><option>Children's Hospital</option><option>Specialty Hospital</option><option>Ambulatory / Physician Group</option><option>Government / VA</option><option>Behavioral Health</option><option>Other Healthcare Organization</option></select><div class="error-message" id="err_orgType">Organization Type is required.</div></label>
-          <label>Number of Employees <span class="required-star">*</span><br><input id="employees" type="number" min="1" step="1" placeholder="Example: 12500" oninput="calculate();clearFieldError('employees')" data-required="true"><div class="error-message" id="err_employees">Number of Employees is required.</div></label>
-          <label>Current ERP Lifecycle Stage <span class="required-star">*</span><br><select id="lifecycleStage" onchange="onLifecycleStageChange();calculate()" data-required="true">
-<option value="Discovery">Discovery</option>
-<option value="Business Case Creation">Business Case</option>
-<option value="Vendor Selection">Vendor Selection</option>
-<option value="Implementation Planning">Pre-Implementation</option>
-<option value="Implementation">Implementation</option>
-<option value="Testing">Testing</option>
-<option value="Go-Live / Hypercare">Go-Live / Hypercare</option>
-<option value="Optimization">Stabilization / Optimization</option>
-</select><div class="error-message" id="err_lifecycleStage">Lifecycle Stage is required.</div></label>
-          <label>Target Timeline <span class="required-star">*</span><br><select id="timeline" onchange="calculate();clearFieldError('timeline')" data-required="true"><option value="">Select Target Timeline</option><option>0–6 Months</option><option>6–12 Months</option><option>12–18 Months</option><option>18–30 Months</option><option>30+ Months</option></select><div class="error-message" id="err_timeline">Target Timeline is required.</div></label>
-        </div>
-        <div id="profileValidation" class="validation-banner">Please complete the required profile fields before saving or generating the report.</div>
-        <div class="callout" id="profileSummary"></div>
-      </div>
-
-      <div class="card">
+    <div class="card">
         <h2>Executive Dashboard</h2>
         <div class="score-ring">
           <div>
@@ -430,7 +452,7 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
         <button class="ghost" type="button" onclick="showScreen('screenScope')">Back</button>
         <div class="right">
           <button class="secondary" type="button" onclick="saveAndExitWizard('assessment')">Save & Exit</button>
-          <button class="primary" type="button" onclick="goToExecutiveReport()">Continue to Executive Report</button>
+          <button class="primary" type="button" onclick="goToExecutiveReport()">Save & Continue</button>
         </div>
       </div>
     </div>
@@ -438,6 +460,12 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 
   <div class="app-screen" id="screenReport">
     <div class="screen-shell">
+      <div class="page-brand-banner">
+        <div class="kicker">Healthcare ERP Advisory Portal</div>
+        <h1>Medix ERP Transformation Readiness Tracker™</h1>
+        <p><span class="org-personalized-label">ERP readiness journey</span><span class="org-personalized-name"></span></p>
+      </div>
+
       <div class="wizard-steps" id="wizardReport"></div>
 <div class="card executive-report exec-command-center" id="executiveReadinessReport">
       <div class="exec-report-header">
@@ -966,7 +994,19 @@ function renderExecutiveReport(raw,score){
 
 let assessmentFlowMode='new';
 
+
+function updatePersonalizedHeaders(){
+ const org=(el('wizardOrg')?.value||el('org')?.value||'').trim();
+ document.querySelectorAll('.org-personalized-name').forEach(node=>{
+   node.textContent=org||'';
+ });
+ document.querySelectorAll('.org-personalized-label').forEach(node=>{
+   node.textContent=org?'ERP readiness journey':'Assess readiness, track progress, and guide executive decision-making throughout the ERP lifecycle.';
+ });
+}
+
 function showScreen(id){
+ updatePersonalizedHeaders();
  document.querySelectorAll('.app-screen').forEach(s=>s.classList.remove('active'));
  const target=el(id);if(target)target.classList.add('active');
  renderWizardSteps(id);
@@ -983,7 +1023,11 @@ function renderWizardSteps(screenId){
  const currentIndex=Math.max(0,steps.findIndex(s=>s[0]===screenId));
  ['wizardProfile','wizardScope','wizardAssessment','wizardReport'].forEach(containerId=>{
    const c=el(containerId);if(!c)return;
-   c.innerHTML=steps.map((s,i)=>`<span class="wizard-step ${i<currentIndex?'done':i===currentIndex?'active':''}">${s[1]}</span>`).join('');
+   c.innerHTML=steps.map((s,i)=>{
+     const label=s[1].replace(/^\d+\s*/,'');
+     const icon=i<currentIndex?'✓':String(i+1);
+     return `<span class="wizard-step ${i<currentIndex?'done':i===currentIndex?'active':''}"><span class="step-num">${icon}</span><span class="step-text">${label}</span></span>`;
+   }).join('');
  });
 }
 
@@ -1045,6 +1089,7 @@ function continueAssessmentFromLanding(event){
      el('profileScreenHelp').innerText='Review the previously saved information below and make any updates before continuing.';
      el('profileConfirmBanner').innerHTML=`<strong>Assessment restored:</strong> ${latest.org||'ERP Project'} · ${latest.lifecycleStage||'Discovery'} · Last saved ${new Date(latest.savedAt).toLocaleString()}`;
      el('profileConfirmBanner').classList.remove('hidden');
+     updatePersonalizedHeaders();
      showScreen('screenProfile');
    }catch(err){
      alert('That backup file could not be restored.');
@@ -1066,6 +1111,7 @@ function saveWizardProfileAndNext(){
  renderLifecycleTracker();
  renderChecklist();
  calculate();
+ updatePersonalizedHeaders();
  showScreen('screenScope');
 }
 
@@ -1165,7 +1211,7 @@ function showLandingAssessmentHistory(){
        <span class="small">${new Date(a.savedAt).toLocaleString()} · ${a.lifecycleStage||'Discovery'} · Score ${a.score}/100</span>
      </div>
      <div class="saved-item-actions">
-       <button class="secondary mini-button" type="button" onclick="continueSavedAssessment('${a.id}')">Continue</button>
+       <button class="secondary mini-button" type="button" onclick="continueSavedAssessment('${a.id}')">Save & Continue</button>
      </div>
    </div>`).join('')}</div>`;
 }
@@ -1190,6 +1236,7 @@ function continueSavedAssessment(id){
  el('profileScreenHelp').innerText='Review the previously saved information below and make any updates before continuing.';
  el('profileConfirmBanner').innerHTML=`<strong>Saved assessment:</strong> ${saved.org||'ERP Project'} · ${saved.lifecycleStage||'Discovery'} · Last saved ${new Date(saved.savedAt).toLocaleString()}`;
  el('profileConfirmBanner').classList.remove('hidden');
+ updatePersonalizedHeaders();
  showScreen('screenProfile');
 }
 function showExecSection(name,btn){
