@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Medix ERP Transformation Readiness Tracker™</title>
-<!-- Internal version tracking: ERP Transformation Readiness Tracker V7.4 -->
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V7.5 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -292,6 +292,88 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 #statusCard,#probabilityCard,#riskCard{grid-column:auto}
 @media(max-width:760px){.exec-dashboard-v2{grid-template-columns:1fr}.exec-dashboard-hero{grid-column:1}}
 
+
+/* V7.5 stabilized dashboard layout */
+.exec-dashboard-v2{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  align-items:stretch;
+}
+.exec-dashboard-hero{
+  grid-column:1/-1;
+}
+#statusCard,#probabilityCard,#riskCard{
+  min-height:92px;
+  padding:14px 16px;
+  background:#fff !important;
+  border:1px solid var(--line) !important;
+  box-shadow:none;
+}
+#statusCard{
+  border-left:5px solid var(--yellow) !important;
+}
+#riskCard{
+  border-left:5px solid var(--yellow) !important;
+}
+.exec-stat-card.status-green{
+  background:#fff !important;
+  border:1px solid var(--line) !important;
+  border-left:5px solid var(--green) !important;
+}
+.exec-stat-card.status-yellow{
+  background:#fff !important;
+  border:1px solid var(--line) !important;
+  border-left:5px solid var(--yellow) !important;
+}
+.exec-stat-card.status-red{
+  background:#fff !important;
+  border:1px solid var(--line) !important;
+  border-left:5px solid var(--red) !important;
+}
+.exec-stat-card.risk-low{
+  background:#fff !important;
+  border:1px solid var(--line) !important;
+  border-left:5px solid var(--green) !important;
+}
+.exec-stat-card.risk-medium{
+  background:#fff !important;
+  border:1px solid var(--line) !important;
+  border-left:5px solid var(--yellow) !important;
+}
+.exec-stat-card.risk-elevated{
+  background:#fff !important;
+  border:1px solid var(--line) !important;
+  border-left:5px solid var(--orange) !important;
+}
+.exec-stat-card.risk-high{
+  background:#fff !important;
+  border:1px solid var(--line) !important;
+  border-left:5px solid var(--red) !important;
+}
+.readiness-stoplight-wrap{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-height:58px;
+}
+.readiness-stoplight{
+  width:36px;
+  height:36px;
+  flex:0 0 36px;
+}
+.readiness-stoplight-copy .label,
+.exec-stat-card .label{
+  font-size:12px;
+  color:var(--muted);
+}
+#probabilityCard .value{
+  font-size:26px;
+}
+@media(max-width:760px){
+  .exec-dashboard-v2{grid-template-columns:1fr}
+  .exec-dashboard-hero{grid-column:1}
+}
 </style>
 </head>
 <body>
@@ -417,14 +499,14 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 <label class="scope-simple-card"><input id="wizardScopePlatform" type="checkbox"/> Platform, Reporting &amp; AI</label>
 </div>
 </div>
-</div>
 <div class="screen-nav">
 <button class="ghost" onclick="showScreen('screenProfile')" type="button">Back</button>
 <div class="right">
 <button class="secondary" onclick="saveAndExitWizard('scope')" type="button">Save &amp; Exit</button>
 <button class="primary" onclick="advanceScopeToReadiness()" type="button">Save &amp; Continue</button>
 </div>
-</div>
+</div></div>
+
 </div><div class="app-screen assessment-screen" id="screenAssessment">
 <div class="screen-shell">
 <div class="page-brand-banner">
@@ -880,6 +962,12 @@ function updateProjectRiskLight(riskText,riskCls){
    const cls=riskCls==='green'?'green':riskCls==='yellow'?'yellow':riskCls==='orange'?'orange':'red';
    light.className='readiness-stoplight '+cls;
    light.setAttribute('aria-label','Overall project risk: '+riskText);
+ }
+
+ const card=el('riskCard');
+ if(card){
+   const cls=riskCls==='green'?'risk-low':riskCls==='yellow'?'risk-medium':riskCls==='orange'?'risk-elevated':'risk-high';
+   card.className='exec-stat-card '+cls;
  }
 }
 
