@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Medix ERP Transformation Readiness Tracker™</title>
-<!-- Internal version tracking: ERP Transformation Readiness Tracker V4.4 -->
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V4.6 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -220,6 +220,11 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 .org-personalized-label{opacity:.92}
 .org-personalized-name{font-weight:900}
 .org-personalized-name:not(:empty):before{content:" · ";font-weight:400;opacity:.8}
+
+.readiness-empty-state{border:1px dashed #BFD5E7;border-radius:18px;padding:24px;background:#FBFDFF;text-align:center;margin-top:14px}
+.readiness-empty-state h3{margin:0 0 7px;color:var(--navy);font-size:20px}
+.readiness-empty-state p{margin:0 auto;color:var(--muted);max-width:680px}
+.dashboard-content.hidden-dashboard{display:none!important}
 @media(max-width:900px){.choice-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:650px){.choice-grid{grid-template-columns:1fr}.scope-simple-card{font-size:16px;min-height:72px;padding:18px}}
 @media(max-width:900px){.exec-summary-strip{grid-template-columns:1fr 1fr}}
@@ -340,16 +345,15 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
         </div>
         <div id="profileConfirmBanner" class="confirm-banner hidden"></div>
       </div>
-
-      <div class="screen-nav">
+    </div>
+        <div class="screen-nav">
         <button class="ghost" type="button" onclick="showScreen('screenLanding')">Back</button>
         <div class="right">
           <button class="secondary" type="button" onclick="saveAndExitWizard('profile')">Save & Exit</button>
           <button class="primary" type="button" onclick="advanceProfileToScope()">Save & Continue</button>
         </div>
       </div>
-    </div>
-  </div>
+</div>
 
   <div class="app-screen" id="screenScope">
     <div class="screen-shell">
@@ -376,16 +380,15 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
           <label class="scope-simple-card"><input type="checkbox" id="wizardScopePlatform"> Platform, Reporting & AI</label>
         </div>
       </div>
-
-      <div class="screen-nav">
+    </div>
+        <div class="screen-nav">
         <button class="ghost" type="button" onclick="showScreen('screenProfile')">Back</button>
         <div class="right">
           <button class="secondary" type="button" onclick="saveAndExitWizard('scope')">Save & Exit</button>
           <button class="primary" type="button" onclick="advanceScopeToReadiness()">Save & Continue</button>
         </div>
       </div>
-    </div>
-  </div>
+</div>
 
   <div class="app-screen assessment-screen" id="screenAssessment">
     <div class="screen-shell">
@@ -406,19 +409,27 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
   <div id="assessment">
     <div class="card">
         <h2>Executive Dashboard</h2>
+        <div class="readiness-empty-state" id="readinessDashboardEmpty">
+          <h3>Complete the Readiness Checklist to Generate Your Score</h3>
+          <p>Your ERP Readiness Score, projected success probability, and overall project risk will appear here once you begin answering the assessment.</p>
+        </div>
+        <div class="dashboard-content hidden-dashboard" id="readinessDashboardContent">
         <div class="score-ring">
           <div>
-            <div class="score-circle" id="scoreCircle" style="--score:0"><span id="score">0</span></div>
+            <div class="score-circle" id="scoreCircle" style="--score:0"><span id="score">—</span></div>
             <div class="small center" style="margin-top:8px;font-weight:800;color:var(--navy)">ERP Readiness Score</div>
           </div>
           <div><div class="kpi"><div class="stoplight-indicator red" id="stoplightIndicator" role="img" aria-label="Readiness status indicator"></div><div class="label">Readiness Status</div></div></div>
         </div>
         <div class="kpi-grid" style="margin-top:12px;grid-template-columns:repeat(2,1fr)">
-          <div class="kpi"><div class="num"><span id="prob">0%</span></div><div class="label">Projected Success Probability</div></div>
-          <div class="kpi"><div class="num"><span id="risk">High</span></div><div class="label">Overall Project Risk</div></div>
+          <div class="kpi"><div class="num"><span id="prob">—</span></div><div class="label">Projected Success Probability</div></div>
+          <div class="kpi"><div class="num"><span id="risk">—</span></div><div class="label">Overall Project Risk</div></div>
         </div>
         <div class="callout" id="execSummary"></div>
       </div>
+    </div>
+
+        </div>
     </div>
 
     <div class="card">
@@ -447,16 +458,15 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
     </div>
 
     </div>
-
-      <div class="screen-nav">
+    </div>
+        <div class="screen-nav">
         <button class="ghost" type="button" onclick="showScreen('screenScope')">Back</button>
         <div class="right">
           <button class="secondary" type="button" onclick="saveAndExitWizard('assessment')">Save & Exit</button>
           <button class="primary" type="button" onclick="advanceReadinessToReport()">Save & Continue</button>
         </div>
       </div>
-    </div>
-  </div>
+</div>
 
   <div class="app-screen" id="screenReport">
     <div class="screen-shell">
@@ -742,6 +752,7 @@ function renderChecklist(){
   html+='</div></div>';
   c.innerHTML+=html;
  });
+ updateReadinessDashboardVisibility();
 }
 function escapeHtml(str){return str.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 function checkedCount(i){let c=0;for(let j=0;j<sections[i].questions.length;j++) if(el(`q${i}_${j}`).checked)c++;return c}
@@ -786,7 +797,17 @@ function scoreClass(score,benchmark){if(score>=benchmark)return'green';if(score>
 function statusLabel(score,benchmark){if(score>=benchmark)return'On Track';if(score>=Math.max(1,benchmark-1))return'Needs Attention';return'Priority Gap'}
 function riskLevel(v){if(v>=75)return['Low','green'];if(v>=55)return['Medium','yellow'];if(v>=35)return['Elevated','orange'];return['High','red']}
 function grade(score){if(score>=92)return'A';if(score>=85)return'A-';if(score>=78)return'B+';if(score>=70)return'B';if(score>=62)return'C+';if(score>=55)return'C';if(score>=45)return'D';return'F'}
-function calculate(){if(!selectedVendor)return;const raw=[];let weighted=0;sections.forEach((s,i)=>{const c=checkedCount(i);const max=sectionMax(i);raw.push(c);weighted+=(c/max)*effectiveWeight(i);const b=el('badge'+i);b.innerText=`${c}/${max}`;b.className='badge '+scoreClass(c,s.benchmark)});const mods=selectedModules();const modCount=mods.length, eco=ecosystemCount(), cpx=complexityPoints();const scopePenalty=Math.min(14, Math.floor(modCount/4)+Math.floor(eco/5)+Math.floor(cpx/3));const score=Math.max(0,Math.round(weighted-scopePenalty));const prob=Math.min(96,Math.max(15,Math.round(score*.86+11)));const [riskText,riskCls]=riskLevel(score);const complexity=projectComplexity(modCount,eco,cpx);el('score').innerText=score;el('scoreCircle').style.setProperty('--score',score);const stoplight=score>=75?'green':score>=55?'yellow':'red';el('stoplightIndicator').className='stoplight-indicator '+stoplight;el('prob').innerText=prob+'%';if(el('moduleCount'))el('moduleCount').innerText=modCount;if(el('selectedModuleCount'))el('selectedModuleCount').innerText=modCount;el('risk').innerText=riskText;el('risk').style.color=riskCls==='green'?'#2E7D32':riskCls==='yellow'?'#F9A825':riskCls==='orange'?'#EF6C00':'#C62828';renderProfileSummary(modCount,eco,complexity);renderExecutiveSummary(score,prob,riskText,modCount,eco);renderBars(raw);renderRadar(raw);renderHeat(raw);renderExecutiveReport(raw,score);renderFindings(raw,score,modCount,eco,complexity);renderImpact(raw,modCount,eco);renderServices(raw,modCount,eco);autosaveDraft()}
+
+function updateReadinessDashboardVisibility(){
+ const answered=sections.some((s,i)=>s.questions.some((q,j)=>!!el(`q${i}_${j}`)?.checked));
+ const empty=el('readinessDashboardEmpty');
+ const content=el('readinessDashboardContent');
+ if(empty)empty.style.display=answered?'none':'block';
+ if(content)content.classList.toggle('hidden-dashboard',!answered);
+ return answered;
+}
+
+function calculate(){if(!selectedVendor)return;updateReadinessDashboardVisibility();const raw=[];let weighted=0;sections.forEach((s,i)=>{const c=checkedCount(i);const max=sectionMax(i);raw.push(c);weighted+=(c/max)*effectiveWeight(i);const b=el('badge'+i);b.innerText=`${c}/${max}`;b.className='badge '+scoreClass(c,s.benchmark)});const mods=selectedModules();const modCount=mods.length, eco=ecosystemCount(), cpx=complexityPoints();const scopePenalty=Math.min(14, Math.floor(modCount/4)+Math.floor(eco/5)+Math.floor(cpx/3));const score=Math.max(0,Math.round(weighted-scopePenalty));const prob=Math.min(96,Math.max(15,Math.round(score*.86+11)));const [riskText,riskCls]=riskLevel(score);const complexity=projectComplexity(modCount,eco,cpx);el('score').innerText=score;el('scoreCircle').style.setProperty('--score',score);const stoplight=score>=75?'green':score>=55?'yellow':'red';el('stoplightIndicator').className='stoplight-indicator '+stoplight;el('prob').innerText=prob+'%';if(el('moduleCount'))el('moduleCount').innerText=modCount;if(el('selectedModuleCount'))el('selectedModuleCount').innerText=modCount;el('risk').innerText=riskText;el('risk').style.color=riskCls==='green'?'#2E7D32':riskCls==='yellow'?'#F9A825':riskCls==='orange'?'#EF6C00':'#C62828';renderProfileSummary(modCount,eco,complexity);renderExecutiveSummary(score,prob,riskText,modCount,eco);renderBars(raw);renderRadar(raw);renderHeat(raw);renderExecutiveReport(raw,score);renderFindings(raw,score,modCount,eco,complexity);renderImpact(raw,modCount,eco);renderServices(raw,modCount,eco);autosaveDraft()}
 function projectComplexity(m,e,c){const pts=m+e+(c*2);if(pts>=48)return'Very High';if(pts>=32)return'High';if(pts>=18)return'Medium';return'Low'}
 function renderProfileSummary(m,e,c){const org=el('org').value||'This organization', stage=el('stage').value||selectedJourneyStage||'not defined', timeline=el('timeline').value, legacy=el('legacy').value||'not defined';const evaluated=evaluatedErpSystems.map(k=>vendors[k]?.name).filter(Boolean).join(', ');const platformText=(selectedVendor==='other'&&evaluated)?`a general ERP evaluation across <strong>${evaluated}</strong>`:`<strong>${vendors[selectedVendor].name}</strong>`;el('profileSummary').innerHTML=`<strong>${org}</strong> is assessing ${platformText} at the <strong>${stage}</strong> stage. Current timeline is <strong>${timeline}</strong>, legacy platform is <strong>${legacy}</strong>, selected scope includes <strong>${m}</strong> items, and healthcare ecosystem scope includes <strong>${e}</strong> impacted systems.`}
 function renderExecutiveSummary(score,prob,risk,m,e){const org=el('org').value||'This organization';el('execSummary').innerHTML=`<strong>${score>=75?'Green':score>=55?'Yellow':'Red'} Readiness:</strong> ${org} has an ERP Readiness Score of <strong>${score}/100</strong> with an estimated success probability of <strong>${prob}</strong> and overall risk of <strong>${risk}</strong>. Scope assumptions include <strong>${m}</strong> selected vendor modules and <strong>${e}</strong> healthcare integration touchpoints.`}
