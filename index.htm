@@ -1,11 +1,9 @@
 <!DOCTYPE html>
-
-<html lang="en">
-<head>
+<html><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Medix ERP Transformation Readiness Tracker™</title>
-<!-- Internal version tracking: ERP Transformation Readiness Tracker V7.5 -->
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V7.7 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -374,27 +372,12 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
   .exec-dashboard-v2{grid-template-columns:1fr}
   .exec-dashboard-hero{grid-column:1}
 }
+
+/* Hard screen isolation */
+.app-screen{display:none!important}
+.app-screen.active{display:block!important}
 </style>
-</head>
-<body>
-<div class="wrapper">
-<div class="brand-header hidden" id="legacyBrandHeader">
-<div class="logo-wrap">
-<img alt="Medix Technology" class="medix-logo" src="medix-technology-logo.png"/>
-<div class="brand-lockup">
-<strong>ERP Transformation Readiness Tracker™</strong>
-<span>Healthcare-focused assessment. Data-driven insights. Smarter ERP decisions.</span>
-</div>
-</div>
-<div class="brand-tagline">People. Technology. Solutions.</div>
-</div>
-<div class="hero hidden" id="legacyHero">
-<div class="kicker">Healthcare ERP Advisory Portal</div>
-<h1>Medix ERP Transformation Readiness Tracker™</h1>
-<p>A longitudinal ERP readiness and transformation tracking tool designed to help executive teams assess progress, manage key actions, and monitor readiness throughout the ERP lifecycle.</p>
-<span class="pill">Executive Assessment</span><span class="pill">Progress Tracking</span><span class="pill">Lifecycle Readiness</span>
-</div>
-<div class="app-screen active" id="screenLanding">
+</head><body><div class="wrapper"><div class="app-screen active" id="screenLanding">
 <div class="landing-shell">
 <div class="landing-card">
 <div class="landing-top">
@@ -506,7 +489,6 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 <button class="primary" onclick="advanceScopeToReadiness()" type="button">Save &amp; Continue</button>
 </div>
 </div></div>
-
 </div><div class="app-screen assessment-screen" id="screenAssessment">
 <div class="screen-shell">
 <div class="page-brand-banner">
@@ -702,38 +684,7 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 </div>
 </div>
 </div>
-</div></div>
-<div class="card">
-<h2 id="scopeTitle">General ERP Evaluation Scope</h2>
-<p class="small" id="scopeHelp">Select the top-level ERP areas included in the initiative.</p>
-<div class="scope-grid" id="moduleGroups"></div>
-</div>
-<div class="grid">
-<div class="card">
-<h2>Readiness Checklist</h2>
-<p class="small">Check each item your organization has already addressed. Workstreams are weighted based on ERP implementation risk in healthcare environments.</p>
-<div id="checklist"></div>
-<div class="button-row"><button class="secondary" onclick="resetAssessment()">Reset Assessment</button></div>
-</div>
-<div>
-<div class="card">
-<h2>Readiness by Category</h2>
-<div id="categoryBars"></div>
-</div>
-<div class="card">
-<h2>Strengths &amp; Gaps Radar</h2>
-<div class="chart-wrap"><canvas id="radar"></canvas></div>
-</div>
-</div>
-</div>
-<div class="screen-nav">
-<button class="ghost" onclick="showScreen('screenScope')" type="button">Back</button>
-<div class="right">
-<button class="secondary" onclick="saveAndExitWizard('assessment')" type="button">Save &amp; Exit</button>
-<button class="primary" onclick="advanceReadinessToReport()" type="button">Save &amp; Continue</button>
-</div>
-</div>
-<script>
+</div></div><script>
 const vendors={
  workday:{name:"Workday",tag:"Cloud ERP / HCM",desc:"Workday-specific scoping for HCM, Financial Management, Spend Management, Supply Chain, analytics, Extend, and healthcare integrations.",groups:[
   {name:"Workday Human Capital Management",kind:"HCM",items:["Core HCM","Human Resources","Payroll","Time Tracking","Absence Management","Benefits","Compensation","Recruiting","Onboarding","Talent & Performance","Learning","Succession Planning","Workforce Planning","Employee Experience / Journeys","Peakon Employee Voice","Skills Cloud"]},
@@ -2687,6 +2638,4 @@ function quickInit(){
 }
 quickInit();
 
-</script>
-</body>
-</html>
+</script></body></html>
