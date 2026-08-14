@@ -3,7 +3,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Medix ERP Transformation Readiness Tracker™</title>
-<!-- Internal version tracking: ERP Transformation Readiness Tracker V7.7 -->
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V7.8 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -927,46 +927,76 @@ function grade(score){if(score>=92)return'A';if(score>=85)return'A-';if(score>=7
 
 
 function smartRandomizeReadiness(){
- const stage=(document.getElementById('lifecycleStage')?.value||document.getElementById('wizardLifecycleStage')?.value||'Discovery');
- const stageOrder=['Discovery','Business Case Creation','Vendor Selection','Implementation Planning','Implementation','Testing','Go-Live / Hypercare','Optimization'];
+ const stage=(document.getElementById('lifecycleStage')?.value||
+              document.getElementById('wizardLifecycleStage')?.value||
+              'Discovery');
+
+ const stageOrder=[
+   'Discovery',
+   'Business Case Creation',
+   'Vendor Selection',
+   'Implementation Planning',
+   'Implementation',
+   'Testing',
+   'Go-Live / Hypercare',
+   'Optimization'
+ ];
  const stageIndex=Math.max(0,stageOrder.indexOf(stage));
 
- const baseByStage=[0.48,0.57,0.65,0.72,0.79,0.84,0.88,0.91];
- const base=baseByStage[stageIndex]||0.55;
+ // Sensible maturity baseline by lifecycle stage.
+ const baseByStage=[0.48,0.56,0.64,0.72,0.79,0.84,0.88,0.91];
+ const base=baseByStage[stageIndex] ?? 0.55;
 
  sections.forEach((section,i)=>{
-   const sectionProgress=i/Math.max(1,sections.length-1);
-   let probability=base + (0.16-(sectionProgress*0.25));
-   probability += (Math.random()*0.14)-0.07;
-   probability=Math.max(0.18,Math.min(0.96,probability));
+   const relativeSection=i/Math.max(1,sections.length-1);
+
+   // Earlier/foundational areas generally mature sooner.
+   let probability=base + (0.14-(relativeSection*0.22));
+
+   // Controlled variation so results do not look artificial.
+   probability += (Math.random()*0.12)-0.06;
+   probability=Math.max(0.18,Math.min(0.95,probability));
 
    section.questions.forEach((q,j)=>{
      const box=document.getElementById(`q${i}_${j}`);
      if(!box)return;
-     const questionAdjustment=j===0?0.07:j===section.questions.length-1?-0.04:0;
+
+     const questionAdjustment=
+       j===0 ? 0.06 :
+       j===section.questions.length-1 ? -0.03 :
+       0;
+
      const p=Math.max(0.12,Math.min(0.98,probability+questionAdjustment));
      box.checked=Math.random()<p;
    });
  });
 
- const allBoxes=[...document.querySelectorAll('#screenAssessment input[type="checkbox"][id^="q"]')];
- let checked=allBoxes.filter(b=>b.checked).length;
- const minChecked=Math.ceil(allBoxes.length*0.32);
- const maxChecked=Math.floor(allBoxes.length*0.90);
+ // Prevent unrealistic all-low or near-perfect testing results.
+ const boxes=[...document.querySelectorAll('#checklist input[type="checkbox"][id^="q"]')];
+ let checked=boxes.filter(b=>b.checked).length;
+ const minChecked=Math.ceil(boxes.length*0.35);
+ const maxChecked=Math.floor(boxes.length*0.90);
 
  if(checked<minChecked){
-   allBoxes.filter(b=>!b.checked).sort(()=>Math.random()-.5).slice(0,minChecked-checked).forEach(b=>b.checked=true);
- }
- checked=allBoxes.filter(b=>b.checked).length;
- if(checked>maxChecked){
-   allBoxes.filter(b=>b.checked).sort(()=>Math.random()-.5).slice(0,checked-maxChecked).forEach(b=>b.checked=false);
+   boxes.filter(b=>!b.checked)
+        .sort(()=>Math.random()-.5)
+        .slice(0,minChecked-checked)
+        .forEach(b=>b.checked=true);
  }
 
- // Force all live sections to refresh immediately after randomization.
- try{calculate()}catch(e){console.warn('Calculation issue:',e)}
- try{updateCategoryReadinessNow()}catch(e){console.warn('Category update issue:',e)}
- try{refreshReadinessRadarOnly()}catch(e){console.warn('Radar update issue:',e)}
- try{refreshExecutiveDashboardOnly()}catch(e){console.warn('Dashboard update issue:',e)}
+ checked=boxes.filter(b=>b.checked).length;
+ if(checked>maxChecked){
+   boxes.filter(b=>b.checked)
+        .sort(()=>Math.random()-.5)
+        .slice(0,checked-maxChecked)
+        .forEach(b=>b.checked=false);
+ }
+
+ // Refresh the existing Readiness outputs immediately.
+ try{calculate()}catch(e){console.warn('Randomize calculate issue:',e)}
+ try{updateCategoryReadinessNow()}catch(e){console.warn('Randomize category issue:',e)}
+ try{refreshReadinessRadarOnly()}catch(e){console.warn('Randomize radar issue:',e)}
+ try{refreshExecutiveDashboardOnly()}catch(e){console.warn('Randomize dashboard issue:',e)}
  try{autosaveDraft()}catch(e){}
 }
 
