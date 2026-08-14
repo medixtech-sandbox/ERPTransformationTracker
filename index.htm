@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Medix ERP Transformation Readiness Tracker™</title>
-<!-- Internal version tracking: ERP Transformation Readiness Tracker V5.3 -->
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V5.4 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -236,6 +236,25 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 .exec-summary-panel{grid-column:1/-1;border:1px solid var(--line);border-radius:14px;padding:14px;background:#F8FCFF;border-left:5px solid var(--secondary)}
 .exec-summary-panel strong{color:var(--navy)}
 
+
+.exec-dashboard-v2{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;align-items:stretch}
+.exec-dashboard-hero{grid-column:1/-1;display:grid;grid-template-columns:150px 1fr;gap:18px;align-items:center;border:1px solid var(--line);border-radius:18px;padding:18px;background:linear-gradient(135deg,#F8FCFF,#FFFFFF)}
+.exec-score-block{display:flex;flex-direction:column;align-items:center;justify-content:center}
+.exec-score-number{font-size:54px;font-weight:900;line-height:1;color:var(--navy)}
+.exec-score-caption{font-size:12px;color:var(--muted);font-weight:800;margin-top:6px;text-align:center}
+.exec-summary-copy{font-size:14px;line-height:1.5;color:var(--text)}
+.exec-summary-copy strong{color:var(--navy)}
+.exec-stat-card{border:1px solid var(--line);border-radius:16px;padding:16px;background:#fff}
+.exec-stat-card .value{font-size:28px;font-weight:900;line-height:1.05;color:var(--blue)}
+.exec-stat-card .label{font-size:12px;color:var(--muted);margin-top:6px}
+.exec-stat-card.status-green{border-left:5px solid var(--green)}
+.exec-stat-card.status-yellow{border-left:5px solid var(--yellow)}
+.exec-stat-card.status-red{border-left:5px solid var(--red)}
+.exec-stat-card.risk-low{border-left:5px solid var(--green)}
+.exec-stat-card.risk-medium{border-left:5px solid var(--yellow)}
+.exec-stat-card.risk-elevated{border-left:5px solid var(--orange)}
+.exec-stat-card.risk-high{border-left:5px solid var(--red)}
+@media(max-width:800px){.exec-dashboard-v2{grid-template-columns:1fr}.exec-dashboard-hero{grid-template-columns:1fr;text-align:center}}
 @media(max-width:900px){.exec-dashboard-compact{grid-template-columns:1fr}.exec-metrics-panel{grid-template-columns:1fr 1fr}}
 @media(max-width:620px){.exec-metrics-panel{grid-template-columns:1fr}}
 @media(max-width:900px){.choice-grid{grid-template-columns:1fr 1fr}}
@@ -436,26 +455,34 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
       </div>
 
       <div class="dashboard-content hidden-dashboard" id="readinessDashboardContent">
-        <div class="exec-dashboard-compact">
-          <div class="exec-score-panel">
-            <div class="score-circle" id="scoreCircle" style="--score:0"><span id="score">—</span></div>
-            <div class="exec-score-label">ERP Readiness Score</div>
+        <div class="exec-dashboard-v2">
+          <div class="exec-dashboard-hero">
+            <div class="exec-score-block">
+              <div class="exec-score-number" id="score">—</div>
+              <div class="exec-score-caption">ERP Readiness Score</div>
+            </div>
+            <div class="exec-summary-copy" id="execAssessmentSummary">
+              Begin completing the readiness checklist to generate a current-state executive summary.
+            </div>
           </div>
 
-          <div class="exec-metrics-panel">
-            <div class="exec-metric-card">
-              <div class="metric-value" id="readinessStatusText">—</div>
-              <div class="metric-label">Readiness Status</div>
-            </div>
-            <div class="exec-metric-card">
-              <div class="metric-value"><span id="prob">—</span></div>
-              <div class="metric-label">Projected Success Probability</div>
-            </div>
-            <div class="exec-metric-card">
-              <div class="metric-value"><span id="risk">—</span></div>
-              <div class="metric-label">Overall Project Risk</div>
-            </div>
+          <div class="exec-stat-card" id="statusCard">
+            <div class="value" id="readinessStatusText">—</div>
+            <div class="label">Readiness Status</div>
           </div>
+
+          <div class="exec-stat-card" id="probabilityCard">
+            <div class="value" id="prob">—</div>
+            <div class="label">Projected Success Probability</div>
+          </div>
+
+          <div class="exec-stat-card" id="riskCard">
+            <div class="value" id="risk">—</div>
+            <div class="label">Overall Project Risk</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
           <div class="exec-summary-panel" id="execAssessmentSummary">
             <strong>Assessment Summary</strong>
@@ -780,7 +807,7 @@ function renderChecklist(){
   let html=`<div class="stage-group"><div class="stage-header"><h3>${stage.name}</h3><div class="small">${stage.desc}</div></div><div class="stage-content">`;
   stage.sections.forEach(i=>{
    const s=sections[i];
-   const qs=s.questions.map((q,j)=>`<label><input type="checkbox" id="q${i}_${j}" onchange="calculate();autosaveDraft()"> <span>${q}</span></label>`).join('');
+   const qs=s.questions.map((q,j)=>`<label><input type="checkbox" id="q${i}_${j}" onchange="calculate();autosaveDraft();targetedFiveSecondRefresh()"> <span>${q}</span></label>`).join('');
    html+=`<div class="section"><div class="section-header"><div><h3>${displayNumber}. ${s.name}</h3><div class="small">Weight: ${effectiveWeight(i)}% | Benchmark: ${s.benchmark}/${s.questions.length}</div></div><span id="badge${i}" class="badge red">0/${s.questions.length}</span></div><div class="questions">${qs}</div></div>`;
    displayNumber++;
   });
@@ -883,6 +910,7 @@ function smartRandomizeReadiness(){
 
  try{calculate()}catch(e){console.warn('Randomized assessment calculation issue:',e)}
  try{updateReadinessDashboardVisibility()}catch(e){}
+ try{targetedFiveSecondRefresh()}catch(e){}
  try{autosaveDraft()}catch(e){}
 }
 
@@ -923,7 +951,6 @@ function currentReadinessRaw(){
 }
 
 function refreshExecutiveDashboardOnly(){
- if(!selectedVendor)return;
  const raw=currentReadinessRaw();
  let weighted=0;
  sections.forEach((s,i)=>{
@@ -939,30 +966,37 @@ function refreshExecutiveDashboardOnly(){
  const score=Math.max(0,Math.round(weighted-scopePenalty));
  const prob=Math.min(96,Math.max(15,Math.round(score*.86+11)));
  const [riskText,riskCls]=riskLevel(score);
+ const statusText=score>=75?'Green':score>=55?'Yellow':'Red';
 
  if(el('score'))el('score').innerText=score;
- if(el('scoreCircle'))el('scoreCircle').style.setProperty('--score',score);
- if(el('readinessStatusText'))el('readinessStatusText').innerText=score>=75?'Green':score>=55?'Yellow':'Red';
+ if(el('readinessStatusText'))el('readinessStatusText').innerText=statusText;
  if(el('prob'))el('prob').innerText=prob+'%';
- if(el('risk')){
-   el('risk').innerText=riskText;
-   el('risk').style.color=riskCls==='green'?'#2E7D32':riskCls==='yellow'?'#F9A825':riskCls==='orange'?'#EF6C00':'#C62828';
- }
+ if(el('risk'))el('risk').innerText=riskText;
+
+ const statusCard=el('statusCard');
+ if(statusCard)statusCard.className='exec-stat-card '+(statusText==='Green'?'status-green':statusText==='Yellow'?'status-yellow':'status-red');
+
+ const riskCard=el('riskCard');
+ if(riskCard)riskCard.className='exec-stat-card '+(riskText==='Low'?'risk-low':riskText==='Medium'?'risk-medium':riskText==='Elevated'?'risk-elevated':'risk-high');
+
  if(el('execAssessmentSummary')){
-   el('execAssessmentSummary').innerHTML='<strong>Assessment Summary</strong><div class="small" style="margin-top:6px">'+buildAssessmentSummary(raw,score,prob,riskText)+'</div>';
+   el('execAssessmentSummary').innerHTML=buildAssessmentSummary(raw,score,prob,riskText);
  }
+
  updateReadinessDashboardVisibility();
 }
 
 function refreshReadinessCategoryOnly(){
- if(!selectedVendor)return;
  const raw=currentReadinessRaw();
+ const target=el('categoryBars');
+ if(!target)return;
  renderBars(raw);
 }
 
 function refreshReadinessRadarOnly(){
- if(!selectedVendor)return;
  const raw=currentReadinessRaw();
+ const canvas=el('radar');
+ if(!canvas)return;
  renderRadar(raw);
 }
 
@@ -978,7 +1012,7 @@ function startTargetedRefresh(){
  targetedRefreshTimer=setInterval(targetedFiveSecondRefresh,5000);
 }
 
-function calculate(){if(!selectedVendor)return;updateReadinessDashboardVisibility();const raw=[];let weighted=0;sections.forEach((s,i)=>{const c=checkedCount(i);const max=sectionMax(i);raw.push(c);weighted+=(c/max)*effectiveWeight(i);const b=el('badge'+i);b.innerText=`${c}/${max}`;b.className='badge '+scoreClass(c,s.benchmark)});const mods=selectedModules();const modCount=mods.length, eco=ecosystemCount(), cpx=complexityPoints();const scopePenalty=Math.min(14, Math.floor(modCount/4)+Math.floor(eco/5)+Math.floor(cpx/3));const score=Math.max(0,Math.round(weighted-scopePenalty));const prob=Math.min(96,Math.max(15,Math.round(score*.86+11)));const [riskText,riskCls]=riskLevel(score);const complexity=projectComplexity(modCount,eco,cpx);el('score').innerText=score;el('scoreCircle').style.setProperty('--score',score);if(el('readinessStatusText'))el('readinessStatusText').innerText=score>=75?'Green':score>=55?'Yellow':'Red';const stoplight=score>=75?'green':score>=55?'yellow':'red';el('stoplightIndicator').className='stoplight-indicator '+stoplight;el('prob').innerText=prob+'%';if(el('moduleCount'))el('moduleCount').innerText=modCount;if(el('selectedModuleCount'))el('selectedModuleCount').innerText=modCount;el('risk').innerText=riskText;el('risk').style.color=riskCls==='green'?'#2E7D32':riskCls==='yellow'?'#F9A825':riskCls==='orange'?'#EF6C00':'#C62828';if(el('execAssessmentSummary'))el('execAssessmentSummary').innerHTML='<strong>Assessment Summary</strong><div class="small" style="margin-top:6px">'+buildAssessmentSummary(raw,score,prob,riskText)+'</div>';renderProfileSummary(modCount,eco,complexity);renderExecutiveSummary(score,prob,riskText,modCount,eco);renderBars(raw);renderRadar(raw);renderHeat(raw);renderExecutiveReport(raw,score);renderFindings(raw,score,modCount,eco,complexity);renderImpact(raw,modCount,eco);renderServices(raw,modCount,eco);autosaveDraft()}
+function calculate(){if(!selectedVendor)return;updateReadinessDashboardVisibility();const raw=[];let weighted=0;sections.forEach((s,i)=>{const c=checkedCount(i);const max=sectionMax(i);raw.push(c);weighted+=(c/max)*effectiveWeight(i);const b=el('badge'+i);b.innerText=`${c}/${max}`;b.className='badge '+scoreClass(c,s.benchmark)});const mods=selectedModules();const modCount=mods.length, eco=ecosystemCount(), cpx=complexityPoints();const scopePenalty=Math.min(14, Math.floor(modCount/4)+Math.floor(eco/5)+Math.floor(cpx/3));const score=Math.max(0,Math.round(weighted-scopePenalty));const prob=Math.min(96,Math.max(15,Math.round(score*.86+11)));const [riskText,riskCls]=riskLevel(score);const complexity=projectComplexity(modCount,eco,cpx);el('score').innerText=score;if(el('readinessStatusText'))el('readinessStatusText').innerText=score>=75?'Green':score>=55?'Yellow':'Red';const stoplight=score>=75?'green':score>=55?'yellow':'red';el('stoplightIndicator').className='stoplight-indicator '+stoplight;el('prob').innerText=prob+'%';if(el('moduleCount'))el('moduleCount').innerText=modCount;if(el('selectedModuleCount'))el('selectedModuleCount').innerText=modCount;el('risk').innerText=riskText;el('risk').style.color=riskCls==='green'?'#2E7D32':riskCls==='yellow'?'#F9A825':riskCls==='orange'?'#EF6C00':'#C62828';if(el('execAssessmentSummary'))el('execAssessmentSummary').innerHTML='<strong>Assessment Summary</strong><div class="small" style="margin-top:6px">'+buildAssessmentSummary(raw,score,prob,riskText)+'</div>';renderProfileSummary(modCount,eco,complexity);renderExecutiveSummary(score,prob,riskText,modCount,eco);renderBars(raw);renderRadar(raw);renderHeat(raw);renderExecutiveReport(raw,score);renderFindings(raw,score,modCount,eco,complexity);renderImpact(raw,modCount,eco);renderServices(raw,modCount,eco);autosaveDraft()}
 function projectComplexity(m,e,c){const pts=m+e+(c*2);if(pts>=48)return'Very High';if(pts>=32)return'High';if(pts>=18)return'Medium';return'Low'}
 function renderProfileSummary(m,e,c){const org=el('org').value||'This organization', stage=el('stage').value||selectedJourneyStage||'not defined', timeline=el('timeline').value, legacy=el('legacy').value||'not defined';const evaluated=evaluatedErpSystems.map(k=>vendors[k]?.name).filter(Boolean).join(', ');const platformText=(selectedVendor==='other'&&evaluated)?`a general ERP evaluation across <strong>${evaluated}</strong>`:`<strong>${vendors[selectedVendor].name}</strong>`;el('profileSummary').innerHTML=`<strong>${org}</strong> is assessing ${platformText} at the <strong>${stage}</strong> stage. Current timeline is <strong>${timeline}</strong>, legacy platform is <strong>${legacy}</strong>, selected scope includes <strong>${m}</strong> items, and healthcare ecosystem scope includes <strong>${e}</strong> impacted systems.`}
 function renderExecutiveSummary(score,prob,risk,m,e){const org=el('org').value||'This organization';el('execSummary').innerHTML=`<strong>${score>=75?'Green':score>=55?'Yellow':'Red'} Readiness:</strong> ${org} has an ERP Readiness Score of <strong>${score}/100</strong> with an estimated success probability of <strong>${prob}</strong> and overall risk of <strong>${risk}</strong>. Scope assumptions include <strong>${m}</strong> selected vendor modules and <strong>${e}</strong> healthcare integration touchpoints.`}
@@ -1437,6 +1471,7 @@ function advanceScopeToReadiness(){
  try{autosaveDraft()}catch(e){}
 
  setActiveScreenHard('screenAssessment');
+ setTimeout(()=>targetedFiveSecondRefresh(),0);
 }
 
 function advanceReadinessToReport(){
