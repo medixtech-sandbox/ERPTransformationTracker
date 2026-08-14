@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Medix ERP Transformation Readiness Tracker™</title>
-<!-- Internal version tracking: ERP Transformation Readiness Tracker V3.8 -->
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V3.9 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -132,8 +132,8 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 .backup-panel strong{color:var(--navy)}
 .backup-file-input{display:none}
 
-.app-screen{display:none}
-.app-screen.active{display:block}
+.app-screen{display:none!important}
+.app-screen.active{display:block!important}
 .landing-shell{min-height:72vh;display:flex;align-items:center;justify-content:center;padding:28px 0}
 .landing-card{width:min(980px,100%);background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);overflow:hidden}
 .landing-top{padding:32px;background:radial-gradient(circle at 86% 18%,rgba(99,230,184,.22),transparent 24%),linear-gradient(135deg,var(--primary-step-2),var(--primary-step-1) 58%,var(--primary));color:#fff;border-bottom:5px solid var(--secondary)}
@@ -260,8 +260,8 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
           <h1>Medix ERP Transformation Readiness Tracker™</h1>
           <p>Assess readiness, track progress, and guide executive decision-making throughout the ERP lifecycle.</p>
         </div>
-        <div id="trackerMessage" class="success-banner"></div>
         <div class="landing-body">
+          <div id="trackerMessage" class="success-banner"></div>
           <h2>How would you like to begin?</h2>
           <div class="choice-grid">
             <div class="choice-card">
@@ -269,6 +269,7 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
               <p>Create a new ERP readiness assessment and establish your organization and project profile.</p>
               <button class="primary" type="button" onclick="startNewAssessmentFlow()">Start New Assessment</button>
             </div>
+
             <div class="choice-card">
               <h3>Continue an Assessment</h3>
               <p>Restore a previously downloaded backup or reopen a project saved in this browser.</p>
