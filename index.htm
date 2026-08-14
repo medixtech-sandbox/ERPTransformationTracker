@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Medix ERP Transformation Readiness Tracker™</title>
-<!-- Internal version tracking: ERP Transformation Readiness Tracker V3.0 -->
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V3.3 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -161,6 +161,36 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 .scope-simple-card input{margin-right:8px}
 .scope-simple-card:has(input:checked){border:2px solid var(--primary);background:#EFF8FF}
 .assessment-screen .card{margin-top:16px}
+
+/* Graphical lifecycle journey */
+.lifecycle-journey{display:flex;align-items:stretch;gap:0;margin-top:18px;overflow-x:auto;padding-bottom:6px}
+.lifecycle-node{position:relative;min-width:150px;flex:1;border:1px solid var(--line);background:#fff;padding:14px 16px;border-radius:14px;text-align:center;box-shadow:0 4px 12px rgba(0,36,84,.05)}
+.lifecycle-node:not(:last-child){margin-right:34px}
+.lifecycle-node:not(:last-child):after{content:"→";position:absolute;right:-28px;top:50%;transform:translateY(-50%);font-size:28px;font-weight:900;color:var(--primary)}
+.lifecycle-node strong{display:block;color:var(--navy);font-size:13px;margin-bottom:6px}
+.lifecycle-node .stage-state{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.5px}
+.lifecycle-node .stage-score{font-size:11px;color:var(--muted);margin-top:4px}
+.lifecycle-node.complete{background:#F1FAF2;border-color:#BFE5C2}
+.lifecycle-node.complete .stage-state{color:var(--green)}
+.lifecycle-node.current{background:#EFF8FF;border:2px solid var(--primary);box-shadow:0 8px 20px rgba(0,117,201,.14)}
+.lifecycle-node.current .stage-state{color:var(--primary)}
+.lifecycle-node.upcoming{background:#FBFDFF;opacity:.78}
+.lifecycle-node.upcoming .stage-state{color:var(--muted)}
+
+/* Executive report navigation */
+.exec-switcher{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}
+.exec-switcher button{position:relative;padding:14px 16px;border-radius:14px;border:1px solid var(--line);background:#fff;color:var(--navy);font-size:13px;font-weight:900;box-shadow:0 3px 10px rgba(0,36,84,.05)}
+.exec-switcher button:after{content:"View";display:block;font-size:10px;font-weight:700;color:var(--muted);margin-top:3px}
+.exec-switcher button.active{background:linear-gradient(135deg,var(--primary-step-1),var(--primary));color:#fff;border-color:var(--primary);box-shadow:0 8px 18px rgba(0,117,201,.18)}
+.exec-switcher button.active:after{content:"Selected";color:#EAF6FE}
+.exec-switcher-label{font-size:12px;color:var(--muted);margin-top:12px;font-weight:800}
+
+/* Randomize on profile screen */
+.profile-actions-inline{display:flex;justify-content:flex-end;margin-bottom:12px}
+.profile-actions-inline button{font-size:12px;padding:9px 12px}
+
+@media(max-width:1000px){.exec-switcher{grid-template-columns:1fr 1fr}.lifecycle-node{min-width:140px}}
+@media(max-width:600px){.exec-switcher{grid-template-columns:1fr}.lifecycle-node{min-width:135px}}
 @media(max-width:900px){.choice-grid,.scope-simple-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:650px){.choice-grid,.scope-simple-grid{grid-template-columns:1fr}}
 @media(max-width:900px){.exec-summary-strip{grid-template-columns:1fr 1fr}}
@@ -202,6 +232,7 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
           <h1>Medix ERP Transformation Readiness Tracker™</h1>
           <p>Assess readiness, track progress, and guide executive decision-making throughout the ERP lifecycle.</p>
         </div>
+        <div id="trackerMessage" class="success-banner"></div>
         <div class="landing-body">
           <h2>How would you like to begin?</h2>
           <div class="choice-grid">
@@ -212,9 +243,11 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
             </div>
             <div class="choice-card">
               <h3>Continue an Assessment</h3>
-              <p>Restore a previously downloaded backup and continue from your latest saved progress.</p>
+              <p>Restore a previously downloaded backup or reopen a project saved in this browser.</p>
               <button class="secondary" type="button" onclick="document.getElementById('landingBackupInput').click()">Upload Assessment Backup</button>
+              <button class="ghost" type="button" onclick="showLandingAssessmentHistory()">Assessment History</button>
               <input id="landingBackupInput" class="backup-file-input" type="file" accept=".json,application/json" onchange="continueAssessmentFromLanding(event)">
+              <div id="landingHistoryPanel" class="hidden" style="margin-top:12px"></div>
             </div>
           </div>
         </div>
@@ -234,6 +267,9 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
       </div>
 
       <div class="card">
+        <div class="profile-actions-inline">
+          <button class="secondary" type="button" onclick="randomizeOrganizationProfile()">Randomize Organization Details</button>
+        </div>
         <div class="profile-grid">
           <label>Organization Name <span class="required-star">*</span><br><input id="wizardOrg" type="text" placeholder="Health System / Organization"></label>
           <label>Organization Type <span class="required-star">*</span><br>
@@ -272,6 +308,7 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
       <div class="screen-nav">
         <button class="ghost" type="button" onclick="showScreen('screenLanding')">Back</button>
         <div class="right">
+          <button class="secondary" type="button" onclick="saveAndExitWizard('profile')">Save & Exit</button>
           <button class="primary" type="button" onclick="saveWizardProfileAndNext()">Continue</button>
         </div>
       </div>
@@ -301,6 +338,7 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
       <div class="screen-nav">
         <button class="ghost" type="button" onclick="showScreen('screenProfile')">Back</button>
         <div class="right">
+          <button class="secondary" type="button" onclick="saveAndExitWizard('scope')">Save & Exit</button>
           <button class="primary" type="button" onclick="saveWizardScopeAndNext()">Continue to Readiness Assessment</button>
         </div>
       </div>
@@ -310,25 +348,7 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
   <div class="app-screen assessment-screen" id="screenAssessment">
     <div class="screen-shell">
       <div class="wizard-steps" id="wizardAssessment"></div>
-<div class="card">
-    <h2>ERP Transformation Tracker</h2>
-    <p class="small">Save your progress, return later, compare assessment snapshots, and track executive actions throughout the ERP lifecycle.</p>
-    <div class="tracker-toolbar">
-      <button class="primary" type="button" onclick="saveAssessmentSnapshot()">Save Progress</button>
-      <button class="secondary" type="button" onclick="resumeLatestAssessment()">Resume Last Assessment</button>
-      <button class="secondary" type="button" onclick="showAssessmentHistory()">Assessment History</button>
-      <button class="ghost" type="button" onclick="startNewAssessmentVersion()">Start New Update</button>
-      <button class="secondary" type="button" onclick="exportTrackerBackup()">Download Backup</button>
-      <button class="ghost" type="button" onclick="document.getElementById('backupImportInput').click()">Restore Backup</button>
-      <input id="backupImportInput" class="backup-file-input" type="file" accept=".json,application/json" onchange="importTrackerBackup(event)">
-    </div>
-    <div class="backup-panel">
-      <strong>Portable Backup</strong>
-      <div class="small">Download a dated backup of the full tracker history. The file can be restored later even if browser storage is cleared or the assessment is opened on another device.</div>
-    </div>
-    <div id="trackerMessage" class="success-banner"></div>
-    <div class="lifecycle" id="lifecycleTracker"></div>
-  </div>
+
 
   <div class="card hidden" id="historyCard">
     <h2>Assessment History</h2>
@@ -338,10 +358,6 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
   <div id="assessment">
 </div>
       
-    </div>
-
-    <div class="button-row" style="margin-top:20px">
-      <button class="secondary" type="button" onclick="randomizeAssessment()">Randomize</button>
     </div>
 
     <div class="grid">
@@ -413,7 +429,7 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
       <div class="screen-nav">
         <button class="ghost" type="button" onclick="showScreen('screenScope')">Back</button>
         <div class="right">
-          <button class="secondary" type="button" onclick="saveAssessmentSnapshot()">Save Progress</button>
+          <button class="secondary" type="button" onclick="saveAndExitWizard('assessment')">Save & Exit</button>
           <button class="primary" type="button" onclick="goToExecutiveReport()">Continue to Executive Report</button>
         </div>
       </div>
@@ -436,11 +452,12 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
         <div class="exec-summary-tile"><div class="num" id="execActionProgress">0/0</div><div class="label">Executive Actions Complete</div></div>
       </div>
 
-      <div class="exec-nav">
-        <button class="primary" type="button" onclick="showExecSection('overview',this)">Executive Overview</button>
-        <button class="secondary" type="button" onclick="showExecSection('progress',this)">Progress</button>
-        <button class="secondary" type="button" onclick="showExecSection('guidance',this)">Guidance</button>
-        <button class="secondary" type="button" onclick="showExecSection('actions',this)">Next Steps</button>
+      <div class="exec-switcher-label">Select a view:</div>
+      <div class="exec-switcher">
+        <button class="active" type="button" onclick="showExecSection('overview',this)">Executive Overview</button>
+        <button type="button" onclick="showExecSection('progress',this)">Progress</button>
+        <button type="button" onclick="showExecSection('guidance',this)">Guidance</button>
+        <button type="button" onclick="showExecSection('actions',this)">Next Steps</button>
       </div>
 
       <div class="exec-section-panel active" id="execSection_overview">
@@ -970,6 +987,22 @@ function renderWizardSteps(screenId){
  });
 }
 
+
+function randomizeOrganizationProfile(){
+ const pick=items=>items[Math.floor(Math.random()*items.length)];
+ const orgPrefixes=['North Valley','Summit','Lakeside','Pioneer','Evergreen','Riverbend','Central Plains','Blue Ridge','Oakwood','Horizon'];
+ const orgSuffixes=['Health System','Medical Center','Regional Health','Healthcare Network','Community Hospital','Health Alliance'];
+ const orgTypes=['Academic Medical Center','Integrated Delivery Network (IDN)','Community Health System','Critical Access Hospital','Children\'s Hospital','Specialty Hospital'];
+ const employeeSizes=[350,650,1200,2500,4800,7500,12000,18500,26000,42000];
+ const timelines=['0–6 Months','6–12 Months','12–18 Months','18–30 Months','30+ Months'];
+ const stages=['Discovery','Business Case Creation','Vendor Selection','Implementation Planning','Implementation'];
+
+ if(el('wizardOrg'))el('wizardOrg').value=`${pick(orgPrefixes)} ${pick(orgSuffixes)}`;
+ if(el('wizardOrgType'))el('wizardOrgType').value=pick(orgTypes);
+ if(el('wizardEmployees'))el('wizardEmployees').value=pick(employeeSizes);
+ if(el('wizardTimeline'))el('wizardTimeline').value=pick(timelines);
+ if(el('wizardLifecycleStage'))el('wizardLifecycleStage').value=pick(stages);
+}
 function startNewAssessmentFlow(){
  assessmentFlowMode='new';
  currentAssessmentId='a_'+Date.now();
@@ -1075,11 +1108,95 @@ function goToExecutiveReport(){
  showScreen('screenReport');
 }
 
+
+function saveAndExitWizard(step){
+ try{
+   if(step==='profile'){
+     const org=el('wizardOrg')?.value.trim()||'';
+     if(el('org'))el('org').value=org;
+     if(el('orgType'))el('orgType').value=el('wizardOrgType')?.value||'';
+     if(el('employees'))el('employees').value=el('wizardEmployees')?.value||'';
+     if(el('timeline'))el('timeline').value=el('wizardTimeline')?.value||'';
+     if(el('lifecycleStage'))el('lifecycleStage').value=el('wizardLifecycleStage')?.value||'Discovery';
+   }
+   if(step==='scope'){
+     // Carry selected high-level scope into the underlying assessment before saving.
+     const selected=[
+       ['wizardScopeHCM','HCM'],['wizardScopeFinance','Finance'],
+       ['wizardScopeSupply','Supply Chain'],['wizardScopePlatform','Platform']
+     ].filter(([id])=>el(id)?.checked).map(x=>x[1]);
+     selectedVendor='other';
+     if(!document.querySelector('.moduleCheck'))renderVendorScope();
+     document.querySelectorAll('.moduleCheck').forEach(box=>{
+       const kind=(box.dataset.kind||'');
+       const name=(box.dataset.name||'');
+       box.checked =
+         (selected.includes('HCM') && /HCM/i.test(kind+name)) ||
+         (selected.includes('Finance') && /Finance/i.test(kind+name)) ||
+         (selected.includes('Supply Chain') && /Supply/i.test(kind+name)) ||
+         (selected.includes('Platform') && /Platform/i.test(kind+name));
+     });
+   }
+   calculate();
+   saveAssessmentSnapshot();
+   showScreen('screenLanding');
+ }catch(e){
+   saveAssessmentSnapshot();
+   showScreen('screenLanding');
+ }
+}
+
+function showLandingAssessmentHistory(){
+ const panel=el('landingHistoryPanel');
+ if(!panel)return;
+ panel.classList.toggle('hidden');
+ if(panel.classList.contains('hidden'))return;
+
+ const state=trackerState();
+ const items=[...state.assessments].sort((a,b)=>new Date(b.savedAt)-new Date(a.savedAt));
+ if(!items.length){
+   panel.innerHTML='<div class="small">No assessments are saved in this browser yet. Upload a backup file to continue.</div>';
+   return;
+ }
+ panel.innerHTML=`<div class="saved-list">${items.map(a=>`
+   <div class="saved-item" style="align-items:flex-start">
+     <div>
+       <strong>${a.org||'ERP Assessment'}</strong><br>
+       <span class="small">${new Date(a.savedAt).toLocaleString()} · ${a.lifecycleStage||'Discovery'} · Score ${a.score}/100</span>
+     </div>
+     <div class="saved-item-actions">
+       <button class="secondary mini-button" type="button" onclick="continueSavedAssessment('${a.id}')">Continue</button>
+     </div>
+   </div>`).join('')}</div>`;
+}
+
+function continueSavedAssessment(id){
+ const state=trackerState();
+ const saved=state.assessments.find(a=>a.id===id);
+ if(!saved)return;
+ applyAssessmentData(saved);
+ assessmentFlowMode='continue';
+ currentAssessmentId=saved.id;
+
+ if(el('wizardOrg'))el('wizardOrg').value=saved.org||'';
+ if(el('wizardOrgType'))el('wizardOrgType').value=saved.orgType||'';
+ if(el('wizardEmployees'))el('wizardEmployees').value=saved.employees||'';
+ if(el('wizardTimeline'))el('wizardTimeline').value=saved.timeline||'';
+ if(el('wizardLifecycleStage'))el('wizardLifecycleStage').value=saved.lifecycleStage||'Discovery';
+
+ syncWizardScopeFromModules();
+
+ el('profileScreenTitle').innerText='Confirm Organization & Project Profile';
+ el('profileScreenHelp').innerText='Review the previously saved information below and make any updates before continuing.';
+ el('profileConfirmBanner').innerHTML=`<strong>Saved assessment:</strong> ${saved.org||'ERP Project'} · ${saved.lifecycleStage||'Discovery'} · Last saved ${new Date(saved.savedAt).toLocaleString()}`;
+ el('profileConfirmBanner').classList.remove('hidden');
+ showScreen('screenProfile');
+}
 function showExecSection(name,btn){
  document.querySelectorAll('.exec-section-panel').forEach(x=>x.classList.remove('active'));
  const panel=el('execSection_'+name);if(panel)panel.classList.add('active');
- document.querySelectorAll('.exec-nav button').forEach(b=>{b.classList.remove('primary');b.classList.add('secondary')});
- if(btn){btn.classList.remove('secondary');btn.classList.add('primary')}
+ document.querySelectorAll('.exec-switcher button').forEach(b=>b.classList.remove('active'));
+ if(btn)btn.classList.add('active');
  if(name==='progress')setTimeout(()=>renderHistorySummary(),0);
 }
 
@@ -1298,14 +1415,23 @@ function lifecycleStages(){
 }
 function renderLifecycleTracker(){
  const current=el('lifecycleStage')?.value||'Discovery';
- const stages=lifecycleStages(); const curIdx=Math.max(0,stages.findIndex(s=>s[0]===current));
+ const stages=lifecycleStages();
+ const curIdx=Math.max(0,stages.findIndex(s=>s[0]===current));
  const state=trackerState();
  const stageScores={};
  state.assessments.forEach(a=>{stageScores[a.lifecycleStage]=a.score});
- el('lifecycleTracker').innerHTML=stages.map((s,idx)=>{
+ const container=el('lifecycleTracker');
+ if(!container)return;
+ container.className='lifecycle-journey';
+ container.innerHTML=stages.map((s,idx)=>{
    const cls=idx<curIdx?'complete':idx===curIdx?'current':'upcoming';
+   const label=idx<curIdx?'Completed':idx===curIdx?'Current Stage':'Upcoming';
    const score=stageScores[s[0]];
-   return `<div class="lifecycle-step ${cls}"><strong>${s[1]}</strong><div class="small">${idx<curIdx?'Completed':idx===curIdx?'Current Stage':'Upcoming'}</div><div class="small">${score!==undefined?'Latest Score: '+score+'/100':''}</div></div>`;
+   return `<div class="lifecycle-node ${cls}">
+     <strong>${s[1]}</strong>
+     <div class="stage-state">${label}</div>
+     <div class="stage-score">${score!==undefined?'Latest Score: '+score+'/100':idx===curIdx?'In Progress':'Not Yet Assessed'}</div>
+   </div>`;
  }).join('');
 }
 function onLifecycleStageChange(){
