@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Medix ERP Transformation Readiness Tracker™</title>
-<!-- Internal version tracking: ERP Transformation Readiness Tracker V8.5 -->
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V8.6 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js">
 window.isNewAssessment=true;
 window.comparisonBaselineId=null;
@@ -539,6 +539,62 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
 #riskCard.risk-medium{border-left:5px solid var(--yellow) !important;box-shadow:-3px 0 8px rgba(249,168,37,.18) !important}
 #riskCard.risk-elevated{border-left:5px solid var(--orange) !important;box-shadow:-3px 0 8px rgba(239,108,0,.18) !important}
 #riskCard.risk-high{border-left:5px solid var(--red) !important;box-shadow:-3px 0 8px rgba(198,40,40,.16) !important}
+
+/* V8.6 equal-width Executive Dashboard metric row */
+.exec-dashboard-v2{
+  display:block !important;
+}
+.exec-dashboard-hero{
+  width:100% !important;
+  margin-bottom:12px !important;
+}
+.exec-metrics-row{
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  gap:10px !important;
+  width:100% !important;
+  align-items:stretch !important;
+}
+.exec-metrics-row > #statusCard,
+.exec-metrics-row > #probabilityCard,
+.exec-metrics-row > #riskCard{
+  width:100% !important;
+  min-width:0 !important;
+  max-width:none !important;
+  height:82px !important;
+  min-height:82px !important;
+  padding:10px 12px !important;
+  margin:0 !important;
+  box-sizing:border-box !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-align:center !important;
+}
+#readinessStoplight,#projectRiskLight{
+  width:26px !important;
+  height:26px !important;
+  flex:0 0 26px !important;
+  margin-bottom:5px !important;
+}
+#probabilityCard .value{
+  font-size:22px !important;
+  line-height:1 !important;
+  margin-bottom:5px !important;
+}
+#statusCard .label,
+#probabilityCard .label,
+#riskCard .label{
+  font-size:11px !important;
+  line-height:1.15 !important;
+  white-space:normal !important;
+}
+@media(max-width:760px){
+  .exec-metrics-row{
+    grid-template-columns:1fr !important;
+  }
+}
 </style>
 </head><body><div class="wrapper"><div class="app-screen active" id="screenLanding">
 <div class="landing-shell">
@@ -685,13 +741,13 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
               Begin completing the readiness checklist to generate a current-state executive summary.
             </div>
 </div>
-<div class="exec-stat-card" id="statusCard"><div aria-label="Readiness status" class="readiness-stoplight red" id="readinessStoplight" role="img"></div><div class="label">Readiness Status</div></div>
-</div>
-<div class="exec-stat-card" id="probabilityCard">
+
+<div class="exec-metrics-row"><div class="exec-stat-card" id="statusCard"><div aria-label="Readiness status" class="readiness-stoplight red" id="readinessStoplight" role="img"></div><div class="label">Readiness Status</div></div><div class="exec-stat-card" id="probabilityCard">
 <div class="value" id="prob">—</div>
 <div class="label">Projected Success Probability</div>
-</div>
-<div class="exec-stat-card" id="riskCard"><div aria-label="Overall project risk" class="readiness-stoplight red" id="projectRiskLight" role="img"></div><div class="label">Overall Project Risk</div></div>
+</div><div class="exec-stat-card" id="riskCard"><div aria-label="Overall project risk" class="readiness-stoplight red" id="projectRiskLight" role="img"></div><div class="label">Overall Project Risk</div></div></div></div>
+
+
 </div>
 </div>
 </div>
