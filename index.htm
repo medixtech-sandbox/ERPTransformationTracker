@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Medix ERP Transformation Readiness Tracker™</title>
-<!-- Internal version tracking: ERP Transformation Readiness Tracker V4.0 -->
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V4.1 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -1101,16 +1101,38 @@ function continueAssessmentFromLanding(event){
 }
 
 function saveWizardProfileAndNext(){
- const org=el('wizardOrg').value.trim(),orgType=el('wizardOrgType').value,employees=el('wizardEmployees').value,timeline=el('wizardTimeline').value,stage=el('wizardLifecycleStage').value;
- if(!org||!orgType||!employees||!timeline){alert('Please complete the required organization and project profile fields.');return}
+ const org=(el('wizardOrg')?.value||'').trim();
+ const orgType=el('wizardOrgType')?.value||'';
+ const employees=el('wizardEmployees')?.value||'';
+ const timeline=el('wizardTimeline')?.value||'';
+ const stage=el('wizardLifecycleStage')?.value||'Discovery';
+
+ if(!org||!orgType||!employees||!timeline){
+   alert('Please complete the required organization and project profile fields.');
+   return;
+ }
+
+ // Store profile values in the underlying assessment model.
  if(el('org'))el('org').value=org;
  if(el('orgType'))el('orgType').value=orgType;
  if(el('employees'))el('employees').value=employees;
  if(el('timeline'))el('timeline').value=timeline;
  if(el('lifecycleStage'))el('lifecycleStage').value=stage;
- renderLifecycleTracker();
- renderChecklist();
- calculate();
+
+ // Create/update a lightweight draft without invoking downstream assessment rendering.
+ try{
+   const state=trackerState();
+   const existing=state.draft||{};
+   state.draft={
+     ...existing,
+     id:currentAssessmentId||existing.id||('a_'+Date.now()),
+     savedAt:new Date().toISOString(),
+     org,orgType,employees,timeline,lifecycleStage:stage
+   };
+   currentAssessmentId=state.draft.id;
+   saveTrackerState(state);
+ }catch(e){}
+
  updatePersonalizedHeaders();
  showScreen('screenScope');
 }
