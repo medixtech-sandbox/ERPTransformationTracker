@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>Medix ERP Transformation Readiness Tracker™</title>
-<!-- Internal version tracking: ERP Transformation Readiness Tracker V8.4 -->
+<!-- Internal version tracking: ERP Transformation Readiness Tracker V8.5 -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js">
 window.isNewAssessment=true;
 window.comparisonBaselineId=null;
@@ -499,6 +499,46 @@ h1{font-size:39px;margin:8px 0 8px;font-weight:900;letter-spacing:.2px;color:inh
   box-shadow:-3px 0 8px rgba(198,40,40,.16) !important;
 }
 
+
+/* V8.5 exact parity between Readiness Status and Overall Project Risk */
+#statusCard,#riskCard{
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:center !important;
+  align-items:center !important;
+  min-height:76px !important;
+  height:76px !important;
+  padding:10px 12px !important;
+  margin:0 !important;
+  background:#fff !important;
+  border:1px solid var(--line) !important;
+  border-radius:12px !important;
+  text-align:center !important;
+  box-sizing:border-box !important;
+}
+#statusCard .readiness-stoplight,
+#riskCard .readiness-stoplight{
+  width:28px !important;
+  height:28px !important;
+  flex:0 0 28px !important;
+  margin:0 0 6px !important;
+}
+#statusCard .label,
+#riskCard .label{
+  font-size:11px !important;
+  line-height:1.2 !important;
+  margin:0 !important;
+}
+
+/* dynamic left accent only */
+#statusCard.status-green{border-left:5px solid var(--green) !important;box-shadow:-3px 0 8px rgba(46,125,50,.16) !important}
+#statusCard.status-yellow{border-left:5px solid var(--yellow) !important;box-shadow:-3px 0 8px rgba(249,168,37,.18) !important}
+#statusCard.status-red{border-left:5px solid var(--red) !important;box-shadow:-3px 0 8px rgba(198,40,40,.16) !important}
+
+#riskCard.risk-low{border-left:5px solid var(--green) !important;box-shadow:-3px 0 8px rgba(46,125,50,.16) !important}
+#riskCard.risk-medium{border-left:5px solid var(--yellow) !important;box-shadow:-3px 0 8px rgba(249,168,37,.18) !important}
+#riskCard.risk-elevated{border-left:5px solid var(--orange) !important;box-shadow:-3px 0 8px rgba(239,108,0,.18) !important}
+#riskCard.risk-high{border-left:5px solid var(--red) !important;box-shadow:-3px 0 8px rgba(198,40,40,.16) !important}
 </style>
 </head><body><div class="wrapper"><div class="app-screen active" id="screenLanding">
 <div class="landing-shell">
